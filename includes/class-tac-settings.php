@@ -57,6 +57,7 @@ class WPTAC_Settings {
                 'adblocker'                => false,
                 'more_info_link'           => true,
                 'mandatory'                => true,
+                'show_icon'                => true,
                 'reload_thx_seconds'       => 0,        // Segundos antes de recargar (0 = sin recarga)
                 'language'                 => 'auto',   // Idioma: auto | es | en | fr
                 'force_expiry_date'        => '',        // Fecha de expiración forzada (YYYY/MM/DD)
@@ -238,6 +239,7 @@ class WPTAC_Settings {
             $settings['general']['adblocker']                   = ! empty( $g['adblocker'] );
             $settings['general']['more_info_link']              = ! empty( $g['more_info_link'] );
             $settings['general']['mandatory']                   = ! empty( $g['mandatory'] );
+            $settings['general']['show_icon']                    = ! empty( $g['show_icon'] );
 
             $settings['general']['reload_thx_seconds']   = isset( $g['reload_thx_seconds'] )
                 ? absint( $g['reload_thx_seconds'] )

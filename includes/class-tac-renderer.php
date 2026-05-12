@@ -140,7 +140,7 @@ class WPTAC_Renderer {
             'cookieslistEmbed'    => (bool) $g['cookieslist_embed'],
             'removeCredit'        => (bool) $g['remove_credit'],
             'closePopup'          => (bool) $g['close_popup'],
-            'showIcon'            => true,
+            'showIcon'            => (bool) $g['show_icon'],
             'iconPosition'        => ! empty( $g['icon_position'] ) ? $g['icon_position'] : 'BottomRight',
             'adblocker'           => (bool) $g['adblocker'],
             'DenyAllCta'          => (bool) $g['deny_all_cta'],

@@ -398,6 +398,10 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                     'label' => __( 'Show partners list', 'wp-tac-manager' ),
                                     'desc'  => __( 'Display the number of partners on the banner.', 'wp-tac-manager' ),
                                 ],
+                                'show_icon'            => [
+                                    'label' => __( 'Show floating cookie icon', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Display the floating cookie icon to reopen the panel.', 'wp-tac-manager' ),
+                                ],
                                 'disable_google_consent_mode' => [
                                     'label' => __( 'Disable Google Consent Mode', 'wp-tac-manager' ),
                                     'desc'  => __( 'Disables tarteaucitron\'s Google Consent Mode v2. Enable this if you use Google Consent Mode from another plugin.', 'wp-tac-manager' ),
