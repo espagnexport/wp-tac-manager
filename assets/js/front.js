@@ -12,8 +12,6 @@
 
     window.addEventListener( 'tac.close_alert', function () {
         document.body.setAttribute( 'data-wptac-banner-visible', '0' );
-        var icon = document.querySelector( '#tarteaucitronRoot .tarteaucitronIcon' );
-        if ( icon ) { icon.style.display = 'none'; }
     } );
 
     // ── Body attributes per service + stats tracking ──

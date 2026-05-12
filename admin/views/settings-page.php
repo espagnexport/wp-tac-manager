@@ -338,6 +338,66 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                     'label' => __( 'Show "Deny All" button', 'wp-tac-manager' ),
                                     'desc'  => __( 'Allows users to deny all non-essential services with one click.', 'wp-tac-manager' ),
                                 ],
+                                'show_details_on_click' => [
+                                    'label' => __( 'Show details on click', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Click to expand the service description.', 'wp-tac-manager' ),
+                                ],
+                                'cookieslist_embed'    => [
+                                    'label' => __( 'Cookie list in panel', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Show the cookie list inside the control panel.', 'wp-tac-manager' ),
+                                ],
+                                'close_popup'          => [
+                                    'label' => __( 'Show close button on banner', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Display a close X on the cookie banner.', 'wp-tac-manager' ),
+                                ],
+                                'always_need_consent'  => [
+                                    'label' => __( 'Always need consent', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Ask for consent even for privacy-by-design services.', 'wp-tac-manager' ),
+                                ],
+                                'mandatory_cta'        => [
+                                    'label' => __( 'Mandatory cookies button', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Show a disabled accept button for mandatory cookies.', 'wp-tac-manager' ),
+                                ],
+                                'adblocker'            => [
+                                    'label' => __( 'Adblocker warning', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Show a warning if an adblocker is detected.', 'wp-tac-manager' ),
+                                ],
+                                'more_info_link'       => [
+                                    'label' => __( 'Show "More info" link', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Display the more info link on the banner.', 'wp-tac-manager' ),
+                                ],
+                                'mandatory'            => [
+                                    'label' => __( 'Show mandatory cookies message', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Display information about mandatory cookies.', 'wp-tac-manager' ),
+                                ],
+                                'bing_consent_mode'    => [
+                                    'label' => __( 'Bing Consent Mode', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Enable consent mode for Clarity & Bing Ads.', 'wp-tac-manager' ),
+                                ],
+                                'piano_consent_mode'   => [
+                                    'label' => __( 'Piano Consent Mode', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Enable consent mode for Piano Analytics.', 'wp-tac-manager' ),
+                                ],
+                                'piano_consent_mode_essential' => [
+                                    'label' => __( 'Piano Essential Mode', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Load Piano Analytics in essential mode by default.', 'wp-tac-manager' ),
+                                ],
+                                'soft_consent_mode'    => [
+                                    'label' => __( 'Soft consent mode', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Consent is required before loading services.', 'wp-tac-manager' ),
+                                ],
+                                'data_layer'           => [
+                                    'label' => __( 'DataLayer events', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Send events to dataLayer with service status.', 'wp-tac-manager' ),
+                                ],
+                                'server_side'          => [
+                                    'label' => __( 'Server-side only', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Tags are not loaded client-side, only server-side.', 'wp-tac-manager' ),
+                                ],
+                                'partners_list'        => [
+                                    'label' => __( 'Show partners list', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Display the number of partners on the banner.', 'wp-tac-manager' ),
+                                ],
                                 'disable_google_consent_mode' => [
                                     'label' => __( 'Disable Google Consent Mode', 'wp-tac-manager' ),
                                     'desc'  => __( 'Disables tarteaucitron\'s Google Consent Mode v2. Enable this if you use Google Consent Mode from another plugin.', 'wp-tac-manager' ),

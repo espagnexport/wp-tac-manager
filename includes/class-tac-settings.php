@@ -42,6 +42,21 @@ class WPTAC_Settings {
                 'enable_banner'            => true,     // Activar banner de cookies
                 'disable_banner_loggedin'  => false,    // Desactivar banner para usuarios logueados
                 'disable_google_consent_mode' => false, // Desactivar Google Consent Mode
+                'show_details_on_click'    => true,
+                'cookieslist_embed'        => false,
+                'close_popup'              => true,
+                'always_need_consent'      => false,
+                'mandatory_cta'            => false,
+                'bing_consent_mode'        => true,
+                'piano_consent_mode'       => true,
+                'piano_consent_mode_essential' => false,
+                'soft_consent_mode'        => false,
+                'data_layer'               => false,
+                'server_side'              => false,
+                'partners_list'            => true,
+                'adblocker'                => false,
+                'more_info_link'           => true,
+                'mandatory'                => true,
                 'reload_thx_seconds'       => 0,        // Segundos antes de recargar (0 = sin recarga)
                 'language'                 => 'auto',   // Idioma: auto | es | en | fr
                 'force_expiry_date'        => '',        // Fecha de expiración forzada (YYYY/MM/DD)
@@ -208,6 +223,21 @@ class WPTAC_Settings {
             $settings['general']['enable_banner']            = ! empty( $g['enable_banner'] );
             $settings['general']['disable_banner_loggedin']  = ! empty( $g['disable_banner_loggedin'] );
             $settings['general']['disable_google_consent_mode'] = ! empty( $g['disable_google_consent_mode'] );
+            $settings['general']['show_details_on_click']       = ! empty( $g['show_details_on_click'] );
+            $settings['general']['cookieslist_embed']           = ! empty( $g['cookieslist_embed'] );
+            $settings['general']['close_popup']                 = ! empty( $g['close_popup'] );
+            $settings['general']['always_need_consent']         = ! empty( $g['always_need_consent'] );
+            $settings['general']['mandatory_cta']               = ! empty( $g['mandatory_cta'] );
+            $settings['general']['bing_consent_mode']           = ! empty( $g['bing_consent_mode'] );
+            $settings['general']['piano_consent_mode']          = ! empty( $g['piano_consent_mode'] );
+            $settings['general']['piano_consent_mode_essential'] = ! empty( $g['piano_consent_mode_essential'] );
+            $settings['general']['soft_consent_mode']           = ! empty( $g['soft_consent_mode'] );
+            $settings['general']['data_layer']                  = ! empty( $g['data_layer'] );
+            $settings['general']['server_side']                 = ! empty( $g['server_side'] );
+            $settings['general']['partners_list']               = ! empty( $g['partners_list'] );
+            $settings['general']['adblocker']                   = ! empty( $g['adblocker'] );
+            $settings['general']['more_info_link']              = ! empty( $g['more_info_link'] );
+            $settings['general']['mandatory']                   = ! empty( $g['mandatory'] );
 
             $settings['general']['reload_thx_seconds']   = isset( $g['reload_thx_seconds'] )
                 ? absint( $g['reload_thx_seconds'] )

@@ -46,6 +46,9 @@ class WPTAC_Renderer {
             wp_add_inline_style( 'tarteaucitron', $color_css );
         }
 
+        $hide_icon_css = 'body[data-wptac-banner-visible="0"] #tarteaucitronRoot .tarteaucitronIcon { display:none!important; }';
+        wp_add_inline_style( 'tarteaucitron', $hide_icon_css );
+
         wp_enqueue_script(
             'tarteaucitron',
             WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/tarteaucitron.min.js',
@@ -131,24 +134,34 @@ class WPTAC_Renderer {
             'orientation'         => $g['orientation'],
             'bodyPosition'        => $g['orientation'] === 'popup' ? 'bottom' : $g['orientation'],
             'groupServices'       => (bool) $g['group_services'],
+            'showDetailsOnClick'  => (bool) $g['show_details_on_click'],
             'showAlertSmall'      => (bool) $g['show_alert_small'],
             'cookieslist'         => (bool) $g['cookie_accessible_ui'],
+            'cookieslistEmbed'    => (bool) $g['cookieslist_embed'],
             'removeCredit'        => (bool) $g['remove_credit'],
+            'closePopup'          => (bool) $g['close_popup'],
             'showIcon'            => true,
             'iconPosition'        => ! empty( $g['icon_position'] ) ? $g['icon_position'] : 'BottomRight',
-            'handleBrowserDNTRequest' => false,
-            'reloadThxSeconds'    => (int)  $g['reload_thx_seconds'],
+            'adblocker'           => (bool) $g['adblocker'],
             'DenyAllCta'          => (bool) $g['deny_all_cta'],
             'AcceptAllCta'        => (bool) $g['accept_all_cta'],
             'highPrivacy'         => true,
-            'serviceDefaultState' => 'wait',
-            'adblocker'           => false,
-            'moreInfoLink'        => true,
+            'alwaysNeedConsent'   => (bool) $g['always_need_consent'],
+            'handleBrowserDNTRequest' => (bool) $g['handle_browser_dnt'],
+            'moreInfoLink'        => (bool) $g['more_info_link'],
             'useExternalCss'      => false,
             'useExternalJs'       => false,
             'readmoreLink'        => '',
-            'mandatory'           => true,
+            'mandatory'           => (bool) $g['mandatory'],
+            'mandatoryCta'        => (bool) $g['mandatory_cta'],
             'googleConsentMode'   => ! (bool) $g['disable_google_consent_mode'],
+            'bingConsentMode'     => (bool) $g['bing_consent_mode'],
+            'pianoConsentMode'    => (bool) $g['piano_consent_mode'],
+            'pianoConsentModeEssential' => (bool) $g['piano_consent_mode_essential'],
+            'softConsentMode'     => (bool) $g['soft_consent_mode'],
+            'dataLayer'           => (bool) $g['data_layer'],
+            'serverSide'          => (bool) $g['server_side'],
+            'partnersList'        => (bool) $g['partners_list'],
         ];
 
         if ( ! empty( $g['force_expiry_date'] ) ) {
