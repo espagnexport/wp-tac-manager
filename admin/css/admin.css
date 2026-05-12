@@ -1,0 +1,792 @@
+/**
+ * WP TAC Manager — Admin CSS
+ * Diseño limpio, profesional y accesible para la página de ajustes.
+ */
+
+/* ─────────────────────────────────────────────
+   Variables
+   ───────────────────────────────────────────── */
+:root {
+    --wptac-accent:       #f5a623;
+    --wptac-accent-dark:  #d48a10;
+    --wptac-primary:      #1d2327;
+    --wptac-surface:      #ffffff;
+    --wptac-surface-2:    #f6f7f7;
+    --wptac-border:       #dcdcde;
+    --wptac-border-focus: #2271b1;
+    --wptac-text:         #1d2327;
+    --wptac-text-muted:   #646970;
+    --wptac-success:      #00a32a;
+    --wptac-error:        #d63638;
+    --wptac-warning:      #dba617;
+    --wptac-radius:       6px;
+    --wptac-shadow:       0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+    --wptac-transition:   160ms ease;
+}
+
+/* ─────────────────────────────────────────────
+   Layout principal
+   ───────────────────────────────────────────── */
+.wptac-wrap {
+    margin: 20px 20px 0 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
+    color: var(--wptac-text);
+    max-width: 1200px;
+}
+
+.wptac-wrap h1,
+.wptac-wrap h2,
+.wptac-wrap h3 {
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Cabecera del plugin
+   ───────────────────────────────────────────── */
+.wptac-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: var(--wptac-primary);
+    color: #fff;
+    border-radius: var(--wptac-radius) var(--wptac-radius) 0 0;
+    margin-bottom: 0;
+}
+
+.wptac-header__logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.wptac-header__icon {
+    font-size: 32px;
+    line-height: 1;
+}
+
+.wptac-header__logo h1 {
+    font-size: 18px;
+    color: #fff;
+}
+
+.wptac-header__logo p {
+    font-size: 13px;
+    color: rgba(255,255,255,.65);
+    margin: 2px 0 0;
+}
+
+/* ─────────────────────────────────────────────
+   Notificación inline
+   ───────────────────────────────────────────── */
+.wptac-notice {
+    padding: 10px 16px;
+    border-left: 4px solid var(--wptac-border);
+    background: var(--wptac-surface);
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-radius: 0 var(--wptac-radius) var(--wptac-radius) 0;
+}
+.wptac-notice--error   { border-color: var(--wptac-error);   background: #fcf0f1; }
+.wptac-notice--success { border-color: var(--wptac-success); background: #edfaef; }
+
+/* ─────────────────────────────────────────────
+   Layout de dos columnas (nav + contenido)
+   ───────────────────────────────────────────── */
+.wptac-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    background: var(--wptac-surface);
+    border: 1px solid var(--wptac-border);
+    border-top: none;
+    border-radius: 0 0 var(--wptac-radius) var(--wptac-radius);
+}
+
+/* ─────────────────────────────────────────────
+   Navegación lateral
+   ───────────────────────────────────────────── */
+.wptac-nav {
+    border-right: 1px solid var(--wptac-border);
+    padding: 16px 0;
+    background: var(--wptac-surface-2);
+    border-radius: 0 0 0 var(--wptac-radius);
+}
+
+.wptac-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.wptac-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    color: var(--wptac-text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: color var(--wptac-transition), background var(--wptac-transition);
+}
+
+.wptac-nav__link:hover {
+    color: var(--wptac-text);
+    background: rgba(0,0,0,.04);
+}
+
+.wptac-nav__link.is-active {
+    color: var(--wptac-text);
+    border-left-color: var(--wptac-accent);
+    background: var(--wptac-surface);
+}
+
+.wptac-nav__link .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Secciones de contenido
+   ───────────────────────────────────────────── */
+.wptac-sections {
+    padding: 28px;
+    min-width: 0;
+}
+
+.wptac-section {
+    display: none;
+}
+
+.wptac-section.is-active {
+    display: block;
+}
+
+.wptac-section__header {
+    margin-bottom: 20px;
+}
+
+.wptac-section__header h2 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.wptac-section__header p {
+    color: var(--wptac-text-muted);
+    font-size: 13px;
+    margin: 0;
+}
+
+/* ─────────────────────────────────────────────
+   Cards
+   ───────────────────────────────────────────── */
+.wptac-card {
+    background: var(--wptac-surface);
+    border: 1px solid var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--wptac-shadow);
+}
+
+/* ─────────────────────────────────────────────
+   Campos de formulario
+   ───────────────────────────────────────────── */
+.wptac-field {
+    margin-bottom: 20px;
+}
+
+.wptac-field:last-child {
+    margin-bottom: 0;
+}
+
+.wptac-field__label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wptac-text);
+    margin-bottom: 6px;
+}
+
+.wptac-field__required {
+    color: var(--wptac-error);
+    margin-left: 2px;
+}
+
+.wptac-field__input,
+.wptac-field__select {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--wptac-text);
+    background: var(--wptac-surface);
+    border: 1px solid var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.05);
+    transition: border-color var(--wptac-transition), box-shadow var(--wptac-transition);
+    box-sizing: border-box;
+}
+
+.wptac-field__input--short {
+    max-width: 160px;
+}
+
+.wptac-field__input,
+.wptac-field__select,
+.wptac-field__textarea {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--wptac-text);
+    background: var(--wptac-surface);
+    border: 1px solid var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.05);
+    transition: border-color var(--wptac-transition), box-shadow var(--wptac-transition);
+    box-sizing: border-box;
+}
+
+.wptac-field__textarea {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    resize: vertical;
+    max-width: 600px;
+}
+
+.wptac-field__input:focus,
+.wptac-field__select:focus,
+.wptac-field__textarea:focus {
+    border-color: var(--wptac-border-focus);
+    box-shadow: 0 0 0 3px rgba(34,113,177,.15);
+    outline: none;
+}
+
+.wptac-field__input:invalid {
+    border-color: var(--wptac-error);
+}
+
+.wptac-field__desc {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: var(--wptac-text-muted);
+    line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────
+   Toggles (switches)
+   ───────────────────────────────────────────── */
+.wptac-field--toggles {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.wptac-field--toggles > .wptac-field__label {
+    padding: 10px 16px;
+    background: var(--wptac-surface-2);
+    border-bottom: 1px solid var(--wptac-border);
+    margin-bottom: 0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--wptac-text-muted);
+}
+
+.wptac-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--wptac-border);
+    transition: background var(--wptac-transition);
+}
+
+.wptac-toggle:last-child {
+    border-bottom: none;
+}
+
+.wptac-toggle:hover {
+    background: var(--wptac-surface-2);
+}
+
+.wptac-toggle--inline {
+    padding: 0;
+    border: none;
+}
+
+.wptac-toggle--inline:hover {
+    background: transparent;
+}
+
+.wptac-toggle__switch {
+    position: relative;
+    flex-shrink: 0;
+    width: 40px;
+    height: 22px;
+}
+
+.wptac-toggle__switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.wptac-toggle__slider {
+    position: absolute;
+    inset: 0;
+    background: #c3c4c7;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background var(--wptac-transition);
+}
+
+.wptac-toggle__slider::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform var(--wptac-transition);
+    box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+
+.wptac-toggle__switch input:checked + .wptac-toggle__slider {
+    background: var(--wptac-accent);
+}
+
+.wptac-toggle__switch input:checked + .wptac-toggle__slider::before {
+    transform: translateX(18px);
+}
+
+.wptac-toggle__switch input:focus-visible + .wptac-toggle__slider {
+    outline: 2px solid var(--wptac-border-focus);
+    outline-offset: 2px;
+}
+
+.wptac-toggle__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.wptac-toggle__label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wptac-text);
+}
+
+.wptac-toggle__desc {
+    font-size: 12px;
+    color: var(--wptac-text-muted);
+}
+
+/* ─────────────────────────────────────────────
+   Cards de servicios
+   ───────────────────────────────────────────── */
+.wptac-service {
+    border: 1px solid var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    margin-bottom: 12px;
+    transition: border-color var(--wptac-transition), box-shadow var(--wptac-transition);
+    background: var(--wptac-surface);
+    overflow: hidden;
+}
+
+.wptac-service.is-active {
+    border-color: var(--wptac-accent);
+    box-shadow: 0 0 0 3px rgba(245,166,35,.12);
+}
+
+.wptac-service__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    gap: 12px;
+}
+
+.wptac-service__info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.wptac-service__icon {
+    font-size: 24px !important;
+    width: 24px !important;
+    height: 24px !important;
+    color: var(--wptac-accent);
+    flex-shrink: 0;
+}
+
+.wptac-service__name {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.wptac-service__controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.wptac-service__desc {
+    font-size: 13px;
+    color: var(--wptac-text-muted);
+    margin: 0 20px 12px;
+    padding-bottom: 0;
+}
+
+.wptac-service__params {
+    padding: 16px 20px;
+    background: var(--wptac-surface-2);
+    border-top: 1px solid var(--wptac-border);
+}
+
+.wptac-service__params.is-hidden {
+    display: none;
+}
+
+.wptac-service__params .wptac-field:last-child {
+    margin-bottom: 0;
+}
+
+.wptac-service__params .wptac-field__input {
+    max-width: 360px;
+}
+
+/* ─────────────────────────────────────────────
+   Badges
+   ───────────────────────────────────────────── */
+.wptac-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+    background: rgba(0,0,0,.07);
+    color: var(--wptac-text-muted);
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+.wptac-badge--count {
+    background: var(--wptac-accent);
+    color: #fff;
+    min-width: 18px;
+    text-align: center;
+    padding: 2px 6px;
+    margin-left: 6px;
+}
+
+.wptac-badge--category {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+/* ─────────────────────────────────────────────
+   Media uploader (icono personalizado)
+   ───────────────────────────────────────────── */
+.wptac-media {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.wptac-media__preview {
+    width: 64px;
+    height: 64px;
+    border: 2px dashed var(--wptac-border);
+    border-radius: var(--wptac-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.wptac-media__image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}
+
+.wptac-media__actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ─────────────────────────────────────────────
+   Update section
+   ───────────────────────────────────────────── */
+.wptac-update__version {
+    font-size: 18px;
+    margin: 4px 0;
+}
+
+.wptac-update__unknown {
+    color: var(--wptac-text-muted);
+    font-style: italic;
+}
+
+.wptac-update__actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.wptac-update__status {
+    padding: 10px 14px;
+    border-radius: var(--wptac-radius);
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.wptac-update__status.is-info {
+    background: #e8f0fe;
+    border-left: 4px solid #1a73e8;
+}
+
+.wptac-update__status.is-success {
+    background: #edfaef;
+    border-left: 4px solid var(--wptac-success);
+}
+
+.wptac-update__status.is-error {
+    background: #fcf0f1;
+    border-left: 4px solid var(--wptac-error);
+}
+
+/* ─────────────────────────────────────────────
+   Botones
+   ───────────────────────────────────────────── */
+.wptac-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: var(--wptac-radius);
+    cursor: pointer;
+    transition: all var(--wptac-transition);
+    border: 1px solid transparent;
+    text-decoration: none;
+    line-height: 1.4;
+}
+
+.wptac-btn--primary {
+    background: var(--wptac-accent);
+    color: #fff;
+    border-color: var(--wptac-accent-dark);
+}
+
+.wptac-btn--primary:hover:not(:disabled) {
+    background: var(--wptac-accent-dark);
+    color: #fff;
+}
+
+.wptac-btn--primary:disabled {
+    opacity: .65;
+    cursor: not-allowed;
+}
+
+.wptac-btn--ghost {
+    background: transparent;
+    color: var(--wptac-text-muted);
+    border-color: var(--wptac-border);
+}
+
+.wptac-btn--ghost:hover {
+    background: var(--wptac-surface-2);
+    color: var(--wptac-text);
+    border-color: #aaa;
+}
+
+.wptac-btn--sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.wptac-btn .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* ─────────────────────────────────────────────
+   Barra de acciones (sticky)
+   ───────────────────────────────────────────── */
+.wptac-actions {
+    position: sticky;
+    bottom: 0;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--wptac-border);
+    padding: 12px 0;
+    margin-top: 16px;
+    z-index: 10;
+}
+
+.wptac-actions__inner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* ─────────────────────────────────────────────
+   Estado del guardado
+   ───────────────────────────────────────────── */
+.wptac-save-status {
+    font-size: 13px;
+    color: var(--wptac-text-muted);
+}
+
+.wptac-save-status.is-saving {
+    color: var(--wptac-text-muted);
+    animation: wptac-pulse 1s ease infinite;
+}
+
+.wptac-save-status.is-saved {
+    color: var(--wptac-success);
+    font-weight: 600;
+}
+
+.wptac-save-status.is-error {
+    color: var(--wptac-error);
+    font-weight: 600;
+}
+
+.wptac-spin {
+    animation: wptac-spin 1.2s linear infinite;
+}
+
+@keyframes wptac-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes wptac-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: .5; }
+}
+
+/* ─────────────────────────────────────────────
+   Color picker fields
+   ───────────────────────────────────────────── */
+.wptac-layout--single .wptac-sections {
+    padding: 28px;
+    min-width: 0;
+}
+
+.wptac-field--color .wptac-field__input {
+    display: inline-block;
+    width: auto;
+}
+
+.wptac-color-picker-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.wptac-color-picker-wrap .wp-color-picker {
+    width: 80px !important;
+    vertical-align: middle;
+}
+
+.wptac-color-default {
+    font-size: 12px;
+    color: var(--wptac-text-muted);
+    white-space: nowrap;
+}
+
+.wptac-color-default code {
+    font-size: 12px;
+    background: var(--wptac-surface-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+}
+
+/* Reset button */
+#wptac-reset-colors {
+    color: var(--wptac-error);
+    border-color: transparent;
+}
+
+#wptac-reset-colors:hover {
+    background: #fcf0f1;
+    border-color: var(--wptac-error);
+}
+
+/* ─────────────────────────────────────────────
+   Responsive (pantallas pequeñas)
+   ───────────────────────────────────────────── */
+@media screen and (max-width: 782px) {
+    .wptac-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .wptac-nav {
+        border-right: none;
+        border-bottom: 1px solid var(--wptac-border);
+        border-radius: 0;
+        padding: 8px 0;
+    }
+
+    .wptac-nav ul {
+        display: flex;
+        overflow-x: auto;
+        padding: 0 12px;
+        gap: 4px;
+    }
+
+    .wptac-nav__link {
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        padding: 8px 12px;
+        border-radius: var(--wptac-radius) var(--wptac-radius) 0 0;
+    }
+
+    .wptac-nav__link.is-active {
+        border-left-color: transparent;
+        border-bottom-color: var(--wptac-accent);
+    }
+
+    .wptac-sections {
+        padding: 16px;
+    }
+
+    .wptac-service__header {
+        flex-wrap: wrap;
+    }
+}

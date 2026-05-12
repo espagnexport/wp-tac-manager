@@ -1,0 +1,411 @@
+# Copyright (C) 2024 Rafael Verde
+# This file is distributed under the same license as WP TAC Manager.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WP TAC Manager 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/espagnexport/wp-tac-manager\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-01-01T00:00:00+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-TAC-Manager 1.0.0\n"
+"X-Domain: wp-tac-manager\n"
+
+#: includes/class-tac-admin.php:29
+msgid "WP TAC Manager — Cookie Management"
+msgstr ""
+
+#: includes/class-tac-admin.php:30
+msgid "TAC Manager (Cookies banner)"
+msgstr ""
+
+#: includes/class-tac-admin.php:73
+msgid "Saving…"
+msgstr ""
+
+#: includes/class-tac-admin.php:74
+msgid "✓ Settings saved"
+msgstr ""
+
+#: includes/class-tac-admin.php:75
+msgid "✗ Error while saving. Please try again."
+msgstr ""
+
+#: includes/class-tac-admin.php:82
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: includes/class-tac-admin.php:102
+msgid "Invalid or expired nonce. Reload the page and try again."
+msgstr ""
+
+#: includes/class-tac-admin.php:109
+msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/class-tac-admin.php:116
+msgid "Invalid payload: JSON expected."
+msgstr ""
+
+#: includes/class-tac-admin.php:127
+msgid "Settings saved successfully."
+msgstr ""
+
+#: includes/class-tac-admin.php:128
+msgid "No changes to save."
+msgstr ""
+
+#: includes/class-tac-admin.php:152
+msgid "WP TAC Manager: The service \"%1$s\" is active but missing the required parameter \"%2$s\"."
+msgstr ""
+
+#: includes/class-tac-admin.php:205
+msgid "WP TAC Manager — Statistics"
+msgstr ""
+
+#: includes/class-tac-admin.php:238
+msgid "No consent data available yet."
+msgstr ""
+
+#: includes/class-tac-admin.php:244
+msgid "Service"
+msgstr ""
+
+#: includes/class-tac-admin.php:245
+msgid "Total"
+msgstr ""
+
+#: includes/class-tac-admin.php:246
+msgid "Accepted"
+msgstr ""
+
+#: includes/class-tac-admin.php:247
+msgid "Rejected"
+msgstr ""
+
+#: includes/class-tac-admin.php:265
+msgid "Since %s"
+msgstr ""
+
+#: includes/class-tac-admin.php:277
+msgid "Reset statistics"
+msgstr ""
+
+#: includes/class-tac-services.php:10
+msgid "Manage all your analytics and marketing tags from a single Google interface."
+msgstr ""
+
+#: includes/class-tac-services.php:16
+msgid "GTM Container ID"
+msgstr ""
+
+#: includes/class-tac-services.php:19
+msgid "Your Google Tag Manager container ID (e.g. GTM-ABCDE12)."
+msgstr ""
+
+#: includes/class-tac-services.php:29
+msgid "Google web analytics (GA4)."
+msgstr ""
+
+#: includes/class-tac-services.php:35
+msgid "Measurement ID"
+msgstr ""
+
+#: includes/class-tac-services.php:38
+msgid "Your Google Analytics 4 Measurement ID (e.g. G-ABCDE12345)."
+msgstr ""
+
+#: includes/class-tac-services.php:48
+msgid "Google Ads conversion tracking."
+msgstr ""
+
+#: includes/class-tac-services.php:54
+msgid "Conversion ID"
+msgstr ""
+
+#: includes/class-tac-services.php:57
+msgid "Your Google Ads conversion ID (e.g. AW-123456789)."
+msgstr ""
+
+#: includes/class-tac-services.php:67
+msgid "Meta (Facebook) tracking pixel for conversions and audiences."
+msgstr ""
+
+#: includes/class-tac-services.php:73
+msgid "Pixel ID"
+msgstr ""
+
+#: includes/class-tac-services.php:76
+msgid "Your Facebook pixel ID (e.g. 123456789)."
+msgstr ""
+
+#: includes/class-tac-services.php:85
+msgid "LinkedIn conversion tracking and remarketing."
+msgstr ""
+
+#: includes/class-tac-services.php:91
+msgid "Partner ID"
+msgstr ""
+
+#: includes/class-tac-services.php:94
+msgid "Your LinkedIn Insight Tag partner ID."
+msgstr ""
+
+#: includes/class-tac-services.php:103
+msgid "Heatmaps, recordings, and surveys with Hotjar."
+msgstr ""
+
+#: includes/class-tac-services.php:109
+msgid "Hotjar Site ID"
+msgstr ""
+
+#: includes/class-tac-services.php:112
+msgid "Your Hotjar site ID (e.g. 1234567)."
+msgstr ""
+
+#: includes/class-tac-services.php:121
+msgid "Self-hosted web analytics with Matomo."
+msgstr ""
+
+#: includes/class-tac-services.php:127
+msgid "Matomo Site ID"
+msgstr ""
+
+#: includes/class-tac-services.php:130
+msgid "Your Matomo site ID."
+msgstr ""
+
+#: includes/class-tac-services.php:134
+msgid "Matomo Server URL"
+msgstr ""
+
+#: includes/class-tac-services.php:137
+msgid "Full URL of your Matomo Cloud instance."
+msgstr ""
+
+#: includes/class-tac-services.php:146
+msgid "Lightweight and privacy-friendly web analytics."
+msgstr ""
+
+#: includes/class-tac-services.php:152
+msgid "Domain"
+msgstr ""
+
+#: includes/class-tac-services.php:155
+msgid "The domain you track in Plausible."
+msgstr ""
+
+#: includes/class-tac-services.php:164
+msgid "Conversion and audience tracking for X (Twitter)."
+msgstr ""
+
+#: includes/class-tac-services.php:170
+msgid "Pixel ID"
+msgstr ""
+
+#: includes/class-tac-services.php:173
+msgid "Your Twitter/X pixel ID."
+msgstr ""
+
+#: includes/class-tac-services.php:182
+msgid "HubSpot CRM and marketing automation."
+msgstr ""
+
+#: includes/class-tac-services.php:188
+msgid "HubSpot ID"
+msgstr ""
+
+#: includes/class-tac-services.php:191
+msgid "Your HubSpot account ID."
+msgstr ""
+
+#: admin/views/settings-page.php:35
+msgid "WP TAC Manager"
+msgstr ""
+
+#: admin/views/settings-page.php:36
+msgid "Cookie management with Tarte au Citron"
+msgstr ""
+
+#: admin/views/settings-page.php:44
+msgid "tarteaucitron.js v%s"
+msgstr ""
+
+#: admin/views/settings-page.php:64
+msgid "Configuration sections"
+msgstr ""
+
+#: admin/views/settings-page.php:69
+msgid "General settings"
+msgstr ""
+
+#: admin/views/settings-page.php:75
+msgid "Services"
+msgstr ""
+
+#: admin/views/settings-page.php:98
+msgid "General settings"
+msgstr ""
+
+#: admin/views/settings-page.php:99
+msgid "Global options for the tarteaucitron cookie banner."
+msgstr ""
+
+#: admin/views/settings-page.php:107
+msgid "Privacy Policy URL"
+msgstr ""
+
+#: admin/views/settings-page.php:120
+msgid "Link to your privacy policy. Displayed in the banner."
+msgstr ""
+
+#: admin/views/settings-page.php:127
+msgid "Banner position"
+msgstr ""
+
+#: admin/views/settings-page.php:132
+msgid "Bottom"
+msgstr ""
+
+#: admin/views/settings-page.php:133
+msgid "Top"
+msgstr ""
+
+#: admin/views/settings-page.php:134
+msgid "Center"
+msgstr ""
+
+#: admin/views/settings-page.php:135
+msgid "Centered modal (popup)"
+msgstr ""
+
+#: admin/views/settings-page.php:149
+msgid "Banner language"
+msgstr ""
+
+#: admin/views/settings-page.php:154
+msgid "Automatic (WordPress language)"
+msgstr ""
+
+#: admin/views/settings-page.php:175
+msgid "Cookie name"
+msgstr ""
+
+#: admin/views/settings-page.php:187
+msgid "Name of the cookie storing user preferences. Lowercase letters, numbers, hyphens, and underscores only."
+msgstr ""
+
+#: admin/views/settings-page.php:194
+msgid "Hashtag to reopen the panel"
+msgstr ""
+
+#: admin/views/settings-page.php:207
+msgid "Add %s to any link so users can reopen the cookie panel."
+msgstr ""
+
+#: admin/views/settings-page.php:217
+msgid "Automatic reload after acceptance (seconds)"
+msgstr ""
+
+#: admin/views/settings-page.php:229
+msgid "0 = no automatic reload. Useful for loading blocked scripts after consent."
+msgstr ""
+
+#: admin/views/settings-page.php:236
+msgid "Force new consent request from"
+msgstr ""
+
+#: admin/views/settings-page.php:248
+msgid "Format: YYYY/MM/DD. If the user's consent predates this date, consent will be requested again."
+msgstr ""
+
+#: admin/views/settings-page.php:254
+msgid "Behavior options"
+msgstr ""
+
+#: admin/views/settings-page.php:259
+msgid "Group services by category"
+msgstr ""
+
+#: admin/views/settings-page.php:260
+msgid "Displays services grouped in the cookie panel."
+msgstr ""
+
+#: admin/views/settings-page.php:263
+msgid "Show always-visible small button"
+msgstr ""
+
+#: admin/views/settings-page.php:264
+msgid "Displays a small quick-access button for the cookie panel."
+msgstr ""
+
+#: admin/views/settings-page.php:267
+msgid "Accessible interface (cookie list)"
+msgstr ""
+
+#: admin/views/settings-page.php:268
+msgid "Improves accessibility for screen readers."
+msgstr ""
+
+#: admin/views/settings-page.php:271
+msgid "Enable cookie banner"
+msgstr ""
+
+#: admin/views/settings-page.php:272
+msgid "Displays the consent banner to visitors. If disabled, tarteaucitron will not load."
+msgstr ""
+
+#: admin/views/settings-page.php:275
+msgid "Disable banner for logged-in users"
+msgstr ""
+
+#: admin/views/settings-page.php:276
+msgid "The banner is only displayed to visitors who are not logged in."
+msgstr ""
+
+#: admin/views/settings-page.php:279
+msgid "Respect browser Do Not Track signal"
+msgstr ""
+
+#: admin/views/settings-page.php:280
+msgid "If the user has DNT enabled, all services will automatically be denied."
+msgstr ""
+
+#: admin/views/settings-page.php:283
+msgid "Show \"Accept all\" button"
+msgstr ""
+
+#: admin/views/settings-page.php:284
+msgid "Allows users to accept all services with a single click."
+msgstr ""
+
+#: admin/views/settings-page.php:287
+msgid "Show \"Deny all\" button"
+msgstr ""
+
+#: admin/views/settings-page.php:288
+msgid "Allows users to deny all non-essential services with a single click."
+msgstr ""
+
+#: admin/views/settings-page.php:291
+msgid "Disable Google Consent Mode"
+msgstr ""
+
+#: admin/views/settings-page.php:292
+msgid "Disables tarteaucitron Google Consent Mode v2. Enable this if you use Google Consent Mode from another plugin."
+msgstr ""
+
+#: admin/views/settings-page.php:295
+msgid "Hide \"Manage cookies\" credit"
+msgstr ""
+
+#: admin/views/settings-page.php:296
+msgid "Hides the tarteaucitron credit link in the banner."
+msgstr ""
