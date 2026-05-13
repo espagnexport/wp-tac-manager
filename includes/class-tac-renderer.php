@@ -149,7 +149,7 @@ class WPTAC_Renderer {
             'alwaysNeedConsent'   => (bool) $g['always_need_consent'],
             'handleBrowserDNTRequest' => (bool) $g['handle_browser_dnt'],
             'moreInfoLink'        => (bool) $g['more_info_link'],
-            'useExternalCss'      => false,
+            'useExternalCss'      => true,
             'useExternalJs'       => false,
             'readmoreLink'        => '',
             'mandatory'           => (bool) $g['mandatory'],

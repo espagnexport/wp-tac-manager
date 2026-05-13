@@ -36,7 +36,7 @@ class WPTAC_Services {
                 'doc_url'     => 'https://tarteaucitron.io/service/gtag/',
                 'tac_key'     => 'gtag',
                 'params'      => [
-                    'id' => [
+                    'Ua' => [
                         'type'        => 'text',
                         'label'       => __( 'Measurement ID', 'wp-tac-manager' ),
                         'placeholder' => 'G-XXXXXXXXXX',
