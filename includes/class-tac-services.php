@@ -42,7 +42,7 @@ class WPTAC_Services {
                         'placeholder' => 'G-XXXXXXXXXX',
                         'required'    => true,
                         'description' => __( 'Your Google Analytics 4 Measurement ID (e.g. G-ABCDE12345).', 'wp-tac-manager' ),
-                        'pattern'     => '^G-[A-Z0-9]+$',
+                        'pattern'     => '^G-[A-Za-z0-9]+$',
                     ],
                 ],
             ],
@@ -112,10 +112,11 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
-                        'label'       => __( 'Site ID', 'wp-tac-manager' ),
-                        'placeholder' => '1234567',
+                        'js_key'      => 'HotjarSv',
+                        'label'       => __( 'Snippet version', 'wp-tac-manager' ),
                         'required'    => true,
-                        'description' => __( 'Your Hotjar site ID (e.g. 1234567).', 'wp-tac-manager' ),
+                        'default'     => '6',
+                        'description' => __( 'Hotjar snippet version, normally 6.', 'wp-tac-manager' ),
                     ],
                 ],
             ],
@@ -155,6 +156,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'plausibleDomain',
                         'label'       => __( 'Domain', 'wp-tac-manager' ),
                         'placeholder' => 'yourdomain.com',
                         'required'    => true,
@@ -322,6 +324,7 @@ class WPTAC_Services {
             ],
 
             'crisp' => [
+                'js_key'      => 'crispID',
                 'label'       => 'Crisp Chat',
                 'category'    => 'other',
                 'icon'        => 'dashicons-format-chat',
@@ -381,27 +384,7 @@ class WPTAC_Services {
                 'icon'        => 'dashicons-share',
                 'description' => __( 'Pinterest save button and tracking.', 'wp-tac-manager' ),
                 'doc_url'     => 'https://tarteaucitron.io/service/pinterest/',
-                'tac_key'     => 'pinterest',
-                'params'      => [],
-            ],
-
-            'stripe' => [
-                'label'       => 'Stripe',
-                'category'    => 'api',
-                'icon'        => 'dashicons-cart',
-                'description' => __( 'Stripe payment processing.', 'wp-tac-manager' ),
-                'doc_url'     => 'https://tarteaucitron.io/service/stripe/',
-                'tac_key'     => 'stripe',
-                'params'      => [],
-            ],
-
-            'paypal' => [
-                'label'       => 'PayPal',
-                'category'    => 'api',
-                'icon'        => 'dashicons-cart',
-                'description' => __( 'PayPal payment and checkout.', 'wp-tac-manager' ),
-                'doc_url'     => 'https://tarteaucitron.io/service/paypal/',
-                'tac_key'     => 'paypal',
+                'tac_key'     => 'pinterestpixel',
                 'params'      => [],
             ],
 
