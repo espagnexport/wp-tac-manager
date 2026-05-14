@@ -84,6 +84,30 @@
         } )( serviceKey );
     } );
 
+    // ── Google Consent Mode for GTM services ──
+    [ 'googletagmanager', 'multiplegoogletagmanager' ].forEach( function ( key ) {
+        document.addEventListener( key + '_consentModeOk', function () {
+            if ( typeof window.tac_gtag === 'function' ) {
+                window.tac_gtag( 'consent', 'update', {
+                    analytics_storage: 'granted',
+                    ad_storage: 'granted',
+                    ad_user_data: 'granted',
+                    ad_personalization: 'granted'
+                } );
+            }
+        }, { once: true } );
+        document.addEventListener( key + '_consentModeKo', function () {
+            if ( typeof window.tac_gtag === 'function' ) {
+                window.tac_gtag( 'consent', 'update', {
+                    analytics_storage: 'denied',
+                    ad_storage: 'denied',
+                    ad_user_data: 'denied',
+                    ad_personalization: 'denied'
+                } );
+            }
+        }, { once: true } );
+    } );
+
     // ── Stats tracking via AJAX ──
     function wptacTrackConsent( service, allowed ) {
         if ( ! settings.ajaxUrl ) {
