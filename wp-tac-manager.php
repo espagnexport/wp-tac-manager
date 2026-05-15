@@ -3,7 +3,7 @@
  * Plugin Name:       WP TAC Manager
  * Plugin URI:        https://github.com/espagnexport/wp-tac-manager
  * Description:       Integración de Tarte au Citron (tarteaucitron.js) con panel de administración para gestionar servicios de cookies desde el back-end de WordPress.
- * Version:           1.6.2
+ * Version:           1.7
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Rafael Verde
@@ -11,6 +11,7 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-tac-manager
  * Domain Path:       /lang
+ * Consent API:       true
  */
 
 // Evitar acceso directo al archivo
@@ -21,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ─────────────────────────────────────────────
 // Constantes del plugin
 // ─────────────────────────────────────────────
-define( 'WPTAC_VERSION',     '1.6.2' );
+define( 'WPTAC_VERSION',     '1.7' );
 define( 'WPTAC_TARTEAUCITRON_VERSION', '1.32.0' );
 define( 'WPTAC_PLUGIN_FILE', __FILE__ );
 define( 'WPTAC_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
@@ -120,4 +121,9 @@ add_action( 'plugins_loaded', function (): void {
 
     // Módulo de renderizado en el front-end
     new WPTAC_Renderer();
+
+    // Declarar compatibilidad con WP Consent API
+    if ( function_exists( 'wp_consent_api_registered' ) ) {
+        wp_consent_api_registered( 'wp-tac-manager' );
+    }
 }, 10 );
