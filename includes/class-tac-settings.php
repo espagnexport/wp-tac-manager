@@ -117,6 +117,7 @@ class WPTAC_Settings {
                     'enabled' => false,
                     'params'  => [
                         'id' => '',
+                        'sv' => '6',
                     ],
                 ],
                 'matomocloud' => [

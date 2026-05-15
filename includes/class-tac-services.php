@@ -94,6 +94,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'linkedininsighttag',
                         'label'       => __( 'Partner ID', 'wp-tac-manager' ),
                         'placeholder' => '123456',
                         'required'    => true,
@@ -112,9 +113,16 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'label'       => __( 'Site ID', 'wp-tac-manager' ),
+                        'placeholder' => '123456',
+                        'required'    => true,
+                        'description' => __( 'Your Hotjar site ID.', 'wp-tac-manager' ),
+                    ],
+                    'sv' => [
+                        'type'        => 'text',
                         'js_key'      => 'HotjarSv',
                         'label'       => __( 'Snippet version', 'wp-tac-manager' ),
-                        'required'    => true,
+                        'required'    => false,
                         'default'     => '6',
                         'description' => __( 'Hotjar snippet version, normally 6.', 'wp-tac-manager' ),
                     ],
@@ -315,6 +323,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'bingadsID',
                         'label'       => __( 'Tag ID', 'wp-tac-manager' ),
                         'placeholder' => '12345678',
                         'required'    => true,

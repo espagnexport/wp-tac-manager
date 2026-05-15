@@ -231,7 +231,7 @@ class WPTAC_Admin {
     // ─────────────────────────────────────────────
 
     public function ajax_track_consent(): void {
-        check_ajax_referer( 'wptac_track_consent_nonce' );
+        check_ajax_referer( 'wptac_track_consent_nonce', '_ajax_nonce' );
 
         $this->check_rate_limit();
 

@@ -86,6 +86,12 @@
 
     // ── Google Consent Mode for Google services ──
     function wptacGtagConsent( granted ) {
+        if ( typeof gtag !== 'function' ) {
+            if ( window.dataLayer ) {
+                window.dataLayer.push( { 'event': 'wptac_consent_update', 'wptac_consent': granted ? 'granted' : 'denied' } );
+            }
+            return;
+        }
         var map = granted
             ? 'granted'
             : 'denied';
@@ -100,7 +106,7 @@
         window.dataLayer.push( { 'event': 'wptac_consent_update', 'wptac_consent': map } );
     }
 
-    [ 'googletagmanager', 'multiplegoogletagmanager', 'gtag', 'multiplegtag', 'googleads', 'gcmads' ].forEach( function ( key ) {
+    [ 'googletagmanager', 'multiplegoogletagmanager', 'gtag', 'multiplegtag', 'googleads', 'gcmads', 'gcmanalyticsstorage', 'gcmadstorage', 'gcmadsuserdata', 'gcmpersonalization' ].forEach( function ( key ) {
         document.addEventListener( key + '_allowed', function () {
             wptacGtagConsent( true );
         } );

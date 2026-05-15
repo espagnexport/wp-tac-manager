@@ -227,15 +227,24 @@ class WPTAC_Renderer {
         $lines = [];
 
         foreach ( $active_services as $key => $service ) {
-            $params  = $service['config']['params'] ?? [];
-            $tac_key = $service['tac_key'];
+            $params_config = $service['config']['params'] ?? [];
+            $params_def    = $service['params'] ?? [];
+            $tac_key       = $service['tac_key'];
 
-            foreach ( $params as $param_key => $param_value ) {
+            foreach ( $params_config as $param_key => $param_value ) {
                 if ( '' === $param_value ) {
                     continue;
                 }
 
-                $js_param_name = 'tarteaucitron.user.' . $tac_key . ucfirst( $param_key );
+                $param_def = $params_def[ $param_key ] ?? [];
+                $js_key    = $param_def['js_key'] ?? null;
+
+                if ( $js_key ) {
+                    $js_param_name = 'tarteaucitron.user.' . $js_key;
+                } else {
+                    $js_param_name = 'tarteaucitron.user.' . $tac_key . ucfirst( $param_key );
+                }
+
                 $escaped_value = wp_json_encode( $param_value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );
 
                 $lines[] = "    {$js_param_name} = {$escaped_value};";
