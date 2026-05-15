@@ -68,6 +68,8 @@ add_action( 'init', function (): void {
         'wp-tac-manager'
     );
 
+    $updater->setBranch( 'main' );
+
     if ( defined( 'WP_TAC_MANAGER_GITHUB_TOKEN' ) && WP_TAC_MANAGER_GITHUB_TOKEN ) {
         $updater->setAuthentication( WP_TAC_MANAGER_GITHUB_TOKEN );
     }

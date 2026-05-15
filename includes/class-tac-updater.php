@@ -6,8 +6,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WPTAC_Updater {
 
-    const GITHUB_API    = 'https://api.github.com/repos/AmauriC/tarteaucitron.js/releases/latest';
-    const GITHUB_RAW    = 'https://raw.githubusercontent.com/AmauriC/tarteaucitron.js';
+    const CDN_PACKAGE  = 'https://cdn.jsdelivr.net/npm/tarteaucitronjs/package.json';
+    const CDN_FILES    = 'https://cdn.jsdelivr.net/npm/tarteaucitronjs';
+    const GITHUB_API   = 'https://api.github.com/repos/AmauriC/tarteaucitron.js/releases/latest';
+    const GITHUB_RAW   = 'https://raw.githubusercontent.com/AmauriC/tarteaucitron.js';
     const VERSION_OPTION = 'wptac_tarteaucitron_latest_version';
 
     public static function get_bundled_version(): string {
@@ -20,9 +22,9 @@ class WPTAC_Updater {
             return $cached ?: null;
         }
 
-        $version = self::fetch_github_version();
+        $version = self::fetch_cdn_version();
         if ( null === $version ) {
-            $version = self::fetch_cdn_version();
+            $version = self::fetch_github_version();
         }
 
         if ( null !== $version ) {
@@ -35,12 +37,18 @@ class WPTAC_Updater {
     }
 
     private static function fetch_github_version(): ?string {
+        $headers = [
+            'Accept'     => 'application/vnd.github.v3+json',
+            'User-Agent' => 'WP-TAC-Manager/' . WPTAC_VERSION,
+        ];
+
+        if ( defined( 'WP_TAC_MANAGER_GITHUB_TOKEN' ) && WP_TAC_MANAGER_GITHUB_TOKEN ) {
+            $headers['Authorization'] = 'Bearer ' . WP_TAC_MANAGER_GITHUB_TOKEN;
+        }
+
         $response = wp_remote_get( self::GITHUB_API, [
             'timeout'   => 10,
-            'headers'   => [
-                'Accept'       => 'application/vnd.github.v3+json',
-                'User-Agent'   => 'WP-TAC-Manager/' . WPTAC_VERSION,
-            ],
+            'headers'   => $headers,
             'sslverify' => true,
         ] );
 
@@ -57,7 +65,7 @@ class WPTAC_Updater {
     }
 
     private static function fetch_cdn_version(): ?string {
-        $response = wp_remote_get( 'https://cdn.jsdelivr.net/npm/tarteaucitronjs/package.json', [
+        $response = wp_remote_get( self::CDN_PACKAGE, [
             'timeout'   => 10,
             'sslverify' => true,
         ] );
@@ -89,20 +97,29 @@ class WPTAC_Updater {
         }
 
         $tag = 'v' . $latest;
-        $base_raw_url = self::GITHUB_RAW . '/' . $tag;
+        $cdn_base   = self::CDN_FILES . '@' . $tag;
+        $github_raw = self::GITHUB_RAW . '/' . $tag;
 
-        $files = [
-            'assets/js/tarteaucitron/tarteaucitron.js'            => $base_raw_url . '/tarteaucitron.js',
-            'assets/js/tarteaucitron/tarteaucitron.min.js'        => $base_raw_url . '/tarteaucitron.min.js',
-            'assets/js/tarteaucitron/tarteaucitron.services.js'   => $base_raw_url . '/tarteaucitron.services.js',
-            'assets/js/tarteaucitron/tarteaucitron.services.min.js' => $base_raw_url . '/tarteaucitron.services.min.js',
-            'assets/css/tarteaucitron.css'                         => $base_raw_url . '/tarteaucitron.css',
-            'assets/css/tarteaucitron.min.css'                     => $base_raw_url . '/tarteaucitron.min.css',
+        $file_map = [
+            'assets/js/tarteaucitron/tarteaucitron.js'            => '/tarteaucitron.js',
+            'assets/js/tarteaucitron/tarteaucitron.min.js'        => '/tarteaucitron.min.js',
+            'assets/js/tarteaucitron/tarteaucitron.services.js'   => '/tarteaucitron.services.js',
+            'assets/js/tarteaucitron/tarteaucitron.services.min.js' => '/tarteaucitron.services.min.js',
+            'assets/css/tarteaucitron.css'                         => '/tarteaucitron.css',
+            'assets/css/tarteaucitron.min.css'                     => '/tarteaucitron.min.css',
         ];
 
         $lang_files = self::get_lang_file_list();
         foreach ( $lang_files as $lang_file ) {
-            $files[ 'assets/js/tarteaucitron/lang/' . $lang_file ] = $base_raw_url . '/lang/' . $lang_file;
+            $file_map[ 'assets/js/tarteaucitron/lang/' . $lang_file ] = '/lang/' . $lang_file;
+        }
+
+        $files = [];
+        foreach ( $file_map as $relative_path => $file_suffix ) {
+            $files[ $relative_path ] = [
+                $cdn_base . $file_suffix,
+                $github_raw . $file_suffix,
+            ];
         }
 
         global $wp_filesystem;
@@ -119,7 +136,7 @@ class WPTAC_Updater {
         $errors     = [];
         $downloaded = 0;
 
-        foreach ( $files as $relative_path => $remote_url ) {
+        foreach ( $files as $relative_path => $urls ) {
             $local_file = $plugin_dir . $relative_path;
             $local_dir  = dirname( $local_file );
 
@@ -127,14 +144,22 @@ class WPTAC_Updater {
                 $wp_filesystem->mkdir( $local_dir, FS_CHMOD_DIR );
             }
 
-            $response = wp_remote_get( $remote_url, [
-                'timeout'  => 30,
-                'headers'  => [ 'User-Agent' => 'WP-TAC-Manager/' . WPTAC_VERSION ],
-                'stream'   => true,
-                'filename' => $local_file,
-            ] );
+            $ok = false;
+            foreach ( $urls as $remote_url ) {
+                $response = wp_remote_get( $remote_url, [
+                    'timeout'  => 30,
+                    'headers'  => [ 'User-Agent' => 'WP-TAC-Manager/' . WPTAC_VERSION ],
+                    'stream'   => true,
+                    'filename' => $local_file,
+                ] );
 
-            if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
+                if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                    $ok = true;
+                    break;
+                }
+            }
+
+            if ( ! $ok ) {
                 $errors[] = sprintf(
                     __( 'Error al descargar %s', 'wp-tac-manager' ),
                     basename( $relative_path )
