@@ -194,6 +194,24 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             </p>
                         </div>
 
+                        <?php /* Privacy Policy URL */ ?>
+                        <div class="wptac-field">
+                            <label class="wptac-field__label" for="general_privacy_url">
+                                <?php esc_html_e( 'Privacy Policy URL', 'wp-tac-manager' ); ?>
+                            </label>
+                            <input
+                                type="url"
+                                id="general_privacy_url"
+                                name="general[privacy_url]"
+                                class="wptac-field__input"
+                                value="<?php echo esc_url( $cfg( 'general.privacy_url', '' ) ); ?>"
+                                placeholder="https://example.com/privacy-policy"
+                            >
+                            <p class="wptac-field__desc">
+                                <?php esc_html_e( 'Link to your privacy policy page. If left blank, WordPress will automatically resolve your dynamic or localized privacy policy URL.', 'wp-tac-manager' ); ?>
+                            </p>
+                        </div>
+
                         <?php /* Idioma */ ?>
                         <div class="wptac-field">
                             <label class="wptac-field__label" for="general_language">

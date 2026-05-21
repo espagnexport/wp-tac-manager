@@ -5,6 +5,7 @@ Thumbs.db
 *.log
 .env
 .vscode/
+.antigravitycli/
 .idea/
 *.sql
 *.zip

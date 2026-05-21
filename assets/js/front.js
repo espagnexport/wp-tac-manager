@@ -14,16 +14,14 @@
         document.body.setAttribute( 'data-wptac-banner-visible', '0' );
     } );
 
-    // ── Body attributes per service + stats tracking ──
+    // ── Body attributes per service ──
     settings.services.forEach( function ( serviceKey ) {
         ( function ( key ) {
             document.addEventListener( key + '_allowed', function () {
                 document.body.setAttribute( 'data-wptac-service-' + key, '1' );
-                wptacTrackConsent( key, 1 );
             } );
             document.addEventListener( key + '_disallowed', function () {
                 document.body.setAttribute( 'data-wptac-service-' + key, '0' );
-                wptacTrackConsent( key, 0 );
             } );
         } )( serviceKey );
     } );
@@ -123,7 +121,7 @@
         document.addEventListener( key + '_disallowed',     wptacGcmOnDeny );
     } );
 
-    // ── Stats tracking via AJAX ──
+    // ── Stats tracking via AJAX (Optimized: only tracks explicit user decisions) ──
     function wptacTrackConsent( service, allowed ) {
         if ( ! settings.ajaxUrl ) {
             return;
@@ -144,5 +142,17 @@
                 credentials: 'same-origin'
             } );
         }
+    }
+
+    // Decorate tarteaucitron.cookie.create to capture explicit user responses only
+    if ( typeof tarteaucitron !== 'undefined' && tarteaucitron.cookie && typeof tarteaucitron.cookie.create === 'function' ) {
+        var originalCreate = tarteaucitron.cookie.create;
+        tarteaucitron.cookie.create = function ( key, status ) {
+            originalCreate.call( this, key, status );
+            if ( status === 'true' || status === true || status === 'false' || status === false ) {
+                var allowed = ( status === 'true' || status === true );
+                wptacTrackConsent( key, allowed );
+            }
+        };
     }
 } )();
