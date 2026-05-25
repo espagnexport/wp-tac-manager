@@ -383,37 +383,40 @@ class WPTAC_Renderer {
     }
 
     private function exclude_from_optimization(): void {
-        $handles = [ 'tarteaucitron', 'tarteaucitron-services', 'tarteaucitron-lang', 'wptac-front' ];
+        $exclude_keywords = [
+            'tarteaucitron.min.js',
+            'tarteaucitron.services.min.js',
+            'tarteaucitron.lang',
+            'wptac-front',
+            '/front.min.js',
+            '/front.js',
+        ];
 
-        add_filter( 'autoptimize_filter_js_exclude', function( string $exclude ) use ( $handles ): string {
-            return $exclude . ', ' . implode( ', ', $handles );
+        add_filter( 'litespeed_optimize_js_excludes', function( $excludes ) use ( $exclude_keywords ) {
+            if ( ! is_array( $excludes ) ) { $excludes = []; }
+            return array_merge( $excludes, $exclude_keywords );
+        } );
+        add_filter( 'litespeed_delay_js_excludes', function( $excludes ) use ( $exclude_keywords ) {
+            if ( ! is_array( $excludes ) ) { $excludes = []; }
+            return array_merge( $excludes, $exclude_keywords );
         } );
 
-        add_filter( 'rocket_exclude_js', function( array $excluded ) use ( $handles ): array {
-            foreach ( $handles as $handle ) {
-                if ( 'wptac-front' === $handle ) {
-                    $excluded[] = 'front';
-                } else {
-                    $excluded[] = 'tarteaucitron/' . $handle;
+        add_filter( 'rocket_exclude_js', function( array $excluded ) use ( $exclude_keywords ): array {
+            return array_merge( $excluded, $exclude_keywords );
+        } );
+        add_filter( 'rocket_delay_js_exclusions', function( array $excluded ) use ( $exclude_keywords ): array {
+            return array_merge( $excluded, $exclude_keywords );
+        } );
+
+        add_filter( 'autoptimize_filter_js_exclude', function( string $exclude ) use ( $exclude_keywords ): string {
+            return $exclude . ', ' . implode( ', ', $exclude_keywords );
+        } );
+
+        add_filter( 'w3tc_minify_js_do_tag_minification', function( bool $do, string $tag ) use ( $exclude_keywords ): bool {
+            foreach ( $exclude_keywords as $keyword ) {
+                if ( str_contains( $tag, $keyword ) ) {
+                    return false;
                 }
-            }
-            return $excluded;
-        } );
-        add_filter( 'rocket_delay_js_exclusions', function( array $excluded ): array {
-            $excluded[] = 'tarteaucitron';
-            $excluded[] = 'wptac-front';
-            return $excluded;
-        } );
-
-        add_filter( 'litespeed_optimize_js_excludes', function( array $excluded ): array {
-            $excluded[] = 'tarteaucitron';
-            $excluded[] = 'wptac-front';
-            return $excluded;
-        } );
-
-        add_filter( 'w3tc_minify_js_do_tag_minification', function( bool $do, string $tag ): bool {
-            if ( str_contains( $tag, 'tarteaucitron' ) || str_contains( $tag, 'wptac-front' ) ) {
-                return false;
             }
             return $do;
         }, 10, 2 );
