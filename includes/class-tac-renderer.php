@@ -195,6 +195,10 @@ class WPTAC_Renderer {
             }
         }
 
+        if ( array_key_exists( 'googletagmanager', $active_services) ) {
+            $tac_config['dataLayer'] = true;
+        }
+
         $config_json = wp_json_encode( $tac_config, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE );
 
         $custom_texts_lines = $this->build_custom_texts();
