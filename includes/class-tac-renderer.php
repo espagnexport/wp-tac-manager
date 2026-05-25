@@ -11,25 +11,6 @@ class WPTAC_Renderer {
     public function __construct() {
         $this->settings = WPTAC_Settings::get_settings();
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
-        add_action( 'wp_head', [ $this, 'print_consent_defaults' ], 1 );
-    }
-
-    public function print_consent_defaults(): void {
-        $g = $this->settings['general'];
-
-        if ( empty( $g['enable_banner'] ) ) {
-            return;
-        }
-
-        if ( ! empty( $g['disable_banner_loggedin'] ) && is_user_logged_in() ) {
-            return;
-        }
-
-        if ( empty( $g['disable_google_consent_mode'] ) ) {
-            printf(
-                '<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("consent","default",{"analytics_storage":"denied","ad_storage":"denied","ad_user_data":"denied","ad_personalization":"denied","functionality_storage":"granted","personalization_storage":"denied","security_storage":"granted","wait_for_update":500});gtag("set","ads_data_redaction",true);gtag("set","url_passthrough",true);</script>' . "\n"
-            );
-        }
     }
 
     public function enqueue_assets(): void {
@@ -195,8 +176,12 @@ class WPTAC_Renderer {
             }
         }
 
-        if ( array_key_exists( 'googletagmanager', $active_services) ) {
-            $tac_config['dataLayer'] = true;
+        $google_services = [ 'googletagmanager', 'gtag', 'googleads' ];
+        foreach ( $google_services as $gs ) {
+            if ( array_key_exists( $gs, $active_services ) ) {
+                $tac_config['dataLayer'] = true;
+                break;
+            }
         }
 
         $config_json = wp_json_encode( $tac_config, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE );
