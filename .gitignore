@@ -9,3 +9,8 @@ Thumbs.db
 .idea/
 *.sql
 *.zip
+assets/css/
+assets/js/tarteaucitron
+context.md 
+opencode.json 
+
