@@ -1,153 +1,154 @@
 # WP TAC Manager
 
-Plugin WordPress para integrar [Tarte au Citron](https://tarteaucitron.io/) con panel de administración completo para gestionar servicios de cookies desde el back-end de WordPress.
+WordPress plugin to integrate [Tarte au Citron](https://tarteaucitron.io/) with a complete administration panel for managing cookie services from the WordPress back office.
 
-## Características
+## Features
 
-- ✅ **tarteaucitron.js bundleado localmente** (v1.32.0) — sin dependencias de CDN externas
-- ✅ **Actualizador automático** de tarteaucitron.js desde GitHub con un clic
-- ✅ **Actualizador del plugin** desde GitHub Releases mediante plugin-update-checker
-- ✅ **28 servicios predefinidos**: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
-- ✅ **Panel de administración** moderno con navegación por tabs (General, Servicios, Actualizaciones, Colores, Textos)
-- ✅ **Personalización completa de colores**: fondo, texto, bordes de botones (Aceptar/Denegar), panel, icono
-- ✅ **Textos personalizados por idioma** mediante `tarteaucitronCustomText` (formato JSON) — se fusionan con la traducción activa
-- ✅ **Traducciones automáticas** del banner según el idioma del sitio
-- ✅ **Estadísticas de consentimiento** con widget en el escritorio
-- ✅ **Limitación de tasa** (rate limiting) en el endpoint de consentimiento
-- ✅ **Seguridad**: nonces CSRF, `current_user_cap()`, sanitización completa, escapado de salida
-- ✅ **AJAX sin recarga** — guardado con feedback visual inmediato
-- ✅ **Generación dinámica del init JS** — sin archivos cacheados problemáticos
-- ✅ **Idioma automático** desde la configuración de WordPress
-- ✅ **GDPR best practices** — highPrivacy=true, DenyAllCta=true, AcceptAllCta=true
-- ✅ **Integración con cachés**: exclusiones para Autoptimize, WP Rocket, LiteSpeed Cache, W3 Total Cache
-- ✅ **Iframes lazy-load** basado en consentimiento
-- ✅ **Soporte multilingüe** compatible con Bogo, Polylang, WPML (la URL de política de privacidad se obtiene automáticamente de WordPress)
-- ✅ **Personalización por JSON**: cualquier opción de tarteaucitron.js se puede sobrescribir (privacyUrl, textos, colores, etc.)
+- ✅ Locally bundled tarteaucitron.js (v1.33.0) — no external CDN dependencies
+- ✅ Automatic tarteaucitron.js updater from GitHub with one click
+- ✅ Plugin updater from GitHub Releases using plugin-update-checker
+- ✅ 28 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
+-✅ Modern admin panel with tab navigation (General, Services, Updates, Colors, Texts)
+- ✅ Full color customization: background, text, button borders (Accept/Deny), panel, icon
+- ✅ Custom texts by language using tarteaucitronCustomText (JSON format) — merged with the active translation
+- ✅ Automatic banner translations based on the site language
+- ✅ Consent statistics with dashboard widget
+- ✅ Rate limiting on the consent endpoint
+- ✅ Security: CSRF nonces, current_user_cap(), full sanitization, output escaping
+- ✅ AJAX without page reload — saving with instant visual feedback
+- ✅ Dynamic init JS generation — no problematic cached files
+- ✅ Automatic language detection from WordPress settings
+- ✅ GDPR best practices — highPrivacy=true, DenyAllCta=true, AcceptAllCta=true
+- ✅ Cache integrations: exclusions for Autoptimize, WP Rocket, LiteSpeed Cache, W3 Total Cache
+- ✅ Consent-based iframe lazy loading
+- ✅ Multilingual support compatible with Bogo, Polylang, WPML (privacy policy URL is automatically retrieved from WordPress)
+- ✅ JSON customization: any tarteaucitron.js option can be overridden (privacyUrl, texts, colors, etc.)
 
-## Instalación
+## Installation
 
-1. Sube la carpeta `wp-tac-manager` a `/wp-content/plugins/`
-2. Activa el plugin desde **Plugins → Plugins instalados**
-3. Ve a **TAC Manager → Ajustes**
+1. Upload the `wp-tac-manager` folder to `/wp-content/plugins/`
+2. Activate the plugin from **Plugins → Installed Plugins**
+3. Go to **TAC Manager → Settings**
 
-## Servicios incluidos
+## Included services
 
-| Servicio | Categoría | Parámetros |
-|----------|-----------|------------|
-| Google Tag Manager | Analítica | ID del contenedor |
-| Google Analytics 4 | Analítica | Measurement ID |
-| Google Ads | Analítica | ID de conversión |
-| Microsoft Clarity | Analítica | ID del proyecto |
-| Bing Ads | Analítica | UET Tag ID |
-| Hotjar | Analítica | Site ID |
-| Matomo Cloud | Analítica | Site ID + URL del servidor |
-| Plausible | Analítica | Dominio |
-| Facebook Pixel | Social | Pixel ID |
-| LinkedIn Insight Tag | Social | Partner ID |
-| Twitter UWT | Social | Pixel ID |
-| Instagram | Social | — |
-| TikTok | Social | Pixel ID |
-| Pinterest | Social | — |
-| YouTube | Video | — |
-| Vimeo | Video | — |
-| Dailymotion | Video | — |
-| Twitch | Video | — |
-| Google Maps | API | API Key |
-| reCAPTCHA | API | Site Key |
-| Stripe | API | — |
-| PayPal | API | — |
-| HubSpot | API | HubSpot ID |
-| Crisp Chat | Otros | Website ID |
-| Google Fonts | Otros | Familias |
-| Disqus | Comentarios | Shortname |
-| Spotify | Otros | — |
-| SoundCloud | Otros | — |
+| Service              | Category  | Parameters           |
+| -------------------- | --------- | -------------------- |
+| Google Tag Manager   | Analytics | Container ID         |
+| Google Analytics 4   | Analytics | Measurement ID       |
+| Google Ads           | Analytics | Conversion ID        |
+| Microsoft Clarity    | Analytics | Project ID           |
+| Bing Ads             | Analytics | UET Tag ID           |
+| Hotjar               | Analytics | Site ID              |
+| Matomo Cloud         | Analytics | Site ID + Server URL |
+| Plausible            | Analytics | Domain               |
+| Facebook Pixel       | Social    | Pixel ID             |
+| LinkedIn Insight Tag | Social    | Partner ID           |
+| Twitter UWT          | Social    | Pixel ID             |
+| Instagram            | Social    | —                    |
+| TikTok               | Social    | Pixel ID             |
+| Pinterest            | Social    | —                    |
+| YouTube              | Video     | —                    |
+| Vimeo                | Video     | —                    |
+| Dailymotion          | Video     | —                    |
+| Twitch               | Video     | —                    |
+| Google Maps          | API       | API Key              |
+| reCAPTCHA            | API       | Site Key             |
+| Stripe               | API       | —                    |
+| PayPal               | API       | —                    |
+| HubSpot              | API       | HubSpot ID           |
+| Crisp Chat           | Other     | Website ID           |
+| Google Fonts         | Other     | Font Families        |
+| Disqus               | Comments  | Shortname            |
+| Spotify              | Other     | —                    |
+| SoundCloud           | Other     | —                    |
 
-## Personalización de textos
 
-Ve a **TAC Manager → Ajustes → Textos** y selecciona un idioma. Introduce un JSON con las claves que quieras sobrescribir:
+## Text Customization
 
-```json
-{"acceptAll": "¡Vamos!", "denyAll": "No, gracias"}
-```
+Go to **TAC Manager → Settings → Texts** and select a language. Enter a JSON object with the keys you want to override:
 
-Los valores se fusionan con la traducción activa del banner mediante `tarteaucitronCustomText`. Solo las claves especificadas se sobrescriben.
+{"acceptAll": "¡Let's go!", "denyAll": "No thanks"}
 
-## Personalización de colores
+Values are merged with the active banner translation using `tarteaucitronCustomText`. Only the specified keys are overridden.
 
-Ve a **TAC Manager → Ajustes → Colores** para personalizar:
-- Fondo y texto del banner principal
-- Fondo, borde y texto del botón **Aceptar**
-- Fondo, borde y texto del botón **Denegar**
-- Fondo y texto del panel de preferencias
-- Fondo del icono flotante
+## Color customization
 
-## Actualizaciones
+Go to **TAC Manager → Settings → Colors** to customize:
+- Main banner background and text
+- **Accept** button background, border, and text
+- **Deny** button background, border, and text
+- Preferences panel background and text
+- Floating icon background
 
-- **tarteaucitron.js**: Ve a **TAC Manager → Ajustes → Actualizaciones** y haz clic en "Comprobar" para buscar nuevas versiones. "Actualizar ahora" descarga e instala los archivos automáticamente.
-- **Plugin**: Las actualizaciones se entregan mediante GitHub Releases. Aparecen automáticamente en **Plugins** cuando hay una nueva versión.
+## Updates
 
-## Seguridad implementada
+- **tarteaucitron.js**: Go to **TAC Manager → Settings → Updates** and click "Check" to search for new versions. "Update now" downloads and installs the files automatically.
+- **Plugin**: Updates are delivered through GitHub Releases. They appear automatically under **Plugins** when a new version is available.
 
-| Medida | Dónde |
-|---|---|
-| `check_ajax_referer()` en todos los endpoints AJAX | `WPTAC_Admin` |
-| `current_user_can('manage_options')` | Menú admin + AJAX + render |
-| `sanitize_text_field()` / `esc_url_raw()` / `sanitize_key()` / `absint()` | `WPTAC_Settings::sanitize()` |
-| `wp_json_encode()` con `JSON_HEX_TAG \| JSON_HEX_APOS \| JSON_HEX_AMP` | `WPTAC_Renderer` |
-| Lista blanca de orientaciones, idiomas y posiciones | `WPTAC_Settings::sanitize()` |
-| Lista blanca de servicios conocidos | `WPTAC_Settings::sanitize_services()` |
-| Validación de colores hex | `WPTAC_Settings::sanitize_colors()` |
-| `esc_html()` / `esc_attr()` / `esc_url()` / `esc_textarea()` en todas las vistas | `settings-page.php` |
-| Rate limiting (10 req/min por IP) | `WPTAC_Admin::check_rate_limit()` |
-| `WP_UNINSTALL_PLUGIN` check | `uninstall.php` |
+## Implemented Security
 
-## Estructura del plugin
+| Measure                                                                   | Where                                 |
+| ------------------------------------------------------------------------- | ------------------------------------- |
+| `check_ajax_referer()` on all AJAX endpoints                              | `WPTAC_Admin`                         |
+| `current_user_can('manage_options')`                                      | Admin menu + AJAX + render            |
+| `sanitize_text_field()` / `esc_url_raw()` / `sanitize_key()` / `absint()` | `WPTAC_Settings::sanitize()`          |
+| `wp_json_encode()` with `JSON_HEX_TAG \| JSON_HEX_APOS \| JSON_HEX_AMP`   | `WPTAC_Renderer`                      |
+| Whitelist for orientations, languages, and positions                      | `WPTAC_Settings::sanitize()`          |
+| Whitelist for known services                                              | `WPTAC_Settings::sanitize_services()` |
+| Hex color validation                                                      | `WPTAC_Settings::sanitize_colors()`   |
+| `esc_html()` / `esc_attr()` / `esc_url()` / `esc_textarea()` in all views | `settings-page.php`                   |
+| Rate limiting (10 req/min per IP)                                         | `WPTAC_Admin::check_rate_limit()`     |
+| `WP_UNINSTALL_PLUGIN` check                                               | `uninstall.php`                       |
 
-```
+## Plugin structure
+
 wp-tac-manager/
-├── wp-tac-manager.php              # Bootstrap, constantes, autoloader, actualizador GitHub
-├── uninstall.php                   # Limpieza de BD al desinstalar
-├── composer.json                   # Dependencias (plugin-update-checker)
+├── wp-tac-manager.php              # Bootstrap, constants, autoloader, GitHub updater
+├── uninstall.php                   # Database cleanup on uninstall
+├── composer.json                   # Dependencies (plugin-update-checker)
 ├── includes/
-│   ├── class-tac-admin.php         # Menú, assets admin, AJAX, estadísticas
-│   ├── class-tac-renderer.php      # Encolado front-end + init JS
-│   ├── class-tac-services.php      # Catálogo de 28 servicios
-│   ├── class-tac-settings.php      # Defaults, sanitización, acceso a BD
-│   └── class-tac-updater.php       # Actualizador de tarteaucitron.js
+│   ├── class-tac-admin.php         # Menu, admin assets, AJAX, statistics
+│   ├── class-tac-renderer.php      # Front-end enqueue + init JS
+│   ├── class-tac-services.php      # Catalog of 28 services
+│   ├── class-tac-settings.php      # Defaults, sanitization, DB access
+│   └── class-tac-updater.php       # tarteaucitron.js updater
 ├── admin/
-│   ├── views/settings-page.php     # Template HTML con 5 tabs
-│   ├── js/admin.js                 # UX (tabs, toggles, AJAX, selector de idioma)
-│   └── css/admin.css               # Estilos del panel
-├── lang/                           # Archivos de traducción (.pot, .po, .mo)
+│   ├── views/settings-page.php     # HTML template with 5 tabs
+│   ├── js/admin.js                 # UX (tabs, toggles, AJAX, language selector)
+│   └── css/admin.css               # Admin panel styles
+├── lang/                           # Translation files (.pot, .po, .mo)
 └── assets/
-    ├── js/tarteaucitron/           # Librería tarteaucitron.js
+    ├── js/tarteaucitron/           # tarteaucitron.js library
     │   ├── tarteaucitron.js
     │   ├── tarteaucitron.min.js
     │   ├── tarteaucitron.services.js
     │   ├── tarteaucitron.services.min.js
-    │   └── lang/                   # Traducciones del banner (38 idiomas)
+    │   └── lang/                   # Banner translations (38 languages)
     └── css/
         ├── tarteaucitron.css
         └── tarteaucitron.min.css
-```
 
 ## Changelog
+### 1.9.0
+- Added manual update option for tarteaucitron.js in admin panel.
+- Changed automatic update to 'check for new version' only.
 
 ### 1.4.0
-- Añadidos 18 nuevos servicios: YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
-- Personalización completa de colores: borde de botones y texto de botones
-- Textos personalizados por idioma vía JSON (tarteaucitronCustomText)
-- Actualizador automático del plugin desde GitHub Releases
-- Mejora en la detección de versiones de tarteaucitron.js (con fallback a CDN)
-- Eliminación del campo obligatorio de URL de privacidad (se obtiene automáticamente de WordPress)
-- Interfaz de administración en inglés (traducible vía Loco Translate)
-- Varias correcciones de seguridad y mantenimiento
+- Added 18 new services: YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
+- Full color customization: button borders and button text
+- Custom texts by language via JSON (tarteaucitronCustomText)
+- Automatic plugin updater from GitHub Releases
+- Improved tarteaucitron.js version detection (with CDN fallback)
+- Removed mandatory privacy URL field (automatically retrieved from WordPress)
+- English admin interface (translatable via Loco Translate)
+- Various security and maintenance fixes
 
 ### 1.0.0
-- Release inicial con soporte para Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot
-- Panel de administración con tabs
-- Personalización de colores básica
-- Estadísticas de consentimiento
-- Actualizador de tarteaucitron.js
-- Exclusiones para plugins de caché
+
+- Initial release with support for Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot
+- Admin panel with tabs
+- Basic color customization
+- Consent statistics
+- tarteaucitron.js updater
+- Exclusions for cache plugins

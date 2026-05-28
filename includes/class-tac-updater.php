@@ -12,8 +12,18 @@ class WPTAC_Updater {
     const GITHUB_RAW   = 'https://raw.githubusercontent.com/AmauriC/tarteaucitron.js';
     const VERSION_OPTION = 'wptac_tarteaucitron_latest_version';
 
-    public static function get_bundled_version(): string {
+    const VERSION_MANUAL_OPTION = 'wptac_tarteaucitron_manual_version';
+
+    public static function get_active_version(): string {
+        $manual_version = get_option( self::VERSION_MANUAL_OPTION, '' );
+        if ( ! empty( $manual_version ) ) {
+            return $manual_version;
+        }
         return WPTAC_TARTEAUCITRON_VERSION;
+    }
+
+    public static function get_bundled_version(): string {
+        return self::get_active_version();
     }
 
     public static function get_latest_version(): ?string {

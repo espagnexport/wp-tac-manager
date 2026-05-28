@@ -286,7 +286,7 @@
     // ─────────────────────────────────────────────
 
     const btnCheck  = document.getElementById( 'wptac-btn-check' );
-    const btnUpdate = document.getElementById( 'wptac-btn-update' );
+    // const btnUpdate = document.getElementById( 'wptac-btn-update' ); // Removed
     const elLatest  = document.getElementById( 'wptac-latest-version' );
     const elStatus  = document.getElementById( 'wptac-update-status' );
 
@@ -320,12 +320,12 @@
                             elStatus.className = 'wptac-update__status is-info';
                             elStatus.textContent = wptacAdmin.i18n.updateAvailable;
                             elStatus.hidden = false;
-                            btnUpdate.hidden = false;
+ 
                         } else {
                             elStatus.className = 'wptac-update__status is-success';
                             elStatus.textContent = wptacAdmin.i18n.uptodate;
                             elStatus.hidden = false;
-                            btnUpdate.hidden = true;
+ 
                         }
                     } else {
                         elLatest.innerHTML = '<span class="wptac-update__unknown">' + wptacAdmin.i18n.checkFailed + '</span>';
@@ -345,50 +345,64 @@
         btnCheck.dataset.label = btnCheck.textContent.trim();
     }
 
-    if ( btnUpdate ) {
-        btnUpdate.addEventListener( 'click', async () => {
-            btnUpdate.disabled = true;
-            btnUpdate.innerHTML = '<span class="dashicons dashicons-download wptac-spin"></span> ' + wptacAdmin.i18n.updating;
+    // ─────────────────────────────────────────────
+    // Manual Update via ZIP upload
+    // ─────────────────────────────────────────────
+
+    const manualUpdateForm = document.getElementById( 'wptac-manual-update-form' );
+    const manualUpdateBtn  = document.getElementById( 'wptac-btn-manual-update' );
+    const manualUpdateStatus = document.getElementById( 'wptac-manual-update-status' );
+    const manualZipUpload  = document.getElementById( 'tarteaucitron_zip_upload' );
+
+    if ( manualUpdateForm ) {
+        manualUpdateForm.addEventListener( 'submit', async ( e ) => {
+            e.preventDefault();
+
+            if ( ! manualZipUpload || ! manualZipUpload.files.length ) {
+                showManualUpdateStatus( wptacAdmin.i18n.manualUpdateError, 'error' );
+                return;
+            }
+
+            manualUpdateBtn.disabled = true;
+            manualUpdateBtn.innerHTML = '<span class="dashicons dashicons-upload wptac-spin"></span> ' + wptacAdmin.i18n.uploading;
+            manualUpdateStatus.hidden = true;
+
+            const formData = new FormData( manualUpdateForm );
 
             try {
-                const url = new URL( wptacAdmin.ajaxUrl );
-                url.searchParams.set( 'action', 'wptac_do_update' );
-                url.searchParams.set( 'nonce', wptacAdmin.nonce );
-
-                const response = await fetch( url.toString(), {
+                const response = await fetch( wptacAdmin.ajaxUrl, {
                     method: 'POST',
-                    headers: {
-                        'X-WP-Nonce': wptacAdmin.nonce,
-                    },
+                    body: formData,
                     credentials: 'same-origin',
                 } );
 
                 const data = await response.json();
 
                 if ( data.success ) {
-                    elStatus.className = 'wptac-update__status is-success';
-                    elStatus.textContent = data.data?.message || wptacAdmin.i18n.updateDone;
-                    elStatus.hidden = false;
-                    btnUpdate.hidden = true;
-                    // Update bundled version display
-                    const bundledEl = document.getElementById( 'wptac-bundled-version' );
-                    if ( bundledEl && data.data?.latest ) {
-                        bundledEl.innerHTML = '<strong>' + data.data.latest + '</strong>';
-                    }
+                    showManualUpdateStatus( data.data?.message || wptacAdmin.i18n.manualUpdateSuccess, 'success' );
+                    // Optionally refresh the page or update version display after successful manual update
+                    // For now, just display success message. A full refresh might be needed for version display.
                 } else {
-                    elStatus.className = 'wptac-update__status is-error';
-                    elStatus.textContent = data.data?.message || wptacAdmin.i18n.updateError;
-                    elStatus.hidden = false;
+                    showManualUpdateStatus( data.data?.message || wptacAdmin.i18n.manualUpdateError, 'error' );
                 }
-            } catch ( err ) {
-                elStatus.className = 'wptac-update__status is-error';
-                elStatus.textContent = wptacAdmin.i18n.updateError;
-                elStatus.hidden = false;
+            } catch ( error ) {
+                console.error( '[WP TAC Manager] Manual Update Error:', error );
+                showManualUpdateStatus( wptacAdmin.i18n.manualUpdateError, 'error' );
+            } finally {
+                manualUpdateBtn.disabled = false;
+                manualUpdateBtn.innerHTML = '<span class="dashicons dashicons-upload"></span> ' + wptacAdmin.i18n.uploading; // Restore original text
+                // Clear file input
+                if ( manualZipUpload ) {
+                    manualZipUpload.value = '';
+                }
             }
-
-            btnUpdate.disabled = false;
-            btnUpdate.innerHTML = '<span class="dashicons dashicons-download"></span> ' + wptacAdmin.i18n.updating;
         } );
+    }
+
+    function showManualUpdateStatus( message, type = 'info' ) {
+        manualUpdateStatus.textContent = message;
+        manualUpdateStatus.className = 'wptac-update__status is-' + type;
+        manualUpdateStatus.hidden = false;
     }
 
     // ─────────────────────────────────────────────

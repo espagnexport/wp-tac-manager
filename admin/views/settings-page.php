@@ -612,10 +612,32 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                 <span class="dashicons dashicons-update"></span>
                                 <?php esc_html_e( 'Check for updates', 'wp-tac-manager' ); ?>
                             </button>
-                            <button type="button" class="wptac-btn wptac-btn--primary" id="wptac-btn-update" hidden>
-                                <span class="dashicons dashicons-download"></span>
-                                <?php esc_html_e( 'Update now', 'wp-tac-manager' ); ?>
+                        </div>
+                    </div>
+
+                    <div class="wptac-card">
+                        <h3><?php esc_html_e( 'Manual tarteaucitron.js Update', 'wp-tac-manager' ); ?></h3>
+                        <p class="description">
+                            <?php esc_html_e( 'If automatic updates are not working, you can manually upload the tarteaucitron.js ZIP file downloaded from GitHub (e.g., tarteaucitron.js-master.zip).', 'wp-tac-manager' ); ?><br>
+                            <?php esc_html_e( 'The plugin will extract the contents and replace the relevant files.', 'wp-tac-manager' ); ?>
+                        </p>
+                        <form id="wptac-manual-update-form" enctype="multipart/form-data" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>">
+                            <input type="hidden" name="action" value="wptac_manual_update">
+                            <input type="hidden" name="_wpnonce_manual_update" value="<?php echo esc_attr( wp_create_nonce( 'wptac_manual_update_nonce' ) ); ?>">
+                            <div class="wptac-field">
+                                <label class="wptac-field__label" for="tarteaucitron_zip_upload"><?php esc_html_e( 'Upload ZIP file', 'wp-tac-manager' ); ?></label>
+                                <input type="file" id="tarteaucitron_zip_upload" name="tarteaucitron_zip_upload" accept=".zip" required>
+                                <p class="description">
+                                    <?php esc_html_e( 'Please upload the "tarteaucitron.js-master.zip" file.', 'wp-tac-manager' ); ?>
+                                </p>
+                            </div>
+                            <button type="submit" class="wptac-btn wptac-btn--secondary" id="wptac-btn-manual-update">
+                                <span class="dashicons dashicons-upload"></span>
+                                <?php esc_html_e( 'Upload and Install', 'wp-tac-manager' ); ?>
                             </button>
+                            <div id="wptac-manual-update-status" class="wptac-update__status" hidden></div>
+                        </form>
+                    </div>
                         </div>
                     </div>
                 </section><!-- /#section-updates -->
