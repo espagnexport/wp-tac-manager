@@ -204,7 +204,7 @@ class WPTAC_Updater {
         ];
     }
 
-    private static function get_lang_file_list(): array {
+    public static function get_lang_file_list(): array {
         $langs = [ 'ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'he', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'ko', 'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh', 'cn' ];
         $files = [];
         foreach ( $langs as $lang ) {
