@@ -364,6 +364,7 @@
             }
 
             manualUpdateBtn.disabled = true;
+            const originalManualBtnLabel = manualUpdateBtn.innerHTML;
             manualUpdateBtn.innerHTML = '<span class="dashicons dashicons-upload wptac-spin"></span> ' + wptacAdmin.i18n.uploading;
             manualUpdateStatus.hidden = true;
 
@@ -390,7 +391,7 @@
                 showManualUpdateStatus( wptacAdmin.i18n.manualUpdateError, 'error' );
             } finally {
                 manualUpdateBtn.disabled = false;
-                manualUpdateBtn.innerHTML = '<span class="dashicons dashicons-upload"></span> ' + wptacAdmin.i18n.uploading; // Restore original text
+                manualUpdateBtn.innerHTML = originalManualBtnLabel;
                 // Clear file input
                 if ( manualZipUpload ) {
                     manualZipUpload.value = '';

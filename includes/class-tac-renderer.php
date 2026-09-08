@@ -49,9 +49,12 @@ class WPTAC_Renderer {
         $hide_icon_css = 'body[data-wptac-banner-visible="0"] #tarteaucitronRoot .tarteaucitronIcon { display:none!important; }';
         wp_add_inline_style( 'tarteaucitron', $hide_icon_css );
 
+        $js_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+            ? 'tarteaucitron.js'
+            : 'tarteaucitron.min.js';
         wp_enqueue_script(
             'tarteaucitron',
-            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/tarteaucitron.min.js',
+            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $js_file,
             [],
             WPTAC_VERSION,
             true

@@ -130,6 +130,9 @@ wp-tac-manager/
         └── tarteaucitron.min.css
 
 ## Changelog
+### 2.0.0
+- Version bump to 2.0.0.
+
 ### 1.9.0
 - Added manual update option for tarteaucitron.js in admin panel.
 - Changed automatic update to 'check for new version' only.

@@ -1,26 +1,32 @@
 # AGENTS.md
 
-This file provides essential guidance for agents working in the `wp-tac-manager` repository.
+WordPress plugin integrating Tarte au Citron (tarteaucitron.js) for cookie consent. No CI, tests, lint, or build tooling.
 
 ## Commands
 
-- **Install PHP dependencies**: `composer install`
+- `composer install` — installs `yahnis-elsts/plugin-update-checker` into `vendor/` (gitignored). Only external dependency; the plugin's own classes use a custom autoloader, not Composer. The `autoload.classmap` entry in `composer.json` is redundant (the SPL autoloader already maps `WPTAC_*`); don't rely on it, and if you remove it, refresh the `composer.lock` content-hash via `composer update --lock`.
 
-## Architecture Notes
+## Architecture
 
-- This project is a WordPress plugin designed to integrate Tarte au Citron for cookie management.
-- The main plugin logic is located in the `includes/` directory, as indicated by the `composer.json` autoload `classmap`.
-- The plugin uses `yahnis-elsts/plugin-update-checker` for updates.
-- **Key Features**: The plugin bundles `tarteaucitron.js` locally, provides an automatic updater for it, and offers a modern admin panel with comprehensive customization options for colors and texts. It includes 28 predefined services and supports multilingual setups.
-- **Security**: Implements CSRF nonces, `current_user_cap()`, full sanitization, and output escaping.
+- Bootstrap is `wp-tac-manager.php`: defines constants, registers a custom SPL autoloader, hooks `init` (GitHub updater) and `plugins_loaded` (module init).
+- **Class → file convention (critical):** `WPTAC_Admin` → `includes/class-tac-admin.php`. The autoloader strips the `WPTAC_` prefix, lowercases, and maps `_` → `-`. A new class `WPTAC_Foo_Bar` must live at `includes/class-tac-foo-bar.php`.
+- Modules in `includes/`: `WPTAC_Admin` (menu/AJAX/stats), `WPTAC_Renderer` (front-end enqueue + init JS), `WPTAC_Settings` (defaults/sanitize/DB), `WPTAC_Services` (28-service catalog), `WPTAC_Updater` (tarteaucitron.js update). Instantiated in `plugins_loaded`; `WPTAC_Admin` only when `is_admin()`.
 
-## Installation
+## Settings
 
-1. Upload the `wp-tac-manager` folder to `/wp-content/plugins/`
-2. Activate the plugin from **Plugins → Installed Plugins**
-3. Go to **TAC Manager → Settings**
+- All config lives in one option `wptac_settings` (`WPTAC_OPTION_KEY`), a nested `general`/`colors`/`texts`/`services` array.
+- Read with `WPTAC_Settings::get_settings()` (deep-merges defaults + saved). Write ONLY via `WPTAC_Settings::save_settings()`/`sanitize()` — never save raw form data.
+- Adding a service requires BOTH a `WPTAC_Services::get_definitions()` entry and a `services` default in `WPTAC_Settings::get_defaults()`. Services can also be extended via the `wptac_services` filter.
 
-## Updates
+## Gotchas
 
-- **tarteaucitron.js**: Go to **TAC Manager → Settings → Updates** and click "Check" to search for new versions. "Update now" downloads and installs the files automatically.
-- **Plugin**: Updates are delivered through GitHub Releases and appear automatically under **Plugins** when a new version is available.
+- Requires PHP 8.0+ (`match`, `str_starts_with`/`str_ends_with`, arrow fns).
+- No build step: JS is committed by hand, including `*.min.js`. `SCRIPT_DEBUG` switches between minified and unminified.
+- Version lives in two places: the `Version:` plugin header and `WPTAC_VERSION`. tarteaucitron version is `WPTAC_TARTEAUCITRON_VERSION`.
+- `.gitignore` lists `assets/css/` and `assets/js/tarteaucitron`, but those files are already tracked — new files added there (e.g. a new language file from the updater) will be ignored and need `git add -f`.
+- `uninstall.php` deletes the settings option; deactivation intentionally preserves it.
+- Optional GitHub auth: define `WP_TAC_MANAGER_GITHUB_TOKEN` for updater rate limits.
+
+## References
+
+- README.md — feature list, service table, installation/update steps. NOTICES.md — bundled tarteaucitron.js license (MIT).

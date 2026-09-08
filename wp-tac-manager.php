@@ -3,7 +3,7 @@
  * Plugin Name:       WP TAC Manager
  * Plugin URI:        https://github.com/espagnexport/wp-tac-manager
  * Description:       Integración de Tarte au Citron (tarteaucitron.js) con panel de administración para gestionar servicios de cookies desde el back-end de WordPress.
- * Version:           1.9.0
+ * Version:           2.0.0
  * Requires at least: 6.0
  * Requires PHP:      8.0
  * Author:            Rafael Verde
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // ─────────────────────────────────────────────
 // Constantes del plugin
 // ─────────────────────────────────────────────
-define( 'WPTAC_VERSION',     '1.9.0' );
+define( 'WPTAC_VERSION',     '2.0.0' );
 define( 'WPTAC_TARTEAUCITRON_VERSION', '1.32.0' );
 define( 'WPTAC_PLUGIN_FILE', __FILE__ );
 define( 'WPTAC_PLUGIN_DIR',  plugin_dir_path( __FILE__ ) );
@@ -88,8 +88,6 @@ register_activation_hook( __FILE__, function (): void {
         $defaults = WPTAC_Settings::get_defaults();
         add_option( WPTAC_OPTION_KEY, $defaults, '', false );
     }
-    // Flush rewrite rules por precaución
-    flush_rewrite_rules();
 } );
 
 /**
@@ -97,7 +95,7 @@ register_activation_hook( __FILE__, function (): void {
  * NO borramos las opciones para preservar la config del usuario.
  */
 register_deactivation_hook( __FILE__, function (): void {
-    flush_rewrite_rules();
+    // Intencionalmente no se hace nada: preservar la configuración del usuario.
 } );
 
 // ─────────────────────────────────────────────
@@ -108,14 +106,16 @@ register_deactivation_hook( __FILE__, function (): void {
  * Inicializa todos los módulos del plugin después de que
  * WordPress haya cargado todos los plugins (hook 'plugins_loaded').
  */
-add_action( 'plugins_loaded', function (): void {
+add_action( 'init', function (): void {
     // Cargar traducciones
     load_plugin_textdomain(
         'wp-tac-manager',
         false,
         dirname( plugin_basename( __FILE__ ) ) . '/lang'
     );
+} );
 
+add_action( 'plugins_loaded', function (): void {
     // Módulo de administración (solo en el back-end)
     if ( is_admin() ) {
         new WPTAC_Admin();

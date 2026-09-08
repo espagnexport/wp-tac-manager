@@ -99,11 +99,11 @@ class WPTAC_Updater {
     public static function do_update(): array {
         $latest = self::get_latest_version();
         if ( null === $latest ) {
-            return [ 'success' => false, 'message' => __( 'No se pudo obtener la última versión.', 'wp-tac-manager' ) ];
+            return [ 'success' => false, 'message' => __( 'Could not fetch the latest version.', 'wp-tac-manager' ) ];
         }
 
         if ( ! version_compare( $latest, self::get_bundled_version(), '>' ) ) {
-            return [ 'success' => false, 'message' => __( 'Ya tienes la última versión instalada.', 'wp-tac-manager' ) ];
+            return [ 'success' => false, 'message' => __( 'You already have the latest version installed.', 'wp-tac-manager' ) ];
         }
 
         $tag = 'v' . $latest;
@@ -139,7 +139,7 @@ class WPTAC_Updater {
         }
 
         if ( ! $wp_filesystem ) {
-            return [ 'success' => false, 'message' => __( 'No se pudo inicializar el sistema de archivos.', 'wp-tac-manager' ) ];
+            return [ 'success' => false, 'message' => __( 'Could not initialize the filesystem.', 'wp-tac-manager' ) ];
         }
 
         $plugin_dir = WPTAC_PLUGIN_DIR;
@@ -171,7 +171,7 @@ class WPTAC_Updater {
 
             if ( ! $ok ) {
                 $errors[] = sprintf(
-                    __( 'Error al descargar %s', 'wp-tac-manager' ),
+                    __( 'Error downloading %s', 'wp-tac-manager' ),
                     basename( $relative_path )
                 );
                 continue;
@@ -187,7 +187,7 @@ class WPTAC_Updater {
 
         if ( ! empty( $errors ) ) {
             $message = sprintf(
-                __( 'Actualización parcial: %1$d archivos actualizados, %2$d errores.', 'wp-tac-manager' ),
+                __( 'Partial update: %1$d files updated, %2$d errors.', 'wp-tac-manager' ),
                 $downloaded,
                 count( $errors )
             );
@@ -198,7 +198,7 @@ class WPTAC_Updater {
             'success' => true,
             'latest'  => $latest,
             'message' => sprintf(
-                __( 'tarteaucitron.js actualizado a v%s correctamente.', 'wp-tac-manager' ),
+                __( 'tarteaucitron.js updated to v%s successfully.', 'wp-tac-manager' ),
                 $latest
             ),
         ];
