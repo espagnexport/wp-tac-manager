@@ -353,10 +353,10 @@
     const manualUpdateBtn  = document.getElementById( 'wptac-btn-manual-update' );
     const manualUpdateStatus = document.getElementById( 'wptac-manual-update-status' );
     const manualZipUpload  = document.getElementById( 'tarteaucitron_zip_upload' );
+    const manualUpdateNonce = document.getElementById( 'wptac-manual-update-nonce' );
 
-    if ( manualUpdateForm ) {
-        manualUpdateForm.addEventListener( 'submit', async ( e ) => {
-            e.preventDefault();
+    if ( manualUpdateBtn ) {
+        manualUpdateBtn.addEventListener( 'click', async () => {
 
             if ( ! manualZipUpload || ! manualZipUpload.files.length ) {
                 showManualUpdateStatus( wptacAdmin.i18n.manualUpdateError, 'error' );
@@ -368,7 +368,10 @@
             manualUpdateBtn.innerHTML = '<span class="dashicons dashicons-upload wptac-spin"></span> ' + wptacAdmin.i18n.uploading;
             manualUpdateStatus.hidden = true;
 
-            const formData = new FormData( manualUpdateForm );
+            const formData = new FormData();
+            formData.append( 'action', 'wptac_manual_update' );
+            formData.append( '_wpnonce_manual_update', manualUpdateNonce ? manualUpdateNonce.value : '' );
+            formData.append( 'tarteaucitron_zip_upload', manualZipUpload.files[0] );
 
             try {
                 const response = await fetch( wptacAdmin.ajaxUrl, {

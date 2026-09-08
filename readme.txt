@@ -4,7 +4,7 @@ Tags: cookies, gdpr, tarteaucitron, cookie-consent, privacy
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,9 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 
 == Changelog ==
 
+= 2.1.0 =
+* Fixed manual tarteaucitron.js update (nested form caused the upload button to submit the settings form).
+
 = 2.0.0 =
 * Version bump to 2.0.0.
 
@@ -76,6 +79,9 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 * Initial release.
 
 == Upgrade Notice ==
+
+= 2.1.0 =
+* Bug fix release. No breaking changes.
 
 = 2.0.0 =
 * Maintenance release. No breaking changes.
