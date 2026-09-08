@@ -239,6 +239,10 @@
     max-width: 160px;
 }
 
+.wptac-field__select--short {
+    max-width: 200px;
+}
+
 .wptac-field__input,
 .wptac-field__select,
 .wptac-field__textarea {
@@ -465,7 +469,7 @@
     border-top: 1px solid var(--wptac-border);
 }
 
-.wptac-service__params.is-hidden {
+.wptac-service__params[hidden] {
     display: none;
 }
 

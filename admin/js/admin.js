@@ -83,8 +83,7 @@
         const isEnabled    = toggleInput.checked;
 
         if ( paramsPanel ) {
-            paramsPanel.classList.toggle( 'is-hidden', ! isEnabled );
-            paramsPanel.setAttribute( 'aria-hidden', String( ! isEnabled ) );
+            paramsPanel.hidden = ! isEnabled;
 
             // Habilitar/deshabilitar los inputs según el estado
             // para que los campos required no bloqueen si el servicio está desactivado
@@ -96,21 +95,12 @@
         if ( serviceCard ) {
             serviceCard.classList.toggle( 'is-active', isEnabled );
         }
-
-        toggleInput.setAttribute( 'aria-expanded', String( isEnabled ) );
     }
 
     // Inicializar estado de todos los toggles al cargar
     document.querySelectorAll( '.wptac-service__toggle' ).forEach( ( toggle ) => {
         updateServiceState( toggle );
         toggle.addEventListener( 'change', () => updateServiceState( toggle ) );
-    } );
-
-    // Sincronizar aria-checked en todos los checkboxes tipo switch
-    document.querySelectorAll( '[role="switch"]' ).forEach( ( sw ) => {
-        sw.addEventListener( 'change', () => {
-            sw.setAttribute( 'aria-checked', String( sw.checked ) );
-        } );
     } );
 
     // ─────────────────────────────────────────────
@@ -349,7 +339,6 @@
     // Manual Update via ZIP upload
     // ─────────────────────────────────────────────
 
-    const manualUpdateForm = document.getElementById( 'wptac-manual-update-form' );
     const manualUpdateBtn  = document.getElementById( 'wptac-btn-manual-update' );
     const manualUpdateStatus = document.getElementById( 'wptac-manual-update-status' );
     const manualZipUpload  = document.getElementById( 'tarteaucitron_zip_upload' );

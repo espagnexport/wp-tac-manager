@@ -178,6 +178,38 @@ class WPTAC_Settings {
         return update_option( WPTAC_OPTION_KEY, $sanitized, false );
     }
 
+    /**
+     * Devuelve la lista de idiomas disponibles para los textos personalizados,
+     * descubierta a partir de los archivos de idioma incluidos con tarteaucitron.js.
+     *
+     * @return string[] Lista ordenada de códigos de idioma (p. ej. 'en', 'es').
+     */
+    public static function get_available_languages(): array {
+        static $cache = null;
+
+        if ( null !== $cache ) {
+            return $cache;
+        }
+
+        $cache = [];
+        $files = glob( WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.*.js' );
+
+        if ( ! is_array( $files ) ) {
+            return $cache;
+        }
+
+        foreach ( $files as $file ) {
+            if ( preg_match( '~tarteaucitron\.([a-z]+)\.js$~', (string) $file, $m ) && 'min' !== $m[1] ) {
+                $cache[] = $m[1];
+            }
+        }
+
+        $cache = array_values( array_unique( $cache ) );
+        sort( $cache );
+
+        return $cache;
+    }
+
     // ─────────────────────────────────────────────
     // Sanitización
     // ─────────────────────────────────────────────
@@ -198,15 +230,15 @@ class WPTAC_Settings {
             $g = $raw['general'];
 
             $settings['general']['privacy_url']          = isset( $g['privacy_url'] )
-                ? esc_url_raw( trim( $g['privacy_url'] ) )
+                ? esc_url_raw( trim( self::str( $g['privacy_url'] ) ) )
                 : '';
 
             $settings['general']['hashtag']              = isset( $g['hashtag'] )
-                ? sanitize_text_field( $g['hashtag'] )
+                ? sanitize_text_field( self::str( $g['hashtag'] ) )
                 : '#tarteaucitron';
 
             $settings['general']['cookie_name']          = isset( $g['cookie_name'] )
-                ? sanitize_key( $g['cookie_name'] )
+                ? sanitize_key( self::str( $g['cookie_name'] ) )
                 : 'tarteaucitron';
 
             $allowed_orientations                        = [ 'bottom', 'top', 'middle', 'popup' ];
@@ -215,32 +247,32 @@ class WPTAC_Settings {
                 ? $g['orientation']
                 : 'bottom';
 
-            $settings['general']['group_services']       = ! empty( $g['group_services'] );
-            $settings['general']['show_alert_small']     = ! empty( $g['show_alert_small'] );
-            $settings['general']['cookie_accessible_ui'] = ! empty( $g['cookie_accessible_ui'] );
-            $settings['general']['remove_credit']        = ! empty( $g['remove_credit'] );
-            $settings['general']['handle_browser_dnt']   = ! empty( $g['handle_browser_dnt'] );
-            $settings['general']['accept_all_cta']           = ! empty( $g['accept_all_cta'] );
-            $settings['general']['deny_all_cta']             = ! empty( $g['deny_all_cta'] );
-            $settings['general']['enable_banner']            = ! empty( $g['enable_banner'] );
-            $settings['general']['disable_banner_loggedin']  = ! empty( $g['disable_banner_loggedin'] );
-            $settings['general']['disable_google_consent_mode'] = ! empty( $g['disable_google_consent_mode'] );
-            $settings['general']['show_details_on_click']       = ! empty( $g['show_details_on_click'] );
-            $settings['general']['cookieslist_embed']           = ! empty( $g['cookieslist_embed'] );
-            $settings['general']['close_popup']                 = ! empty( $g['close_popup'] );
-            $settings['general']['always_need_consent']         = ! empty( $g['always_need_consent'] );
-            $settings['general']['mandatory_cta']               = ! empty( $g['mandatory_cta'] );
-            $settings['general']['bing_consent_mode']           = ! empty( $g['bing_consent_mode'] );
-            $settings['general']['piano_consent_mode']          = ! empty( $g['piano_consent_mode'] );
-            $settings['general']['piano_consent_mode_essential'] = ! empty( $g['piano_consent_mode_essential'] );
-            $settings['general']['soft_consent_mode']           = ! empty( $g['soft_consent_mode'] );
-            $settings['general']['data_layer']                  = ! empty( $g['data_layer'] );
-            $settings['general']['server_side']                 = ! empty( $g['server_side'] );
-            $settings['general']['partners_list']               = ! empty( $g['partners_list'] );
-            $settings['general']['adblocker']                   = ! empty( $g['adblocker'] );
-            $settings['general']['more_info_link']              = ! empty( $g['more_info_link'] );
-            $settings['general']['mandatory']                   = ! empty( $g['mandatory'] );
-            $settings['general']['show_icon']                    = ! empty( $g['show_icon'] );
+            $settings['general']['group_services']       = wp_validate_boolean( $g['group_services'] ?? false );
+            $settings['general']['show_alert_small']     = wp_validate_boolean( $g['show_alert_small'] ?? false );
+            $settings['general']['cookie_accessible_ui'] = wp_validate_boolean( $g['cookie_accessible_ui'] ?? false );
+            $settings['general']['remove_credit']        = wp_validate_boolean( $g['remove_credit'] ?? false );
+            $settings['general']['handle_browser_dnt']   = wp_validate_boolean( $g['handle_browser_dnt'] ?? false );
+            $settings['general']['accept_all_cta']           = wp_validate_boolean( $g['accept_all_cta'] ?? false );
+            $settings['general']['deny_all_cta']             = wp_validate_boolean( $g['deny_all_cta'] ?? false );
+            $settings['general']['enable_banner']            = wp_validate_boolean( $g['enable_banner'] ?? false );
+            $settings['general']['disable_banner_loggedin']  = wp_validate_boolean( $g['disable_banner_loggedin'] ?? false );
+            $settings['general']['disable_google_consent_mode'] = wp_validate_boolean( $g['disable_google_consent_mode'] ?? false );
+            $settings['general']['show_details_on_click']       = wp_validate_boolean( $g['show_details_on_click'] ?? false );
+            $settings['general']['cookieslist_embed']           = wp_validate_boolean( $g['cookieslist_embed'] ?? false );
+            $settings['general']['close_popup']                 = wp_validate_boolean( $g['close_popup'] ?? false );
+            $settings['general']['always_need_consent']         = wp_validate_boolean( $g['always_need_consent'] ?? false );
+            $settings['general']['mandatory_cta']               = wp_validate_boolean( $g['mandatory_cta'] ?? false );
+            $settings['general']['bing_consent_mode']           = wp_validate_boolean( $g['bing_consent_mode'] ?? false );
+            $settings['general']['piano_consent_mode']          = wp_validate_boolean( $g['piano_consent_mode'] ?? false );
+            $settings['general']['piano_consent_mode_essential'] = wp_validate_boolean( $g['piano_consent_mode_essential'] ?? false );
+            $settings['general']['soft_consent_mode']           = wp_validate_boolean( $g['soft_consent_mode'] ?? false );
+            $settings['general']['data_layer']                  = wp_validate_boolean( $g['data_layer'] ?? false );
+            $settings['general']['server_side']                 = wp_validate_boolean( $g['server_side'] ?? false );
+            $settings['general']['partners_list']               = wp_validate_boolean( $g['partners_list'] ?? false );
+            $settings['general']['adblocker']                   = wp_validate_boolean( $g['adblocker'] ?? false );
+            $settings['general']['more_info_link']              = wp_validate_boolean( $g['more_info_link'] ?? false );
+            $settings['general']['mandatory']                   = wp_validate_boolean( $g['mandatory'] ?? false );
+            $settings['general']['show_icon']                    = wp_validate_boolean( $g['show_icon'] ?? false );
 
             $settings['general']['reload_thx_seconds']   = isset( $g['reload_thx_seconds'] )
                 ? absint( $g['reload_thx_seconds'] )
@@ -253,7 +285,7 @@ class WPTAC_Settings {
                 : 'auto';
 
             // Fecha: validar formato YYYY/MM/DD
-            $force_date = isset( $g['force_expiry_date'] ) ? sanitize_text_field( $g['force_expiry_date'] ) : '';
+            $force_date = isset( $g['force_expiry_date'] ) ? sanitize_text_field( self::str( $g['force_expiry_date'] ) ) : '';
             if ( $force_date && ! preg_match( '/^\d{4}\/\d{2}\/\d{2}$/', $force_date ) ) {
                 $force_date = '';
             }
@@ -266,12 +298,14 @@ class WPTAC_Settings {
                 : 'BottomRight';
 
             $settings['general']['custom_css'] = isset( $g['custom_css'] )
-                ? wp_strip_all_tags( $g['custom_css'] )
+                ? wp_strip_all_tags( self::str( $g['custom_css'] ) )
                 : '';
 
-            $settings['general']['custom_icon'] = isset( $g['custom_icon'] )
-                ? absint( $g['custom_icon'] )
-                : 0;
+            $custom_icon = isset( $g['custom_icon'] ) ? absint( $g['custom_icon'] ) : 0;
+            if ( $custom_icon > 0 && ! wp_attachment_is_image( $custom_icon ) ) {
+                $custom_icon = 0;
+            }
+            $settings['general']['custom_icon'] = $custom_icon;
         }
 
         // ── Colores ──
@@ -281,9 +315,7 @@ class WPTAC_Settings {
 
         // ── Textos ──
         if ( isset( $raw['texts'] ) && is_array( $raw['texts'] ) ) {
-            foreach ( $raw['texts'] as $lang => $json_str ) {
-                $settings['texts'][ sanitize_key( $lang ) ] = sanitize_textarea_field( $json_str );
-            }
+            $settings['texts'] = self::sanitize_texts( $raw['texts'] );
         }
 
         // ── Servicios ──
@@ -292,6 +324,55 @@ class WPTAC_Settings {
         }
 
         return $settings;
+    }
+
+    /**
+     * Sanitiza los textos personalizados por idioma (JSON).
+     *
+     * Descarta idiomas desconocidos y JSON inválido, y normaliza cada valor
+     * según su tipo (solo se aceptan cadenas y números escalares).
+     *
+     * @param  array<string, mixed> $raw_texts Datos crudos indexados por código de idioma.
+     * @return array<string, string> Textos válidos re-encodificados como JSON.
+     */
+    private static function sanitize_texts( array $raw_texts ): array {
+        $languages = self::get_available_languages();
+        $sanitized = [];
+
+        foreach ( $raw_texts as $lang => $json_str ) {
+            $lang = sanitize_key( (string) $lang );
+
+            if ( '' === $lang || ! in_array( $lang, $languages, true ) || ! is_string( $json_str ) ) {
+                continue;
+            }
+
+            $decoded = json_decode( trim( $json_str ), true );
+            if ( ! is_array( $decoded ) ) {
+                continue; // JSON inválido: se ignora.
+            }
+
+            $clean = [];
+            foreach ( $decoded as $key => $value ) {
+                if ( ! is_string( $key ) || '' === $key ) {
+                    continue;
+                }
+
+                if ( is_string( $value ) ) {
+                    $clean[ $key ] = sanitize_text_field( $value );
+                } elseif ( is_int( $value ) || is_float( $value ) ) {
+                    $clean[ $key ] = (string) $value;
+                }
+                // Se omiten arrays, objetos y booleanos: no son textos válidos.
+            }
+
+            if ( empty( $clean ) ) {
+                continue;
+            }
+
+            $sanitized[ $lang ] = wp_json_encode( $clean, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT );
+        }
+
+        return $sanitized;
     }
 
     /**
@@ -307,21 +388,28 @@ class WPTAC_Settings {
 
         foreach ( $known_services as $service_key => $service_def ) {
             $raw_service = $raw_services[ $service_key ] ?? [];
+            if ( ! is_array( $raw_service ) ) {
+                $raw_service = [];
+            }
 
             $sanitized[ $service_key ] = [
-                'enabled' => ! empty( $raw_service['enabled'] ),
+                'enabled' => wp_validate_boolean( $raw_service['enabled'] ?? false ),
                 'params'  => [],
             ];
 
-            // Sanitizar cada parámetro del servicio según su tipo
+            $raw_params = $raw_service['params'] ?? [];
+            if ( ! is_array( $raw_params ) ) {
+                $raw_params = [];
+            }
+
+            // Sanitizar cada parámetro según su tipo, usando el esquema confiable del plugin.
             foreach ( $service_def['params'] as $param_key => $param_def ) {
-                $raw_value = $raw_service['params'][ $param_key ] ?? '';
+                $value = self::str( $raw_params[ $param_key ] ?? '' );
 
                 $sanitized[ $service_key ]['params'][ $param_key ] = match ( $param_def['type'] ) {
-                    'url'    => esc_url_raw( trim( $raw_value ) ),
-                    'key'    => sanitize_key( $raw_value ),
-                    'text'   => sanitize_text_field( $raw_value ),
-                    default  => sanitize_text_field( $raw_value ),
+                    'url'    => esc_url_raw( trim( $value ) ),
+                    'key'    => sanitize_key( $value ),
+                    default  => sanitize_text_field( $value ),
                 };
             }
         }
@@ -341,15 +429,13 @@ class WPTAC_Settings {
         $sanitized = [];
 
         foreach ( $known as $color_key ) {
-            $raw = isset( $raw_colors[ $color_key ] ) ? sanitize_text_field( $raw_colors[ $color_key ] ) : '';
-            $raw = ltrim( $raw, '#' );
-            $raw = strtoupper( $raw );
+            $value = isset( $raw_colors[ $color_key ] ) && is_string( $raw_colors[ $color_key ] )
+                ? sanitize_hex_color_no_hash( $raw_colors[ $color_key ] )
+                : null;
 
-            if ( preg_match( '/^[0-9A-F]{6}$/', $raw ) ) {
-                $sanitized[ $color_key ] = $raw;
-            } else {
-                $sanitized[ $color_key ] = $defaults['colors'][ $color_key ];
-            }
+            $sanitized[ $color_key ] = ( null !== $value && '' !== $value )
+                ? $value
+                : $defaults['colors'][ $color_key ];
         }
 
         return $sanitized;
@@ -358,6 +444,17 @@ class WPTAC_Settings {
     // ─────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────
+
+    /**
+     * Convierte de forma segura un valor a string. Los valores no escalares
+     * (arrays, objetos) devuelven cadena vacía para evitar errores de tipo.
+     *
+     * @param mixed $value Valor a convertir.
+     * @return string
+     */
+    private static function str( $value ): string {
+        return is_scalar( $value ) ? (string) $value : '';
+    }
 
     /**
      * Fusión profunda de arrays. Los valores de $override tienen prioridad.

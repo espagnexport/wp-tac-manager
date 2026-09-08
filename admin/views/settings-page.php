@@ -3,8 +3,9 @@
  * Vista: Página de ajustes del plugin WP TAC Manager
  *
  * Variables disponibles inyectadas desde WPTAC_Admin::render_settings_page():
- *   @var array<string, mixed>        $settings   Configuración completa actual.
- *   @var array<string, array<mixed>> $services   Catálogo de servicios disponibles.
+ *   @var array<string, mixed>        $settings  Configuración completa actual.
+ *   @var array<string, array<mixed>> $services  Catálogo de servicios disponibles.
+ *   @var string[]                    $languages Lista de idiomas disponibles para textos personalizados.
  *
  * @package WP_TAC_Manager
  */
@@ -52,7 +53,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
     <?php /* Mensajes de estado (JS los muestra/oculta) */ ?>
     <div id="wptac-notice" class="wptac-notice" aria-live="polite" hidden></div>
 
-    <form id="wptac-form" novalidate>
+    <form id="wptac-form">
         <?php /* Nonce de seguridad oculto en el formulario (respaldo, el JS usa el de wp_localize_script) */ ?>
         <input type="hidden" name="_wpnonce" value="<?php echo esc_attr( wp_create_nonce( 'wptac_save_settings_nonce' ) ); ?>">
 
@@ -204,7 +205,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                 id="general_privacy_url"
                                 name="general[privacy_url]"
                                 class="wptac-field__input"
-                                value="<?php echo esc_url( $cfg( 'general.privacy_url', '' ) ); ?>"
+                                value="<?php echo esc_attr( $cfg( 'general.privacy_url', '' ) ); ?>"
                                 placeholder="https://example.com/privacy-policy"
                             >
                             <p class="wptac-field__desc">
@@ -219,7 +220,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             </label>
                             <select id="general_language" name="general[language]" class="wptac-field__select">
                                 <?php
-                                $languages = [
+                                $banner_languages = [
                                     'auto' => __( 'Automatic (WordPress language)', 'wp-tac-manager' ),
                                     'es'   => 'Español',
                                     'en'   => 'English',
@@ -229,7 +230,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                     'pt'   => 'Português',
                                     'nl'   => 'Nederlands',
                                 ];
-                                foreach ( $languages as $value => $label ) :
+                                foreach ( $banner_languages as $value => $label ) :
                                 ?>
                                     <option value="<?php echo esc_attr( $value ); ?>" <?php selected( $cfg( 'general.language' ), $value ); ?>>
                                         <?php echo esc_html( $label ); ?>
@@ -441,8 +442,6 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                         name="general[<?php echo esc_attr( $toggle_key ); ?>]"
                                         value="1"
                                         <?php checked( $is_checked ); ?>
-                                        role="switch"
-                                        aria-checked="<?php echo $is_checked ? 'true' : 'false'; ?>"
                                     >
                                     <span class="wptac-toggle__slider" aria-hidden="true"></span>
                                 </div>
@@ -518,9 +517,6 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                             class="wptac-service__toggle"
                                             data-service="<?php echo esc_attr( $service_key ); ?>"
                                             <?php checked( $is_enabled ); ?>
-                                            role="switch"
-                                            aria-expanded="<?php echo $is_enabled ? 'true' : 'false'; ?>"
-                                            aria-controls="service-<?php echo esc_attr( $service_key ); ?>-params"
                                         >
                                         <span class="wptac-toggle__slider" aria-hidden="true"></span>
                                     </div>
@@ -544,8 +540,8 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                         <?php /* Parámetros del servicio (se muestran/ocultan según el toggle) */ ?>
                         <div
                             id="service-<?php echo esc_attr( $service_key ); ?>-params"
-                            class="wptac-service__params <?php echo $is_enabled ? '' : 'is-hidden'; ?>"
-                            aria-hidden="<?php echo $is_enabled ? 'false' : 'true'; ?>"
+                            class="wptac-service__params"
+                            <?php echo $is_enabled ? '' : 'hidden'; ?>
                         >
                             <?php foreach ( $service_def['params'] as $param_key => $param_def ) :
                                 $field_id    = 'service_' . $service_key . '_' . $param_key;
@@ -625,7 +621,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             <input type="hidden" id="wptac-manual-update-nonce" value="<?php echo esc_attr( wp_create_nonce( 'wptac_manual_update_nonce' ) ); ?>">
                             <div class="wptac-field">
                                 <label class="wptac-field__label" for="tarteaucitron_zip_upload"><?php esc_html_e( 'Upload ZIP file', 'wp-tac-manager' ); ?></label>
-                                <input type="file" id="tarteaucitron_zip_upload" name="tarteaucitron_zip_upload" accept=".zip" required>
+                                <input type="file" id="tarteaucitron_zip_upload" name="tarteaucitron_zip_upload" accept=".zip">
                                 <p class="description">
                                     <?php esc_html_e( 'Please upload the "tarteaucitron.js-master.zip" file.', 'wp-tac-manager' ); ?>
                                 </p>
@@ -710,32 +706,21 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                         <p><?php esc_html_e( 'Override translation strings per language with JSON. Select a language and enter your custom texts.', 'wp-tac-manager' ); ?></p>
                     </div>
 
-                    <?php
-                    $langs = [];
-                    $lang_files = glob( WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.*.js' );
-                    foreach ( $lang_files as $file ) {
-                        if ( preg_match( '/tarteaucitron\.(\w+)\.js$/', $file, $m )
-                            && ! str_ends_with( $m[1], '.min' ) && $m[1] !== 'min' ) {
-                            $langs[] = $m[1];
-                        }
-                    }
-                    sort( $langs );
-                    $saved_texts = $settings['texts'] ?? [];
-                    ?>
+                    <?php $saved_texts = $settings['texts'] ?? []; ?>
 
                     <div class="wptac-card">
                         <div class="wptac-field">
                             <label class="wptac-field__label" for="wptac-text-lang"><?php esc_html_e( 'Language', 'wp-tac-manager' ); ?></label>
-                            <select id="wptac-text-lang" class="wptac-field__select" style="max-width:200px;">
+                            <select id="wptac-text-lang" class="wptac-field__select wptac-field__select--short">
                                 <option value="">— <?php esc_html_e( 'Select', 'wp-tac-manager' ); ?> —</option>
-                                <?php foreach ( $langs as $code ) : ?>
+                                <?php foreach ( $languages as $code ) : ?>
                                 <option value="<?php echo esc_attr( $code ); ?>"><?php echo esc_html( $code ); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
 
                         <div id="wptac-text-fields">
-                            <?php foreach ( $langs as $code ) : ?>
+                            <?php foreach ( $languages as $code ) : ?>
                             <div class="wptac-lang-fields" data-lang="<?php echo esc_attr( $code ); ?>" hidden>
                                 <label class="wptac-field__label" for="texts_<?php echo esc_attr( $code ); ?>">
                                     <?php printf( esc_html__( 'Custom JSON for %s', 'wp-tac-manager' ), esc_html( $code ) ); ?>

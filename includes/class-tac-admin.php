@@ -116,8 +116,9 @@ class WPTAC_Admin {
             wp_die( esc_html__( 'You do not have permission to access this page.', 'wp-tac-manager' ) );
         }
 
-        $settings = WPTAC_Settings::get_settings();
-        $services = WPTAC_Services::get_definitions();
+        $settings  = WPTAC_Settings::get_settings();
+        $services  = WPTAC_Services::get_definitions();
+        $languages = WPTAC_Settings::get_available_languages();
 
         include WPTAC_PLUGIN_DIR . 'admin/views/settings-page.php';
     }
@@ -258,6 +259,12 @@ class WPTAC_Admin {
             wp_send_json_error( [ 'message' => __( 'Invalid file type. Please upload a ZIP file.', 'wp-tac-manager' ) ], 400 );
         }
 
+        // Guard against unreasonable archive sizes (zip bombs). tarteaucitron releases are < 3 MB.
+        $uploaded_size = isset( $uploaded_file['size'] ) ? (int) $uploaded_file['size'] : 0;
+        if ( empty( $uploaded_size ) || $uploaded_size > 20 * MB_IN_BYTES ) {
+            wp_send_json_error( [ 'message' => __( 'The uploaded ZIP file is too large.', 'wp-tac-manager' ) ], 400 );
+        }
+
         // Handle the upload
         $upload_overrides = [ 'test_form' => false, 'mimes' => [ 'zip' => 'application/zip' ] ];
         $move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
@@ -281,7 +288,7 @@ class WPTAC_Admin {
         // Clean up the uploaded zip file
         wp_delete_file( $zip_file_path );
 
-        if ( ! $unzipped ) {
+        if ( is_wp_error( $unzipped ) || ! $unzipped ) {
             $wp_filesystem->delete( $unzip_to_dir, true ); // Clean up temp dir
             wp_send_json_error( [ 'message' => __( 'Could not unzip the file.', 'wp-tac-manager' ) ], 500 );
         }
