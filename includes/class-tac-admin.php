@@ -224,154 +224,39 @@ class WPTAC_Admin {
     }
 
     public function ajax_manual_update(): void {
-        check_ajax_referer( 'wptac_manual_update_nonce', '_wpnonce_manual_update' );
+        check_ajax_referer( 'wptac_manual_update_nonce', 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'wp-tac-manager' ) ], 403 );
         }
 
-        if ( ! function_exists( 'wp_handle_upload' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-        }
-
-        if ( ! isset( $_FILES['tarteaucitron_zip_upload'] ) ) {
+        if ( empty( $_FILES['tarteaucitron_zip_upload'] ) || ! is_array( $_FILES['tarteaucitron_zip_upload'] ) ) {
             wp_send_json_error( [ 'message' => __( 'No file uploaded.', 'wp-tac-manager' ) ], 400 );
         }
 
-        if ( ! function_exists( 'WP_Filesystem' ) ) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
+        $result = WPTAC_Updater::process_zip_upload( $_FILES['tarteaucitron_zip_upload'] );
+
+        if ( is_wp_error( $result ) ) {
+            wp_send_json_error( [ 'message' => $result->get_error_message() ], 400 );
         }
 
-        if ( ! WP_Filesystem() ) {
-            wp_send_json_error( [ 'message' => __( 'Could not initialize the filesystem.', 'wp-tac-manager' ) ], 500 );
-        }
-
-        global $wp_filesystem;
-
-        if ( ! $wp_filesystem ) {
-            wp_send_json_error( [ 'message' => __( 'Could not initialize the filesystem.', 'wp-tac-manager' ) ], 500 );
-        }
-
-        $uploaded_file = $_FILES['tarteaucitron_zip_upload'];
-
-        // Validate file type
-        if ( 'application/zip' !== $uploaded_file['type'] && 'application/x-zip-compressed' !== $uploaded_file['type'] ) {
-            wp_send_json_error( [ 'message' => __( 'Invalid file type. Please upload a ZIP file.', 'wp-tac-manager' ) ], 400 );
-        }
-
-        // Guard against unreasonable archive sizes (zip bombs). tarteaucitron releases are < 3 MB.
-        $uploaded_size = isset( $uploaded_file['size'] ) ? (int) $uploaded_file['size'] : 0;
-        if ( empty( $uploaded_size ) || $uploaded_size > 20 * MB_IN_BYTES ) {
-            wp_send_json_error( [ 'message' => __( 'The uploaded ZIP file is too large.', 'wp-tac-manager' ) ], 400 );
-        }
-
-        // Handle the upload
-        $upload_overrides = [ 'test_form' => false, 'mimes' => [ 'zip' => 'application/zip' ] ];
-        $move_file        = wp_handle_upload( $uploaded_file, $upload_overrides );
-
-        if ( isset( $move_file['error'] ) ) {
-            wp_send_json_error( [ 'message' => $move_file['error'] ], 500 );
-        }
-
-        $zip_file_path = $move_file['file'];
-        $unzip_to_dir  = trailingslashit( get_temp_dir() ) . 'wptac-' . wp_generate_password( 12, false, false ) . '/';
-
-        // Create temporary directory for extraction (recursive + proper permissions)
-        if ( ! $wp_filesystem->mkdir( $unzip_to_dir, FS_CHMOD_DIR, true ) ) {
-            wp_delete_file( $zip_file_path );
-            wp_send_json_error( [ 'message' => __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) ], 500 );
-        }
-
-        // Unzip the file
-        $unzipped = $wp_filesystem->unzip( $zip_file_path, $unzip_to_dir );
-
-        // Clean up the uploaded zip file
-        wp_delete_file( $zip_file_path );
-
-        if ( is_wp_error( $unzipped ) || ! $unzipped ) {
-            $wp_filesystem->delete( $unzip_to_dir, true ); // Clean up temp dir
-            wp_send_json_error( [ 'message' => __( 'Could not unzip the file.', 'wp-tac-manager' ) ], 500 );
-        }
-
-        // Find the extracted tarteaucitron.js-master directory and package.json
-        $extracted_dirs = $wp_filesystem->dirlist( $unzip_to_dir );
-        $tc_master_dir  = '';
-        foreach ( $extracted_dirs as $dir_name => $dir_info ) {
-            if ( str_starts_with( $dir_name, 'tarteaucitron.js-master' ) && $dir_info['type'] === 'd' ) {
-                $tc_master_dir = trailingslashit( $unzip_to_dir . $dir_name );
-                break;
-            }
-        }
-
-        if ( empty( $tc_master_dir ) ) {
-            $wp_filesystem->delete( $unzip_to_dir, true );
-            wp_send_json_error( [ 'message' => __( 'Could not find tarteaucitron.js-master directory in the ZIP.', 'wp-tac-manager' ) ], 400 );
-        }
-
-        $package_json_path = $tc_master_dir . 'package.json';
-        if ( ! $wp_filesystem->exists( $package_json_path ) ) {
-            $wp_filesystem->delete( $unzip_to_dir, true );
-            wp_send_json_error( [ 'message' => __( 'package.json not found in the extracted directory.', 'wp-tac-manager' ) ], 400 );
-        }
-
-        $package_json_content = $wp_filesystem->get_contents( $package_json_path );
-        $package_data         = json_decode( $package_json_content, true );
-        $new_version          = $package_data['version'] ?? null;
-
-        if ( ! $new_version ) {
-            $wp_filesystem->delete( $unzip_to_dir, true );
-            wp_send_json_error( [ 'message' => __( 'Could not determine version from package.json.', 'wp-tac-manager' ) ], 400 );
-        }
-
-        // Define files to copy (from WPTAC_Updater)
-        $file_map = [
-            'assets/js/tarteaucitron/tarteaucitron.js'            => '/tarteaucitron.js',
-            'assets/js/tarteaucitron/tarteaucitron.min.js'        => '/tarteaucitron.min.js',
-            'assets/js/tarteaucitron/tarteaucitron.services.js'   => '/tarteaucitron.services.js',
-            'assets/js/tarteaucitron/tarteaucitron.services.min.js' => '/tarteaucitron.services.min.js',
-            'assets/css/tarteaucitron.css'                         => '/tarteaucitron.css',
-            'assets/css/tarteaucitron.min.css'                     => '/tarteaucitron.min.css',
-        ];
-
-        // Add language files to the map
-        $langs = WPTAC_Updater::get_lang_file_list(); // Re-use method from Updater
-        foreach ( $langs as $lang_file ) {
-            $file_map[ 'assets/js/tarteaucitron/lang/' . $lang_file ] = '/lang/' . $lang_file;
-        }
-
-        $errors = [];
-        $copied_files_count = 0;
-
-        foreach ( $file_map as $relative_path => $file_suffix ) {
-            $source_file = $tc_master_dir . ltrim( $file_suffix, '/' );
-            $destination_file = WPTAC_PLUGIN_DIR . $relative_path;
-            $destination_dir  = dirname( $destination_file );
-
-            if ( ! $wp_filesystem->is_dir( $destination_dir ) ) {
-                $wp_filesystem->mkdir( $destination_dir, FS_CHMOD_DIR );
-            }
-
-            if ( $wp_filesystem->exists( $source_file ) && $wp_filesystem->copy( $source_file, $destination_file, true, FS_CHMOD_FILE ) ) {
-                $copied_files_count++;
-            } else {
-                $errors[] = sprintf( __( 'Failed to copy %s', 'wp-tac-manager' ), basename( $source_file ) );
-            }
-        }
-
-        $wp_filesystem->delete( $unzip_to_dir, true ); // Clean up extracted files
-
-        if ( ! empty( $errors ) ) {
-            $message = sprintf( __( 'Manual update completed with %d errors. %d files copied.', 'wp-tac-manager' ), count( $errors ), $copied_files_count );
-            wp_send_json_error( [ 'message' => $message, 'errors' => $errors ], 500 );
+        if ( ! empty( $result['version'] ) ) {
+            $message = sprintf( __( 'tarteaucitron.js updated to v%s successfully.', 'wp-tac-manager' ), $result['version'] );
         } else {
-            // Store the manually installed version
-            update_option( 'wptac_tarteaucitron_manual_version', $new_version );
-            // Clear any version cache
-            WPTAC_Updater::clear_version_cache();
-
-            $message = sprintf( __( 'tarteaucitron.js manually updated to v%s successfully.', 'wp-tac-manager' ), $new_version );
-            wp_send_json_success( [ 'message' => $message, 'new_version' => $new_version ] );
+            $message = __( 'tarteaucitron.js updated successfully.', 'wp-tac-manager' );
         }
+
+        $response = [ 'message' => $message ];
+
+        if ( ! empty( $result['version'] ) ) {
+            $response['new_version'] = $result['version'];
+        }
+
+        if ( ! empty( $result['warnings'] ) && is_array( $result['warnings'] ) ) {
+            $response['warnings'] = $result['warnings'];
+        }
+
+        wp_send_json_success( $response );
     }
 
 

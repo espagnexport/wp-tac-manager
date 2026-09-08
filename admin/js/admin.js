@@ -359,7 +359,7 @@
 
             const formData = new FormData();
             formData.append( 'action', 'wptac_manual_update' );
-            formData.append( '_wpnonce_manual_update', manualUpdateNonce ? manualUpdateNonce.value : '' );
+            formData.append( 'nonce', manualUpdateNonce ? manualUpdateNonce.value : '' );
             formData.append( 'tarteaucitron_zip_upload', manualZipUpload.files[0] );
 
             try {
