@@ -233,15 +233,22 @@ class WPTAC_Admin {
             require_once ABSPATH . 'wp-admin/includes/file.php';
         }
 
+        if ( ! isset( $_FILES['tarteaucitron_zip_upload'] ) ) {
+            wp_send_json_error( [ 'message' => __( 'No file uploaded.', 'wp-tac-manager' ) ], 400 );
+        }
+
         if ( ! function_exists( 'WP_Filesystem' ) ) {
             require_once ABSPATH . 'wp-admin/includes/file.php';
-            WP_Filesystem();
+        }
+
+        if ( ! WP_Filesystem() ) {
+            wp_send_json_error( [ 'message' => __( 'Could not initialize the filesystem.', 'wp-tac-manager' ) ], 500 );
         }
 
         global $wp_filesystem;
 
-        if ( ! $wp_filesystem || ! isset( $_FILES['tarteaucitron_zip_upload'] ) ) {
-            wp_send_json_error( [ 'message' => __( 'No file uploaded or file system error.', 'wp-tac-manager' ) ], 500 );
+        if ( ! $wp_filesystem ) {
+            wp_send_json_error( [ 'message' => __( 'Could not initialize the filesystem.', 'wp-tac-manager' ) ], 500 );
         }
 
         $uploaded_file = $_FILES['tarteaucitron_zip_upload'];
@@ -260,11 +267,11 @@ class WPTAC_Admin {
         }
 
         $zip_file_path = $move_file['file'];
-        $unzip_to_dir  = WPTAC_PLUGIN_DIR . 'tmp/tarteaucitron_manual_update/';
+        $unzip_to_dir  = trailingslashit( get_temp_dir() ) . 'wptac-' . wp_generate_password( 12, false, false ) . '/';
 
-        // Create temporary directory for extraction
-        if ( ! $wp_filesystem->mkdir( $unzip_to_dir ) ) {
-            @unlink( $zip_file_path );
+        // Create temporary directory for extraction (recursive + proper permissions)
+        if ( ! $wp_filesystem->mkdir( $unzip_to_dir, FS_CHMOD_DIR, true ) ) {
+            wp_delete_file( $zip_file_path );
             wp_send_json_error( [ 'message' => __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) ], 500 );
         }
 
@@ -272,7 +279,7 @@ class WPTAC_Admin {
         $unzipped = $wp_filesystem->unzip( $zip_file_path, $unzip_to_dir );
 
         // Clean up the uploaded zip file
-        @unlink( $zip_file_path );
+        wp_delete_file( $zip_file_path );
 
         if ( ! $unzipped ) {
             $wp_filesystem->delete( $unzip_to_dir, true ); // Clean up temp dir

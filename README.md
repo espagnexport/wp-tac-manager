@@ -130,6 +130,10 @@ wp-tac-manager/
         └── tarteaucitron.min.css
 
 ## Changelog
+### 2.1.1
+- Fixed manual tarteaucitron.js update (filesystem init + temporary directory creation).
+- Fixed plugin update checker autoload.
+
 ### 2.1.0
 - Fixed manual tarteaucitron.js update (nested form caused the upload button to submit the settings form).
 
