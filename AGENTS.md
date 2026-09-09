@@ -10,7 +10,7 @@ WordPress plugin integrating Tarte au Citron (tarteaucitron.js) for cookie conse
 
 - Bootstrap is `wp-tac-manager.php`: defines constants, registers a custom SPL autoloader, hooks `init` (GitHub updater) and `plugins_loaded` (module init).
 - **Class → file convention (critical):** `WPTAC_Admin` → `includes/class-tac-admin.php`. The autoloader strips the `WPTAC_` prefix, lowercases, and maps `_` → `-`. A new class `WPTAC_Foo_Bar` must live at `includes/class-tac-foo-bar.php`.
-- Modules in `includes/`: `WPTAC_Admin` (menu/AJAX/stats), `WPTAC_Renderer` (front-end enqueue + init JS), `WPTAC_Settings` (defaults/sanitize/DB), `WPTAC_Services` (28-service catalog), `WPTAC_Updater` (tarteaucitron.js update). Instantiated in `plugins_loaded`; `WPTAC_Admin` only when `is_admin()`.
+- Modules in `includes/`: `WPTAC_Admin` (menu/AJAX/stats), `WPTAC_Renderer` (front-end enqueue + init JS), `WPTAC_Settings` (defaults/sanitize/DB), `WPTAC_Services` (26-service catalog), `WPTAC_Updater` (tarteaucitron.js update). Instantiated in `plugins_loaded`; `WPTAC_Admin` only when `is_admin()`.
 
 ## Settings
 

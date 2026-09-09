@@ -4,7 +4,7 @@ Tags: cookies, gdpr, tarteaucitron, cookie-consent, privacy
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.1.1
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ WP TAC Manager bundles [Tarte au Citron](https://tarteaucitron.io/) locally (no 
 
 Features:
 
-* 28 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
+* 26 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Spotify, SoundCloud, Dailymotion, Twitch
 * Modern admin panel with tabs (General, Services, Updates, Colors, Texts)
 * Full color customization (background, text, button borders and text, panel, icon)
 * Custom banner texts per language via JSON (`tarteaucitronCustomText`)
@@ -52,11 +52,21 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 == Screenshots ==
 
 1. General settings tab.
-2. Services tab with the 28-service catalog.
+2. Services tab with the 26-service catalog.
 3. Updates tab.
 4. Colors and texts customization.
 
 == Changelog ==
+
+= 2.2.0 =
+* Made the tarteaucitron.js auto-updater atomic: files are downloaded to a temporary location and only moved into place after every download succeeds, preventing mixed-version bundles on partial failures.
+* Added strict version validation and detailed error reporting to the update checker.
+* Added ZIP archive path validation (zip-slip defense) to the manual upload.
+* Hardened the admin update UI against HTML injection in version strings.
+* Added filemtime-based cache busting for admin and front-end assets.
+* Added separate nonces for the save, check, update, and manual-upload actions.
+* Cleaned up updater options and transient on uninstall.
+* Fixed dynamic discovery of tarteaucitron.js language files.
 
 = 2.1.1 =
 * Fixed manual update extraction (filesystem init + temporary directory creation).
@@ -83,6 +93,9 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 * Initial release.
 
 == Upgrade Notice ==
+
+= 2.2.0 =
+* Security and reliability release. No breaking changes.
 
 = 2.1.1 =
 * Bug fix release. No breaking changes.

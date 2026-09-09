@@ -305,7 +305,10 @@
                 if ( data.success && data.data ) {
                     const d = data.data;
                     if ( d.latest ) {
-                        elLatest.innerHTML = '<strong>' + d.latest + '</strong>';
+                        elLatest.textContent = '';
+                        var strong = document.createElement( 'strong' );
+                        strong.textContent = d.latest;
+                        elLatest.appendChild( strong );
 
                         if ( d.needs_update ) {
                             elStatus.className = 'wptac-update__status is-info';

@@ -165,6 +165,17 @@ class WPTAC_Updater {
             ];
         }
 
+        if ( ! preg_match( '/^\d+\.\d+(\.\d+)?$/', (string) $latest ) ) {
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    /* translators: versión recibida de la fuente de actualizaciones */
+                    __( 'Refusing to update: unexpected version format "%s".', 'wp-tac-manager' ),
+                    (string) $latest
+                ),
+            ];
+        }
+
         if ( ! version_compare( $latest, self::get_bundled_version(), '>' ) ) {
             return [ 'success' => false, 'message' => __( 'You already have the latest version installed.', 'wp-tac-manager' ) ];
         }
@@ -207,8 +218,10 @@ class WPTAC_Updater {
 
         $plugin_dir = WPTAC_PLUGIN_DIR;
         $errors     = [];
-        $downloaded = 0;
+        $temp_files = [];
 
+        // Fase 1: descargar todos los archivos a una ubicación temporal,
+        // sin tocar los archivos en producción.
         foreach ( $files as $relative_path => $urls ) {
             $local_file = $plugin_dir . $relative_path;
             $local_dir  = dirname( $local_file );
@@ -217,13 +230,15 @@ class WPTAC_Updater {
                 $wp_filesystem->mkdir( $local_dir, FS_CHMOD_DIR );
             }
 
+            $temp_file = $local_file . '.wptac-download';
+
             $ok = false;
             foreach ( $urls as $remote_url ) {
                 $response = wp_remote_get( $remote_url, [
                     'timeout'  => 30,
                     'headers'  => [ 'User-Agent' => 'WP-TAC-Manager/' . WPTAC_VERSION ],
                     'stream'   => true,
-                    'filename' => $local_file,
+                    'filename' => $temp_file,
                 ] );
 
                 if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
@@ -233,6 +248,9 @@ class WPTAC_Updater {
             }
 
             if ( ! $ok ) {
+                if ( $wp_filesystem->exists( $temp_file ) ) {
+                    $wp_filesystem->delete( $temp_file );
+                }
                 $errors[] = sprintf(
                     __( 'Error downloading %s', 'wp-tac-manager' ),
                     basename( $relative_path )
@@ -240,22 +258,50 @@ class WPTAC_Updater {
                 continue;
             }
 
-            ++$downloaded;
+            $temp_files[] = [ $temp_file, $local_file ];
         }
 
-        if ( empty( $errors ) ) {
-            self::save_downloaded_version( $latest );
-            self::clear_version_cache();
-        }
-
+        // Fase 2: si algo falló, limpiar temporales y abortar SIN modificar
+        // los archivos en producción (evita bundles con versiones mezcladas).
         if ( ! empty( $errors ) ) {
+            foreach ( $temp_files as $pair ) {
+                if ( $wp_filesystem->exists( $pair[0] ) ) {
+                    $wp_filesystem->delete( $pair[0] );
+                }
+            }
+
             $message = sprintf(
-                __( 'Partial update: %1$d files updated, %2$d errors.', 'wp-tac-manager' ),
-                $downloaded,
+                __( 'Update aborted: %1$d files downloaded, %2$d errors. No files were modified.', 'wp-tac-manager' ),
+                count( $temp_files ),
                 count( $errors )
             );
             return [ 'success' => false, 'message' => $message, 'errors' => $errors ];
         }
+
+        // Fase 3: mover todos los temporales a su destino final.
+        $move_errors = [];
+        foreach ( $temp_files as $pair ) {
+            if ( ! $wp_filesystem->move( $pair[0], $pair[1], true ) ) {
+                $move_errors[] = basename( $pair[1] );
+            }
+        }
+
+        if ( ! empty( $move_errors ) ) {
+            foreach ( $temp_files as $pair ) {
+                if ( $wp_filesystem->exists( $pair[0] ) ) {
+                    $wp_filesystem->delete( $pair[0] );
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => __( 'Update aborted: could not move downloaded files into place.', 'wp-tac-manager' ),
+                'errors'  => $move_errors,
+            ];
+        }
+
+        self::save_downloaded_version( $latest );
+        self::clear_version_cache();
 
         return [
             'success' => true,
@@ -324,7 +370,13 @@ class WPTAC_Updater {
             return new WP_Error( 'mkdir', __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) );
         }
 
-        // 7. Descomprimir.
+        // 7. Rechazar archivos con rutas inseguras (zip-slip) antes de extraer.
+        if ( self::zip_has_unsafe_paths( $zip_path ) ) {
+            wp_delete_file( $zip_path );
+            return new WP_Error( 'unsafe_zip', __( 'The ZIP file contains unsafe file paths.', 'wp-tac-manager' ) );
+        }
+
+        // 8. Descomprimir.
         $unzipped = unzip_file( $zip_path, $extract );
         wp_delete_file( $zip_path );
 
@@ -333,7 +385,7 @@ class WPTAC_Updater {
             return new WP_Error( 'unzip', __( 'Could not unzip the file.', 'wp-tac-manager' ) );
         }
 
-        // 8. Localizar la raíz del paquete (soporta carpetas raíz de GitHub).
+        // 9. Localizar la raíz del paquete (soporta carpetas raíz de GitHub).
         $root = self::find_package_root( $extract );
 
         if ( null === $root ) {
@@ -429,6 +481,42 @@ class WPTAC_Updater {
             'copied'   => $copied,
             'warnings' => $warnings,
         ];
+    }
+
+    /**
+     * Comprueba si un archivo ZIP contiene rutas inseguras (zip-slip).
+     * Usa ZipArchive cuando está disponible; en caso contrario asume que no es
+     * posible inspeccionarlo y delega la protección en unzip_file() + el copiado
+     * con lista blanca de nombres de archivo.
+     *
+     * @param string $zip_path Ruta al archivo ZIP.
+     * @return bool True si contiene rutas inseguras.
+     */
+    private static function zip_has_unsafe_paths( string $zip_path ): bool {
+        if ( ! class_exists( 'ZipArchive' ) ) {
+            return false;
+        }
+
+        $zip = new ZipArchive();
+        if ( true !== $zip->open( $zip_path ) ) {
+            return false;
+        }
+
+        $unsafe = false;
+        for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+            $name = (string) $zip->getNameIndex( $i );
+            if ( '' === $name ) {
+                continue;
+            }
+
+            if ( str_contains( $name, '..' ) || str_starts_with( $name, '/' ) || str_contains( $name, '\\' ) ) {
+                $unsafe = true;
+                break;
+            }
+        }
+        $zip->close();
+
+        return $unsafe;
     }
 
     /**

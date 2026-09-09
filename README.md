@@ -7,7 +7,7 @@ WordPress plugin to integrate [Tarte au Citron](https://tarteaucitron.io/) with 
 - ✅ Locally bundled tarteaucitron.js (v1.32.0) — no external CDN dependencies
 - ✅ Automatic tarteaucitron.js updater from GitHub with one click
 - ✅ Plugin updater from GitHub Releases using plugin-update-checker
-- ✅ 28 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch
+- ✅ 26 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Spotify, SoundCloud, Dailymotion, Twitch
 -✅ Modern admin panel with tab navigation (General, Services, Updates, Colors, Texts)
 - ✅ Full color customization: background, text, button borders (Accept/Deny), panel, icon
 - ✅ Custom texts by language using tarteaucitronCustomText (JSON format) — merged with the active translation
@@ -54,8 +54,6 @@ WordPress plugin to integrate [Tarte au Citron](https://tarteaucitron.io/) with 
 | Twitch               | Video     | —                    |
 | Google Maps          | API       | API Key              |
 | reCAPTCHA            | API       | Site Key             |
-| Stripe               | API       | —                    |
-| PayPal               | API       | —                    |
 | HubSpot              | API       | HubSpot ID           |
 | Crisp Chat           | Other     | Website ID           |
 | Google Fonts         | Other     | Font Families        |
@@ -110,7 +108,7 @@ wp-tac-manager/
 ├── includes/
 │   ├── class-tac-admin.php         # Menu, admin assets, AJAX, statistics
 │   ├── class-tac-renderer.php      # Front-end enqueue + init JS
-│   ├── class-tac-services.php      # Catalog of 28 services
+│   ├── class-tac-services.php      # Catalog of 26 services
 │   ├── class-tac-settings.php      # Defaults, sanitization, DB access
 │   └── class-tac-updater.php       # tarteaucitron.js updater
 ├── admin/
@@ -124,12 +122,22 @@ wp-tac-manager/
     │   ├── tarteaucitron.min.js
     │   ├── tarteaucitron.services.js
     │   ├── tarteaucitron.services.min.js
-    │   └── lang/                   # Banner translations (38 languages)
+    │   └── lang/                   # Banner translations (36 languages)
     └── css/
         ├── tarteaucitron.css
         └── tarteaucitron.min.css
 
 ## Changelog
+### 2.2.0
+- Atomic tarteaucitron.js auto-update (no mixed-version bundles on partial failures).
+- Strict version validation and detailed update-check error reporting.
+- ZIP archive path validation (zip-slip defense) on manual upload.
+- Hardened admin update UI against HTML injection in version strings.
+- filemtime-based cache busting for admin and front-end assets.
+- Separate nonces for save/check/update/manual-upload actions.
+- Updater options and transient cleanup on uninstall.
+- Dynamic discovery of tarteaucitron.js language files.
+
 ### 2.1.1
 - Fixed manual tarteaucitron.js update (filesystem init + temporary directory creation).
 - Fixed plugin update checker autoload.
