@@ -43,7 +43,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                 printf(
                     /* translators: número de versión */
                     esc_html__( 'tarteaucitron.js v%s', 'wp-tac-manager' ),
-                    WPTAC_TARTEAUCITRON_VERSION
+                    esc_html( WPTAC_Updater::get_active_version() )
                 );
                 ?>
             </span>
@@ -590,7 +590,7 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                         <div class="wptac-field">
                             <label class="wptac-field__label"><?php esc_html_e( 'Installed version', 'wp-tac-manager' ); ?></label>
                             <p class="wptac-update__version" id="wptac-bundled-version">
-                                <strong><?php echo esc_html( WPTAC_TARTEAUCITRON_VERSION ); ?></strong>
+                                <strong><?php echo esc_html( WPTAC_Updater::get_active_version() ); ?></strong>
                             </p>
                         </div>
 
@@ -618,7 +618,6 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             <?php esc_html_e( 'The plugin will extract the contents and replace the relevant files.', 'wp-tac-manager' ); ?>
                         </p>
                         <div id="wptac-manual-update-form">
-                            <input type="hidden" id="wptac-manual-update-nonce" value="<?php echo esc_attr( wp_create_nonce( 'wptac_manual_update_nonce' ) ); ?>">
                             <div class="wptac-field">
                                 <label class="wptac-field__label" for="tarteaucitron_zip_upload"><?php esc_html_e( 'Upload ZIP file', 'wp-tac-manager' ); ?></label>
                                 <input type="file" id="tarteaucitron_zip_upload" name="tarteaucitron_zip_upload" accept=".zip">

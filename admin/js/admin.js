@@ -241,13 +241,13 @@
             // así wp_verify_nonce() los encuentra independientemente del Content-Type.
             const url = new URL( wptacAdmin.ajaxUrl );
             url.searchParams.set( 'action', 'wptac_save_settings' );
-            url.searchParams.set( 'nonce',  wptacAdmin.nonce );
+            url.searchParams.set( 'nonce',  wptacAdmin.nonces.save );
 
             const response = await fetch( url.toString(), {
                 method:  'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-WP-Nonce':   wptacAdmin.nonce, // Cabecera adicional (leída por el handler PHP)
+                    'X-WP-Nonce':   wptacAdmin.nonces.save, // Cabecera adicional (leída por el handler PHP)
                 },
                 body: JSON.stringify( payload ), // Solo datos de configuración, sin action/nonce
                 credentials: 'same-origin',      // Incluir cookies de sesión de WordPress
@@ -289,12 +289,13 @@
             try {
                 const url = new URL( wptacAdmin.ajaxUrl );
                 url.searchParams.set( 'action', 'wptac_check_update' );
-                url.searchParams.set( 'nonce', wptacAdmin.nonce );
+                url.searchParams.set( 'nonce', wptacAdmin.nonces.check );
+                url.searchParams.set( 'force', '1' );
 
                 const response = await fetch( url.toString(), {
                     method: 'GET',
                     headers: {
-                        'X-WP-Nonce': wptacAdmin.nonce,
+                        'X-WP-Nonce': wptacAdmin.nonces.check,
                     },
                     credentials: 'same-origin',
                 } );
@@ -342,7 +343,6 @@
     const manualUpdateBtn  = document.getElementById( 'wptac-btn-manual-update' );
     const manualUpdateStatus = document.getElementById( 'wptac-manual-update-status' );
     const manualZipUpload  = document.getElementById( 'tarteaucitron_zip_upload' );
-    const manualUpdateNonce = document.getElementById( 'wptac-manual-update-nonce' );
 
     if ( manualUpdateBtn ) {
         manualUpdateBtn.addEventListener( 'click', async () => {
@@ -359,7 +359,7 @@
 
             const formData = new FormData();
             formData.append( 'action', 'wptac_manual_update' );
-            formData.append( 'nonce', manualUpdateNonce ? manualUpdateNonce.value : '' );
+            formData.append( 'nonce', wptacAdmin.nonces.manualUpdate );
             formData.append( 'tarteaucitron_zip_upload', manualZipUpload.files[0] );
 
             try {

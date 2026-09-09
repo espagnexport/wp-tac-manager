@@ -13,6 +13,19 @@ class WPTAC_Renderer {
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
     }
 
+    private function asset_version( string $relative_path ): string {
+        $file = WPTAC_PLUGIN_DIR . ltrim( $relative_path, '/' );
+
+        if ( file_exists( $file ) ) {
+            $mtime = filemtime( $file );
+            if ( false !== $mtime ) {
+                return (string) $mtime;
+            }
+        }
+
+        return WPTAC_VERSION;
+    }
+
     public function enqueue_assets(): void {
         $g = $this->settings['general'];
 
@@ -33,7 +46,7 @@ class WPTAC_Renderer {
             'tarteaucitron',
             WPTAC_PLUGIN_URL . 'assets/css/' . $css_file,
             [],
-            WPTAC_VERSION
+            $this->asset_version( 'assets/css/' . $css_file )
         );
 
         $custom_css = $g['custom_css'] ?? '';
@@ -56,7 +69,7 @@ class WPTAC_Renderer {
             'tarteaucitron',
             WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $js_file,
             [],
-            WPTAC_VERSION,
+            $this->asset_version( 'assets/js/tarteaucitron/' . $js_file ),
             true
         );
 
@@ -67,7 +80,7 @@ class WPTAC_Renderer {
             'tarteaucitron-services',
             WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $services_file,
             [ 'tarteaucitron' ],
-            WPTAC_VERSION,
+            $this->asset_version( 'assets/js/tarteaucitron/' . $services_file ),
             true
         );
 
@@ -83,7 +96,7 @@ class WPTAC_Renderer {
                 'tarteaucitron-lang',
                 WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $lang_file,
                 [ 'tarteaucitron' ],
-                WPTAC_VERSION,
+                $this->asset_version( 'assets/js/tarteaucitron/' . $lang_file ),
                 true
             );
         }
@@ -109,7 +122,7 @@ class WPTAC_Renderer {
             'wptac-front',
             WPTAC_PLUGIN_URL . $script_name,
             [ 'tarteaucitron-services' ],
-            WPTAC_VERSION,
+            $this->asset_version( $script_name ),
             [ 'strategy' => 'defer', 'in_footer' => true ]
         );
 

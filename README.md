@@ -4,7 +4,7 @@ WordPress plugin to integrate [Tarte au Citron](https://tarteaucitron.io/) with 
 
 ## Features
 
-- ✅ Locally bundled tarteaucitron.js (v1.33.0) — no external CDN dependencies
+- ✅ Locally bundled tarteaucitron.js (v1.32.0) — no external CDN dependencies
 - ✅ Automatic tarteaucitron.js updater from GitHub with one click
 - ✅ Plugin updater from GitHub Releases using plugin-update-checker
 - ✅ 28 predefined services: Google Tag Manager, GA4, Google Ads, Facebook Pixel, LinkedIn Insight Tag, Hotjar, Matomo Cloud, Plausible, Twitter UWT, HubSpot, YouTube, Vimeo, Google Maps, reCAPTCHA, Instagram, TikTok, Microsoft Clarity, Bing Ads, Crisp Chat, Google Fonts, Disqus, Pinterest, Stripe, PayPal, Spotify, SoundCloud, Dailymotion, Twitch

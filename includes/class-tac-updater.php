@@ -14,11 +14,21 @@ class WPTAC_Updater {
 
     const VERSION_MANUAL_OPTION = 'wptac_tarteaucitron_manual_version';
 
+    const VERSION_CHECK_TRANSIENT    = 'wptac_tarteaucitron_version_check';
+    const VERSION_CHECK_TTL          = DAY_IN_SECONDS;
+    const VERSION_CHECK_NEGATIVE_TTL = MINUTE_IN_SECONDS;
+
     public static function get_active_version(): string {
+        $downloaded = get_option( self::VERSION_OPTION, '' );
+        if ( ! empty( $downloaded ) ) {
+            return (string) $downloaded;
+        }
+
         $manual_version = get_option( self::VERSION_MANUAL_OPTION, '' );
         if ( ! empty( $manual_version ) ) {
-            return $manual_version;
+            return (string) $manual_version;
         }
+
         return WPTAC_TARTEAUCITRON_VERSION;
     }
 
@@ -26,27 +36,56 @@ class WPTAC_Updater {
         return self::get_active_version();
     }
 
-    public static function get_latest_version(): ?string {
-        $cached = get_transient( 'wptac_tarteaucitron_version_check' );
-        if ( false !== $cached ) {
-            return $cached ?: null;
+    /**
+     * Obtiene la última versión disponible de tarteaucitron.js.
+     *
+     * @param bool $force Si es true, ignora la caché y vuelve a consultar las fuentes.
+     * @return string|WP_Error Versión en caso de éxito o WP_Error con el detalle del fallo.
+     */
+    public static function get_latest_version( bool $force = false ) {
+        if ( $force ) {
+            self::clear_version_cache();
+        } else {
+            $cached = get_transient( self::VERSION_CHECK_TRANSIENT );
+
+            if ( false !== $cached ) {
+                if ( is_wp_error( $cached ) ) {
+                    return $cached;
+                }
+                if ( '' !== $cached ) {
+                    return (string) $cached;
+                }
+            }
         }
 
         $version = self::fetch_cdn_version();
-        if ( null === $version ) {
-            $version = self::fetch_github_version();
+
+        if ( is_wp_error( $version ) ) {
+            $cdn_error = $version;
+            $github    = self::fetch_github_version();
+
+            if ( is_wp_error( $github ) ) {
+                $error = new WP_Error(
+                    'version_check_failed',
+                    __( 'Could not retrieve the latest tarteaucitron.js version from any update source.', 'wp-tac-manager' ),
+                    [
+                        'cdn'    => $cdn_error,
+                        'github' => $github,
+                    ]
+                );
+                set_transient( self::VERSION_CHECK_TRANSIENT, $error, self::VERSION_CHECK_NEGATIVE_TTL );
+                return $error;
+            }
+
+            $version = $github;
         }
 
-        if ( null !== $version ) {
-            set_transient( 'wptac_tarteaucitron_version_check', $version, DAY_IN_SECONDS );
-        } else {
-            set_transient( 'wptac_tarteaucitron_version_check', '', HOUR_IN_SECONDS );
-        }
+        set_transient( self::VERSION_CHECK_TRANSIENT, $version, self::VERSION_CHECK_TTL );
 
-        return $version;
+        return (string) $version;
     }
 
-    private static function fetch_github_version(): ?string {
+    private static function fetch_github_version() {
         $headers = [
             'Accept'     => 'application/vnd.github.v3+json',
             'User-Agent' => 'WP-TAC-Manager/' . WPTAC_VERSION,
@@ -62,34 +101,54 @@ class WPTAC_Updater {
             'sslverify' => true,
         ] );
 
-        if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
-            return null;
+        if ( is_wp_error( $response ) ) {
+            return new WP_Error( 'github_request_failed', $response->get_error_message() );
+        }
+
+        $code = wp_remote_retrieve_response_code( $response );
+        if ( 200 !== $code ) {
+            return new WP_Error(
+                'github_http_error',
+                sprintf( __( 'GitHub returned HTTP %d.', 'wp-tac-manager' ), $code )
+            );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
         if ( ! is_array( $data ) || empty( $data['tag_name'] ) ) {
-            return null;
+            return new WP_Error( 'github_invalid_response', __( 'GitHub returned an invalid release payload.', 'wp-tac-manager' ) );
         }
 
-        return ltrim( $data['tag_name'], 'v' );
+        return ltrim( (string) $data['tag_name'], 'v' );
     }
 
-    private static function fetch_cdn_version(): ?string {
+    private static function fetch_cdn_version() {
         $response = wp_remote_get( self::CDN_PACKAGE, [
             'timeout'   => 10,
             'sslverify' => true,
         ] );
 
-        if ( is_wp_error( $response ) || wp_remote_retrieve_response_code( $response ) !== 200 ) {
-            return null;
+        if ( is_wp_error( $response ) ) {
+            return new WP_Error( 'cdn_request_failed', $response->get_error_message() );
+        }
+
+        $code = wp_remote_retrieve_response_code( $response );
+        if ( 200 !== $code ) {
+            return new WP_Error(
+                'cdn_http_error',
+                sprintf( __( 'The CDN returned HTTP %1$d while fetching %2$s.', 'wp-tac-manager' ), $code, self::CDN_PACKAGE )
+            );
         }
 
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
-        return $data['version'] ?? null;
+        if ( ! is_array( $data ) || empty( $data['version'] ) ) {
+            return new WP_Error( 'cdn_invalid_response', __( 'The CDN returned an invalid package.json without a version.', 'wp-tac-manager' ) );
+        }
+
+        return (string) $data['version'];
     }
 
     public static function clear_version_cache(): void {
-        delete_transient( 'wptac_tarteaucitron_version_check' );
+        delete_transient( self::VERSION_CHECK_TRANSIENT );
     }
 
     private static function save_downloaded_version( string $version ): void {
@@ -98,8 +157,12 @@ class WPTAC_Updater {
 
     public static function do_update(): array {
         $latest = self::get_latest_version();
-        if ( null === $latest ) {
-            return [ 'success' => false, 'message' => __( 'Could not fetch the latest version.', 'wp-tac-manager' ) ];
+        if ( is_wp_error( $latest ) ) {
+            return [
+                'success' => false,
+                'message' => $latest->get_error_message(),
+                'code'    => $latest->get_error_code(),
+            ];
         }
 
         if ( ! version_compare( $latest, self::get_bundled_version(), '>' ) ) {
@@ -180,7 +243,7 @@ class WPTAC_Updater {
             ++$downloaded;
         }
 
-        if ( $downloaded > 0 ) {
+        if ( empty( $errors ) ) {
             self::save_downloaded_version( $latest );
             self::clear_version_cache();
         }
@@ -406,12 +469,17 @@ class WPTAC_Updater {
     }
 
     public static function get_lang_file_list(): array {
-        $langs = [ 'ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'he', 'hr', 'hu', 'id', 'is', 'it', 'ja', 'ko', 'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh', 'cn' ];
         $files = [];
-        foreach ( $langs as $lang ) {
-            $files[] = 'tarteaucitron.' . $lang . '.js';
-            $files[] = 'tarteaucitron.' . $lang . '.min.js';
+        $found = glob( WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.*.js' );
+
+        if ( is_array( $found ) ) {
+            foreach ( $found as $file ) {
+                $files[] = basename( (string) $file );
+            }
         }
+
+        sort( $files );
+
         return $files;
     }
 }

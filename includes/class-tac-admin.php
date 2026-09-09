@@ -13,6 +13,11 @@ class WPTAC_Admin {
     const RATE_LIMIT_MAX = 10; // Max requests per minute
     const RATE_LIMIT_WINDOW = 60; // 60 seconds
 
+    const NONCE_SAVE          = 'wptac_save_settings_nonce';
+    const NONCE_CHECK         = 'wptac_check_update_nonce';
+    const NONCE_UPDATE        = 'wptac_update_nonce';
+    const NONCE_MANUAL_UPDATE = 'wptac_manual_update_nonce';
+
     public function __construct() {
         add_action( 'admin_menu',             [ $this, 'register_menu' ] );
         add_action( 'admin_init',             [ $this, 'register_settings' ] );
@@ -25,6 +30,7 @@ class WPTAC_Admin {
         add_action( 'wp_ajax_nopriv_wptac_track_consent', [ $this, 'ajax_track_consent' ] );
 
         add_action( 'wp_ajax_wptac_check_update', [ $this, 'ajax_check_update' ] );
+        add_action( 'wp_ajax_wptac_update',       [ $this, 'ajax_update' ] );
         add_action( 'wp_ajax_wptac_manual_update', [ $this, 'ajax_manual_update' ] );
 
 
@@ -75,14 +81,14 @@ class WPTAC_Admin {
             'wptac-admin',
             WPTAC_PLUGIN_URL . 'admin/css/admin.css',
             [],
-            WPTAC_VERSION
+            $this->asset_version( 'admin/css/admin.css' )
         );
 
         wp_enqueue_script(
             'wptac-admin',
             WPTAC_PLUGIN_URL . 'admin/js/admin.js',
             [ 'wp-color-picker' ],
-            WPTAC_VERSION,
+            $this->asset_version( 'admin/js/admin.js' ),
             [ 'strategy' => 'defer', 'in_footer' => true ]
         );
 
@@ -90,7 +96,12 @@ class WPTAC_Admin {
 
         wp_localize_script( 'wptac-admin', 'wptacAdmin', [
             'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-            'nonce'   => wp_create_nonce( 'wptac_save_settings_nonce' ),
+            'nonces'  => [
+                'save'         => wp_create_nonce( self::NONCE_SAVE ),
+                'check'        => wp_create_nonce( self::NONCE_CHECK ),
+                'update'       => wp_create_nonce( self::NONCE_UPDATE ),
+                'manualUpdate' => wp_create_nonce( self::NONCE_MANUAL_UPDATE ),
+            ],
             'i18n'    => [
                 'saving'       => __( 'Saving…', 'wp-tac-manager' ),
                 'saved'        => __( '✓ Settings saved', 'wp-tac-manager' ),
@@ -109,6 +120,42 @@ class WPTAC_Admin {
                 'manualUpdateError'  => __( '✗ Error updating tarteaucitron.js. Please check the file or try again.', 'wp-tac-manager' ),
             ],
         ] );
+    }
+
+    /**
+     * Devuelve el timestamp de modificación de un asset del plugin para usarlo
+     * como versión de cache-busting. Si el archivo no existe, usa WPTAC_VERSION.
+     *
+     * @param string $relative_path Ruta relativa al directorio del plugin.
+     * @return string
+     */
+    private function asset_version( string $relative_path ): string {
+        $file = WPTAC_PLUGIN_DIR . ltrim( $relative_path, '/' );
+
+        if ( file_exists( $file ) ) {
+            $mtime = filemtime( $file );
+            if ( false !== $mtime ) {
+                return (string) $mtime;
+            }
+        }
+
+        return WPTAC_VERSION;
+    }
+
+    /**
+     * Extrae y sanitiza el nonce de la petición AJAX actual.
+     * Busca primero en la cabecera X-WP-Nonce y luego en $_REQUEST.
+     *
+     * @return string
+     */
+    private function get_request_nonce(): string {
+        $nonce = sanitize_text_field( $_SERVER['HTTP_X_WP_NONCE'] ?? '' );
+
+        if ( '' !== $nonce ) {
+            return $nonce;
+        }
+
+        return sanitize_text_field( $_REQUEST['nonce'] ?? '' );
     }
 
     public function render_settings_page(): void {
@@ -132,7 +179,7 @@ class WPTAC_Admin {
             ?: ( is_array( $raw_data ) ? sanitize_text_field( $raw_data['nonce'] ?? '' ) : '' )
             ?: sanitize_text_field( $_POST['nonce'] ?? '' );
 
-        if ( ! wp_verify_nonce( $nonce, 'wptac_save_settings_nonce' ) ) {
+        if ( ! wp_verify_nonce( $nonce, self::NONCE_SAVE ) ) {
             wp_send_json_error(
                 [ 'message' => __( 'Invalid or expired nonce. Reload the page and try again.', 'wp-tac-manager' ) ],
                 403
@@ -200,31 +247,56 @@ class WPTAC_Admin {
     // ─────────────────────────────────────────────
 
     public function ajax_check_update(): void {
-        $nonce =
-            sanitize_text_field( $_SERVER['HTTP_X_WP_NONCE'] ?? '' )
-            ?: sanitize_text_field( $_GET['nonce'] ?? '' )
-            ?: sanitize_text_field( $_POST['nonce'] ?? '' );
+        $nonce = $this->get_request_nonce();
 
-        if ( ! wp_verify_nonce( $nonce, 'wptac_save_settings_nonce' ) ) {
+        if ( ! wp_verify_nonce( $nonce, self::NONCE_CHECK ) ) {
             wp_send_json_error( [ 'message' => __( 'Invalid or expired nonce. Reload the page and try again.', 'wp-tac-manager' ) ], 403 );
         }
 
         if ( ! current_user_can( 'manage_options' ) ) {
-            wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'wp-tac-manager' ) ] );
+            wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'wp-tac-manager' ) ], 403 );
         }
 
+        $force   = ! empty( $_GET['force'] ) || ! empty( $_POST['force'] );
         $bundled = WPTAC_Updater::get_active_version();
-        $latest  = WPTAC_Updater::get_latest_version();
+        $latest  = WPTAC_Updater::get_latest_version( $force );
+
+        if ( is_wp_error( $latest ) ) {
+            wp_send_json_error( [
+                'message' => $latest->get_error_message(),
+                'code'    => $latest->get_error_code(),
+            ], 400 );
+        }
 
         wp_send_json_success( [
             'bundled' => $bundled,
             'latest'  => $latest,
-            'needs_update' => $latest ? version_compare( $latest, $bundled, '>' ) : false,
+            'needs_update' => version_compare( $latest, $bundled, '>' ),
         ] );
     }
 
+    public function ajax_update(): void {
+        $nonce = $this->get_request_nonce();
+
+        if ( ! wp_verify_nonce( $nonce, self::NONCE_UPDATE ) ) {
+            wp_send_json_error( [ 'message' => __( 'Invalid or expired nonce. Reload the page and try again.', 'wp-tac-manager' ) ], 403 );
+        }
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'wp-tac-manager' ) ], 403 );
+        }
+
+        $result = WPTAC_Updater::do_update();
+
+        if ( ! empty( $result['success'] ) ) {
+            wp_send_json_success( $result );
+        }
+
+        wp_send_json_error( $result, 400 );
+    }
+
     public function ajax_manual_update(): void {
-        check_ajax_referer( 'wptac_manual_update_nonce', 'nonce' );
+        check_ajax_referer( self::NONCE_MANUAL_UPDATE, 'nonce' );
 
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( [ 'message' => __( 'Insufficient permissions.', 'wp-tac-manager' ) ], 403 );
