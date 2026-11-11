@@ -2,10 +2,10 @@
 # This file is distributed under the same license as WP TAC Manager.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP TAC Manager 2.2.0\n"
+"Project-Id-Version: WP TAC Manager 2.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/espagnexport/wp-tac-manager\n"
-"POT-Creation-Date: 2026-11-11 23:14+0000\n"
-"PO-Revision-Date: 2026-11-11 23:14+0000\n"
+"POT-Creation-Date: 2026-11-11 23:18+0000\n"
+"PO-Revision-Date: 2026-11-11 23:18+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: es_ES\n"
@@ -915,160 +915,164 @@ msgstr "Haz clic en «Comprobar» para saberlo."
 msgid "Check for updates"
 msgstr "Comprobar actualizaciones"
 
-#: admin/views/settings-page.php:587
+#: admin/views/settings-page.php:585
+msgid "Update now"
+msgstr "Actualizar ahora"
+
+#: admin/views/settings-page.php:591
 msgid "Manual tarteaucitron.js Update"
 msgstr "Actualización manual de tarteaucitron.js"
 
-#: admin/views/settings-page.php:589
+#: admin/views/settings-page.php:593
 msgid "If automatic updates are not working, you can manually upload the tarteaucitron.js ZIP file downloaded from GitHub (e.g., tarteaucitron.js-master.zip)."
 msgstr "Si las actualizaciones automáticas no funcionan, puedes subir manualmente el archivo ZIP de tarteaucitron.js descargado de GitHub (p. ej. tarteaucitron.js-master.zip)."
 
-#: admin/views/settings-page.php:590
+#: admin/views/settings-page.php:594
 msgid "The plugin will extract the contents and replace the relevant files."
 msgstr "El plugin extraerá el contenido y reemplazará los archivos correspondientes."
 
-#: admin/views/settings-page.php:594
+#: admin/views/settings-page.php:598
 msgid "Upload ZIP file"
 msgstr "Subir archivo ZIP"
 
-#: admin/views/settings-page.php:597
+#: admin/views/settings-page.php:601
 msgid "Please upload the \"tarteaucitron.js-master.zip\" file."
 msgstr "Sube el archivo «tarteaucitron.js-master.zip»."
 
-#: admin/views/settings-page.php:602
+#: admin/views/settings-page.php:606
 msgid "Upload and Install"
 msgstr "Subir e instalar"
 
-#: admin/views/settings-page.php:614
+#: admin/views/settings-page.php:618
 msgid "Main banner background"
 msgstr "Fondo del banner principal"
 
-#: admin/views/settings-page.php:614
+#: admin/views/settings-page.php:618
 msgid "Background color of the main cookie banner."
 msgstr "Color de fondo del banner principal de cookies."
 
-#: admin/views/settings-page.php:615
+#: admin/views/settings-page.php:619
 msgid "Main banner text"
 msgstr "Texto del banner principal"
 
-#: admin/views/settings-page.php:615
+#: admin/views/settings-page.php:619
 msgid "Text color in the main banner."
 msgstr "Color del texto del banner principal."
 
-#: admin/views/settings-page.php:616
+#: admin/views/settings-page.php:620
 msgid "\"Accept\" button background"
 msgstr "Fondo del botón «Aceptar»"
 
-#: admin/views/settings-page.php:616
+#: admin/views/settings-page.php:620
 msgid "Background color of the accept button."
 msgstr "Color de fondo del botón de aceptar."
 
-#: admin/views/settings-page.php:617
+#: admin/views/settings-page.php:621
 msgid "\"Accept\" button border"
 msgstr "Borde del botón «Aceptar»"
 
-#: admin/views/settings-page.php:617
+#: admin/views/settings-page.php:621
 msgid "Border color of the accept button."
 msgstr "Color del borde del botón de aceptar."
 
-#: admin/views/settings-page.php:618
+#: admin/views/settings-page.php:622
 msgid "\"Accept\" button text"
 msgstr "Texto del botón «Aceptar»"
 
-#: admin/views/settings-page.php:618
+#: admin/views/settings-page.php:622
 msgid "Text color of the accept button."
 msgstr "Color del texto del botón de aceptar."
 
-#: admin/views/settings-page.php:619
+#: admin/views/settings-page.php:623
 msgid "\"Deny\" button background"
 msgstr "Fondo del botón «Rechazar»"
 
-#: admin/views/settings-page.php:619
+#: admin/views/settings-page.php:623
 msgid "Background color of the deny button."
 msgstr "Color de fondo del botón de rechazar."
 
-#: admin/views/settings-page.php:620
+#: admin/views/settings-page.php:624
 msgid "\"Deny\" button border"
 msgstr "Borde del botón «Rechazar»"
 
-#: admin/views/settings-page.php:620
+#: admin/views/settings-page.php:624
 msgid "Border color of the deny button."
 msgstr "Color del borde del botón de rechazar."
 
-#: admin/views/settings-page.php:621
+#: admin/views/settings-page.php:625
 msgid "\"Deny\" button text"
 msgstr "Texto del botón «Rechazar»"
 
-#: admin/views/settings-page.php:621
+#: admin/views/settings-page.php:625
 msgid "Text color of the deny button."
 msgstr "Color del texto del botón de rechazar."
 
-#: admin/views/settings-page.php:622
+#: admin/views/settings-page.php:626
 msgid "Panel background"
 msgstr "Fondo del panel"
 
-#: admin/views/settings-page.php:622
+#: admin/views/settings-page.php:626
 msgid "Background color of the preferences panel."
 msgstr "Color de fondo del panel de preferencias."
 
-#: admin/views/settings-page.php:623
+#: admin/views/settings-page.php:627
 msgid "Panel text"
 msgstr "Texto del panel"
 
-#: admin/views/settings-page.php:623
+#: admin/views/settings-page.php:627
 msgid "Text color in the preferences panel."
 msgstr "Color del texto del panel de preferencias."
 
-#: admin/views/settings-page.php:624
+#: admin/views/settings-page.php:628
 msgid "Icon background"
 msgstr "Fondo del icono"
 
-#: admin/views/settings-page.php:624
+#: admin/views/settings-page.php:628
 msgid "Background color of the floating cookie icon."
 msgstr "Color de fondo del icono flotante de cookies."
 
-#: admin/views/settings-page.php:629
+#: admin/views/settings-page.php:633
 msgid "tarteaucitron colors"
 msgstr "Colores de tarteaucitron"
 
-#: admin/views/settings-page.php:630
+#: admin/views/settings-page.php:634
 msgid "Customize the cookie banner colors. Each field includes a color picker."
 msgstr "Personaliza los colores del banner de cookies. Cada campo incluye un selector de color."
 
-#: admin/views/settings-page.php:653
+#: admin/views/settings-page.php:657
 #, php-format
 msgid "Default: %s"
 msgstr "Por defecto: %s"
 
-#: admin/views/settings-page.php:664
+#: admin/views/settings-page.php:668
 msgid "Reset to defaults"
 msgstr "Restablecer valores por defecto"
 
-#: admin/views/settings-page.php:676
+#: admin/views/settings-page.php:680
 msgid "Custom texts"
 msgstr "Textos personalizados"
 
-#: admin/views/settings-page.php:677
+#: admin/views/settings-page.php:681
 msgid "Override translation strings per language with JSON. Select a language and enter your custom texts."
 msgstr "Sobrescribe los textos de la traducción por idioma con JSON. Selecciona un idioma e introduce tus textos personalizados."
 
-#: admin/views/settings-page.php:684
+#: admin/views/settings-page.php:688
 msgid "Language"
 msgstr "Idioma"
 
-#: admin/views/settings-page.php:686
+#: admin/views/settings-page.php:690
 msgid "Select"
 msgstr "Seleccionar"
 
-#: admin/views/settings-page.php:697
+#: admin/views/settings-page.php:701
 #, php-format
 msgid "Custom JSON for %s"
 msgstr "JSON personalizado para %s"
 
-#: admin/views/settings-page.php:707
+#: admin/views/settings-page.php:711
 msgid "Enter a JSON object. These values merge with the default translation for this language."
 msgstr "Introduce un objeto JSON. Estos valores se combinan con la traducción por defecto de este idioma."
 
-#: admin/views/settings-page.php:723
+#: admin/views/settings-page.php:727
 msgid "Save changes"
 msgstr "Guardar cambios"

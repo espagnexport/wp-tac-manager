@@ -2,9 +2,9 @@
 # This file is distributed under the same license as WP TAC Manager.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP TAC Manager 2.2.0\n"
+"Project-Id-Version: WP TAC Manager 2.3.0\n"
 "Report-Msgid-Bugs-To: https://github.com/espagnexport/wp-tac-manager\n"
-"POT-Creation-Date: 2026-11-11 23:14+0000\n"
+"POT-Creation-Date: 2026-11-11 23:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -914,160 +914,164 @@ msgstr ""
 msgid "Check for updates"
 msgstr ""
 
-#: admin/views/settings-page.php:587
+#: admin/views/settings-page.php:585
+msgid "Update now"
+msgstr ""
+
+#: admin/views/settings-page.php:591
 msgid "Manual tarteaucitron.js Update"
 msgstr ""
 
-#: admin/views/settings-page.php:589
+#: admin/views/settings-page.php:593
 msgid "If automatic updates are not working, you can manually upload the tarteaucitron.js ZIP file downloaded from GitHub (e.g., tarteaucitron.js-master.zip)."
 msgstr ""
 
-#: admin/views/settings-page.php:590
+#: admin/views/settings-page.php:594
 msgid "The plugin will extract the contents and replace the relevant files."
 msgstr ""
 
-#: admin/views/settings-page.php:594
+#: admin/views/settings-page.php:598
 msgid "Upload ZIP file"
 msgstr ""
 
-#: admin/views/settings-page.php:597
+#: admin/views/settings-page.php:601
 msgid "Please upload the \"tarteaucitron.js-master.zip\" file."
 msgstr ""
 
-#: admin/views/settings-page.php:602
+#: admin/views/settings-page.php:606
 msgid "Upload and Install"
 msgstr ""
 
-#: admin/views/settings-page.php:614
+#: admin/views/settings-page.php:618
 msgid "Main banner background"
 msgstr ""
 
-#: admin/views/settings-page.php:614
+#: admin/views/settings-page.php:618
 msgid "Background color of the main cookie banner."
 msgstr ""
 
-#: admin/views/settings-page.php:615
+#: admin/views/settings-page.php:619
 msgid "Main banner text"
 msgstr ""
 
-#: admin/views/settings-page.php:615
+#: admin/views/settings-page.php:619
 msgid "Text color in the main banner."
 msgstr ""
 
-#: admin/views/settings-page.php:616
+#: admin/views/settings-page.php:620
 msgid "\"Accept\" button background"
 msgstr ""
 
-#: admin/views/settings-page.php:616
+#: admin/views/settings-page.php:620
 msgid "Background color of the accept button."
 msgstr ""
 
-#: admin/views/settings-page.php:617
+#: admin/views/settings-page.php:621
 msgid "\"Accept\" button border"
 msgstr ""
 
-#: admin/views/settings-page.php:617
+#: admin/views/settings-page.php:621
 msgid "Border color of the accept button."
 msgstr ""
 
-#: admin/views/settings-page.php:618
+#: admin/views/settings-page.php:622
 msgid "\"Accept\" button text"
 msgstr ""
 
-#: admin/views/settings-page.php:618
+#: admin/views/settings-page.php:622
 msgid "Text color of the accept button."
 msgstr ""
 
-#: admin/views/settings-page.php:619
+#: admin/views/settings-page.php:623
 msgid "\"Deny\" button background"
 msgstr ""
 
-#: admin/views/settings-page.php:619
+#: admin/views/settings-page.php:623
 msgid "Background color of the deny button."
 msgstr ""
 
-#: admin/views/settings-page.php:620
+#: admin/views/settings-page.php:624
 msgid "\"Deny\" button border"
 msgstr ""
 
-#: admin/views/settings-page.php:620
+#: admin/views/settings-page.php:624
 msgid "Border color of the deny button."
 msgstr ""
 
-#: admin/views/settings-page.php:621
+#: admin/views/settings-page.php:625
 msgid "\"Deny\" button text"
 msgstr ""
 
-#: admin/views/settings-page.php:621
+#: admin/views/settings-page.php:625
 msgid "Text color of the deny button."
 msgstr ""
 
-#: admin/views/settings-page.php:622
+#: admin/views/settings-page.php:626
 msgid "Panel background"
 msgstr ""
 
-#: admin/views/settings-page.php:622
+#: admin/views/settings-page.php:626
 msgid "Background color of the preferences panel."
 msgstr ""
 
-#: admin/views/settings-page.php:623
+#: admin/views/settings-page.php:627
 msgid "Panel text"
 msgstr ""
 
-#: admin/views/settings-page.php:623
+#: admin/views/settings-page.php:627
 msgid "Text color in the preferences panel."
 msgstr ""
 
-#: admin/views/settings-page.php:624
+#: admin/views/settings-page.php:628
 msgid "Icon background"
 msgstr ""
 
-#: admin/views/settings-page.php:624
+#: admin/views/settings-page.php:628
 msgid "Background color of the floating cookie icon."
 msgstr ""
 
-#: admin/views/settings-page.php:629
+#: admin/views/settings-page.php:633
 msgid "tarteaucitron colors"
 msgstr ""
 
-#: admin/views/settings-page.php:630
+#: admin/views/settings-page.php:634
 msgid "Customize the cookie banner colors. Each field includes a color picker."
 msgstr ""
 
-#: admin/views/settings-page.php:653
+#: admin/views/settings-page.php:657
 #, php-format
 msgid "Default: %s"
 msgstr ""
 
-#: admin/views/settings-page.php:664
+#: admin/views/settings-page.php:668
 msgid "Reset to defaults"
 msgstr ""
 
-#: admin/views/settings-page.php:676
+#: admin/views/settings-page.php:680
 msgid "Custom texts"
 msgstr ""
 
-#: admin/views/settings-page.php:677
+#: admin/views/settings-page.php:681
 msgid "Override translation strings per language with JSON. Select a language and enter your custom texts."
 msgstr ""
 
-#: admin/views/settings-page.php:684
+#: admin/views/settings-page.php:688
 msgid "Language"
 msgstr ""
 
-#: admin/views/settings-page.php:686
+#: admin/views/settings-page.php:690
 msgid "Select"
 msgstr ""
 
-#: admin/views/settings-page.php:697
+#: admin/views/settings-page.php:701
 #, php-format
 msgid "Custom JSON for %s"
 msgstr ""
 
-#: admin/views/settings-page.php:707
+#: admin/views/settings-page.php:711
 msgid "Enter a JSON object. These values merge with the default translation for this language."
 msgstr ""
 
-#: admin/views/settings-page.php:723
+#: admin/views/settings-page.php:727
 msgid "Save changes"
 msgstr ""

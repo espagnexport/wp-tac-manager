@@ -580,6 +580,10 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                 <span class="dashicons dashicons-update"></span>
                                 <?php esc_html_e( 'Check for updates', 'wp-tac-manager' ); ?>
                             </button>
+                            <button type="button" class="wptac-btn wptac-btn--secondary" id="wptac-btn-update" hidden>
+                                <span class="dashicons dashicons-download"></span>
+                                <?php esc_html_e( 'Update now', 'wp-tac-manager' ); ?>
+                            </button>
                         </div>
                     </div>
 

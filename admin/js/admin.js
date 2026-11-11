@@ -276,7 +276,8 @@
     // ─────────────────────────────────────────────
 
     const btnCheck  = document.getElementById( 'wptac-btn-check' );
-    // const btnUpdate = document.getElementById( 'wptac-btn-update' ); // Removed
+    const btnUpdate = document.getElementById( 'wptac-btn-update' );
+    const elBundled = document.getElementById( 'wptac-bundled-version' );
     const elLatest  = document.getElementById( 'wptac-latest-version' );
     const elStatus  = document.getElementById( 'wptac-update-status' );
 
@@ -314,12 +315,16 @@
                             elStatus.className = 'wptac-update__status is-info';
                             elStatus.textContent = wptacAdmin.i18n.updateAvailable;
                             elStatus.hidden = false;
- 
+                            if ( btnUpdate ) {
+                                btnUpdate.hidden = false;
+                            }
                         } else {
                             elStatus.className = 'wptac-update__status is-success';
                             elStatus.textContent = wptacAdmin.i18n.uptodate;
                             elStatus.hidden = false;
- 
+                            if ( btnUpdate ) {
+                                btnUpdate.hidden = true;
+                            }
                         }
                     } else {
                         elLatest.innerHTML = '<span class="wptac-update__unknown">' + wptacAdmin.i18n.checkFailed + '</span>';
@@ -337,6 +342,66 @@
 
         // Save original label
         btnCheck.dataset.label = btnCheck.textContent.trim();
+    }
+
+    // Actualización con un clic (descarga desde el CDN / GitHub en el servidor).
+    if ( btnUpdate ) {
+        const originalUpdateLabel = btnUpdate.innerHTML;
+
+        btnUpdate.addEventListener( 'click', async () => {
+            btnUpdate.disabled = true;
+            if ( btnCheck ) {
+                btnCheck.disabled = true;
+            }
+            btnUpdate.innerHTML = '<span class="dashicons dashicons-update wptac-spin"></span> ' + wptacAdmin.i18n.updating;
+            elStatus.hidden = true;
+
+            let ok      = false;
+            let message = wptacAdmin.i18n.updateError;
+
+            try {
+                const formData = new FormData();
+                formData.append( 'action', 'wptac_update' );
+                formData.append( 'nonce', wptacAdmin.nonces.update );
+
+                const response = await fetch( wptacAdmin.ajaxUrl, {
+                    method: 'POST',
+                    headers: { 'X-WP-Nonce': wptacAdmin.nonces.update },
+                    body: formData,
+                    credentials: 'same-origin',
+                } );
+
+                const data = await response.json();
+                ok = !! ( data && data.success );
+
+                if ( data && data.data && data.data.message ) {
+                    message = data.data.message;
+                } else if ( ok ) {
+                    message = wptacAdmin.i18n.updateDone;
+                }
+
+                if ( ok && data.data.latest && elBundled ) {
+                    elBundled.textContent = '';
+                    const strong = document.createElement( 'strong' );
+                    strong.textContent = data.data.latest;
+                    elBundled.appendChild( strong );
+                }
+            } catch ( err ) {
+                ok = false;
+            }
+
+            // textContent: el mensaje viene del servidor, nunca se inserta como HTML.
+            elStatus.className   = 'wptac-update__status ' + ( ok ? 'is-success' : 'is-error' );
+            elStatus.textContent = message;
+            elStatus.hidden      = false;
+
+            btnUpdate.innerHTML = originalUpdateLabel;
+            btnUpdate.disabled  = false;
+            btnUpdate.hidden    = ok;
+            if ( btnCheck ) {
+                btnCheck.disabled = false;
+            }
+        } );
     }
 
     // ─────────────────────────────────────────────
