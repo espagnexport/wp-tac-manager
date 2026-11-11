@@ -11,7 +11,6 @@
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       wp-tac-manager
  * Domain Path:       /lang
- * Consent API:       true
  * 
  * @package WpTacManager
  */
@@ -83,7 +82,8 @@ register_activation_hook(
 	function (): void {
 		if ( ! get_option( WPTAC_OPTION_KEY ) ) {
 			$defaults = WPTAC_Settings::get_defaults();
-			add_option( WPTAC_OPTION_KEY, $defaults, '', false );
+			// autoload: la configuración se lee en cada carga del front-end.
+			add_option( WPTAC_OPTION_KEY, $defaults, '', true );
 		}
 	}
 );
@@ -120,11 +120,6 @@ add_action(
 
 		// Módulo de renderizado en el front-end
 		new WPTAC_Renderer();
-
-		// Declarar compatibilidad con WP Consent API
-		if ( function_exists( 'wp_consent_api_registered' ) ) {
-			wp_consent_api_registered( 'wp-tac-manager' );
-		}
 	},
 	10
 );

@@ -6,7 +6,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WPTAC_Services {
 
+    /** @var array<string, array>|null Catálogo cacheado durante la petición. */
+    private static ?array $cache = null;
+
+    /**
+     * Devuelve el catálogo de servicios (filtrable con 'wptac_services').
+     * Se cachea por petición una vez cargadas las traducciones (init), ya que
+     * se consulta muchas veces al renderizar cada página.
+     *
+     * @return array<string, array>
+     */
     public static function get_definitions(): array {
+        if ( null !== self::$cache ) {
+            return self::$cache;
+        }
+
         $services = [
 
             'googletagmanager' => [
@@ -454,7 +468,13 @@ class WPTAC_Services {
 
         ];
 
-        return apply_filters( 'wptac_services', $services );
+        $services = apply_filters( 'wptac_services', $services );
+
+        if ( did_action( 'init' ) ) {
+            self::$cache = $services;
+        }
+
+        return $services;
     }
 
     public static function get_definition( string $key ): ?array {

@@ -85,17 +85,30 @@
     // Google Consent Mode v2 lo gestiona tarteaucitron de forma nativa y
     // granular (opción googleConsentMode), por lo que no se duplica aquí.
 
-    // ── Stats tracking via AJAX (Optimized: only tracks explicit user decisions) ──
-    function wptacTrackConsent( service, allowed ) {
-        if ( ! settings.ajaxUrl ) {
+    // ── Stats tracking via AJAX ──
+    // Las decisiones se agrupan y se envían en una sola petición (p. ej.
+    // "Aceptar todo" genera una decisión por servicio), para no agotar el
+    // límite de peticiones por IP del servidor.
+    var pendingConsents = {};
+    var flushTimer      = null;
+
+    function wptacFlushConsents() {
+        var keys = Object.keys( pendingConsents );
+
+        if ( flushTimer ) {
+            clearTimeout( flushTimer );
+            flushTimer = null;
+        }
+        if ( ! settings.ajaxUrl || ! keys.length ) {
             return;
         }
 
         var data = new FormData();
         data.append( 'action', 'wptac_track_consent' );
-        data.append( 'service', service );
-        data.append( 'status', allowed ? '1' : '0' );
-        data.append( '_ajax_nonce', settings.nonce );
+        keys.forEach( function ( key ) {
+            data.append( 'consents[' + key + ']', pendingConsents[ key ] ? '1' : '0' );
+        } );
+        pendingConsents = {};
 
         if ( typeof navigator.sendBeacon === 'function' ) {
             navigator.sendBeacon( settings.ajaxUrl, data );
@@ -103,10 +116,21 @@
             fetch( settings.ajaxUrl, {
                 method: 'POST',
                 body: data,
-                credentials: 'same-origin'
+                credentials: 'same-origin',
+                keepalive: true
             } );
         }
     }
+
+    function wptacTrackConsent( service, allowed ) {
+        pendingConsents[ service ] = allowed;
+        if ( ! flushTimer ) {
+            flushTimer = setTimeout( wptacFlushConsents, 500 );
+        }
+    }
+
+    // Si el usuario abandona la página antes del envío, enviar lo pendiente.
+    window.addEventListener( 'pagehide', wptacFlushConsents );
 
     // Decorate tarteaucitron.cookie.create to capture explicit user responses only
     if ( typeof tarteaucitron !== 'undefined' && tarteaucitron.cookie && typeof tarteaucitron.cookie.create === 'function' ) {

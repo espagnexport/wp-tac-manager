@@ -50,10 +50,6 @@ class WPTAC_Updater {
         delete_option( self::VERSION_MANUAL_OPTION );
     }
 
-    public static function get_bundled_version(): string {
-        return self::get_active_version();
-    }
-
     /**
      * Obtiene la última versión disponible de tarteaucitron.js.
      *
@@ -190,7 +186,7 @@ class WPTAC_Updater {
             ];
         }
 
-        if ( ! version_compare( $latest, self::get_bundled_version(), '>' ) ) {
+        if ( ! version_compare( $latest, self::get_active_version(), '>' ) ) {
             return [ 'success' => false, 'message' => __( 'You already have the latest version installed.', 'wp-tac-manager' ) ];
         }
 
@@ -411,15 +407,15 @@ class WPTAC_Updater {
         $upload_dir = wp_upload_dir();
         $extract    = trailingslashit( $upload_dir['basedir'] ) . 'wptac-' . wp_generate_password( 12, false, false ) . '/';
 
-        if ( ! $wp_filesystem->mkdir( $extract, FS_CHMOD_DIR, true ) ) {
-            wp_delete_file( $zip_path );
-            return new WP_Error( 'mkdir', __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) );
-        }
-
         // 7. Rechazar archivos con rutas inseguras (zip-slip) antes de extraer.
         if ( self::zip_has_unsafe_paths( $zip_path ) ) {
             wp_delete_file( $zip_path );
             return new WP_Error( 'unsafe_zip', __( 'The ZIP file contains unsafe file paths.', 'wp-tac-manager' ) );
+        }
+
+        if ( ! $wp_filesystem->mkdir( $extract, FS_CHMOD_DIR ) ) {
+            wp_delete_file( $zip_path );
+            return new WP_Error( 'mkdir', __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) );
         }
 
         // 8. Descomprimir.

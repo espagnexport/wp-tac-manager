@@ -27,7 +27,6 @@ Features:
 * Consent-based iframe lazy loading
 * Cache plugin exclusions (Autoptimize, WP Rocket, LiteSpeed Cache, W3 Total Cache)
 * Multilingual compatible (Bogo, Polylang, WPML)
-* Compatible with the WP Consent API
 
 == Installation ==
 
