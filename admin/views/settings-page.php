@@ -220,16 +220,11 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             </label>
                             <select id="general_language" name="general[language]" class="wptac-field__select">
                                 <?php
-                                $banner_languages = [
-                                    'auto' => __( 'Automatic (WordPress language)', 'wp-tac-manager' ),
-                                    'es'   => 'Español',
-                                    'en'   => 'English',
-                                    'fr'   => 'Français',
-                                    'de'   => 'Deutsch',
-                                    'it'   => 'Italiano',
-                                    'pt'   => 'Português',
-                                    'nl'   => 'Nederlands',
-                                ];
+                                // Todos los idiomas incluidos con tarteaucitron.js.
+                                $banner_languages = [ 'auto' => __( 'Automatic (WordPress language)', 'wp-tac-manager' ) ];
+                                foreach ( $languages as $lang_code ) {
+                                    $banner_languages[ $lang_code ] = WPTAC_Settings::get_language_name( $lang_code );
+                                }
                                 foreach ( $banner_languages as $value => $label ) :
                                 ?>
                                     <option value="<?php echo esc_attr( $value ); ?>" <?php selected( $cfg( 'general.language' ), $value ); ?>>
@@ -275,28 +270,9 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                 printf(
                                     /* translators: ejemplo de uso del hashtag */
                                     esc_html__( 'Add %s to any link so users can reopen the cookie panel.', 'wp-tac-manager' ),
-                                    '<code>#tarteaucitron</code>'
+                                    '<code>' . esc_html( $cfg( 'general.hashtag', '#tarteaucitron' ) ) . '</code>'
                                 );
                                 ?>
-                            </p>
-                        </div>
-
-                        <?php /* Segundos antes de recargar */ ?>
-                        <div class="wptac-field">
-                            <label class="wptac-field__label" for="general_reload_thx_seconds">
-                                <?php esc_html_e( 'Auto-reload after accepting (seconds)', 'wp-tac-manager' ); ?>
-                            </label>
-                            <input
-                                type="number"
-                                id="general_reload_thx_seconds"
-                                name="general[reload_thx_seconds]"
-                                class="wptac-field__input wptac-field__input--short"
-                                value="<?php echo absint( $cfg( 'general.reload_thx_seconds', 0 ) ); ?>"
-                                min="0"
-                                max="60"
-                            >
-                            <p class="wptac-field__desc">
-                                <?php esc_html_e( '0 = no auto-reload. Useful for loading blocked scripts after consent.', 'wp-tac-manager' ); ?>
                             </p>
                         </div>
 
@@ -334,8 +310,8 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                     'desc'  => __( 'Shows a small quick-access button to the cookie panel.', 'wp-tac-manager' ),
                                 ],
                                 'cookie_accessible_ui' => [
-                                    'label' => __( 'Accessible interface (cookie list)', 'wp-tac-manager' ),
-                                    'desc'  => __( 'Improves accessibility for screen readers.', 'wp-tac-manager' ),
+                                    'label' => __( 'Show cookie list', 'wp-tac-manager' ),
+                                    'desc'  => __( 'Adds a button next to the small banner that lists the cookies placed by each service.', 'wp-tac-manager' ),
                                 ],
                                 'enable_banner'          => [
                                     'label' => __( 'Enable cookie banner', 'wp-tac-manager' ),
@@ -376,10 +352,6 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                                 'mandatory_cta'        => [
                                     'label' => __( 'Mandatory cookies button', 'wp-tac-manager' ),
                                     'desc'  => __( 'Show a disabled accept button for mandatory cookies.', 'wp-tac-manager' ),
-                                ],
-                                'adblocker'            => [
-                                    'label' => __( 'Adblocker warning', 'wp-tac-manager' ),
-                                    'desc'  => __( 'Show a warning if an adblocker is detected.', 'wp-tac-manager' ),
                                 ],
                                 'more_info_link'       => [
                                     'label' => __( 'Show "More info" link', 'wp-tac-manager' ),
@@ -607,6 +579,10 @@ $cfg = static function( string $path, mixed $default = '' ) use ( $settings ): m
                             <button type="button" class="wptac-btn wptac-btn--ghost" id="wptac-btn-check">
                                 <span class="dashicons dashicons-update"></span>
                                 <?php esc_html_e( 'Check for updates', 'wp-tac-manager' ); ?>
+                            </button>
+                            <button type="button" class="wptac-btn wptac-btn--secondary" id="wptac-btn-update" hidden>
+                                <span class="dashicons dashicons-download"></span>
+                                <?php esc_html_e( 'Update now', 'wp-tac-manager' ); ?>
                             </button>
                         </div>
                     </div>

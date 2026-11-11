@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WPTAC_Admin {
 
     const PAGE_SLUG = 'wp-tac-manager';
-    const OPTION_GROUP = 'wptac_option_group';
     const STAT_PREFIX = 'wptac_stat_';
     const RATE_LIMIT_KEY = 'wptac_rate_limit_';
     const RATE_LIMIT_MAX = 10; // Max requests per minute
@@ -20,7 +19,6 @@ class WPTAC_Admin {
 
     public function __construct() {
         add_action( 'admin_menu',             [ $this, 'register_menu' ] );
-        add_action( 'admin_init',             [ $this, 'register_settings' ] );
         add_action( 'admin_enqueue_scripts',  [ $this, 'enqueue_admin_assets' ] );
         add_action( 'wp_ajax_wptac_save_settings', [ $this, 'ajax_save_settings' ] );
         add_action( 'admin_notices',          [ $this, 'admin_notices' ] );
@@ -55,18 +53,6 @@ class WPTAC_Admin {
             'manage_options',
             self::PAGE_SLUG,
             [ $this, 'render_settings_page' ]
-        );
-    }
-
-    public function register_settings(): void {
-        register_setting(
-            self::OPTION_GROUP,
-            WPTAC_OPTION_KEY,
-            [
-                'type'              => 'array',
-                'sanitize_callback' => [ 'WPTAC_Settings', 'sanitize' ],
-                'default'           => WPTAC_Settings::get_defaults(),
-            ]
         );
     }
 
@@ -337,33 +323,75 @@ class WPTAC_Admin {
     // Stats: AJAX handler
     // ─────────────────────────────────────────────
 
+    /**
+     * Registra las decisiones de consentimiento enviadas desde el front-end.
+     *
+     * Recibe `consents[<clave tarteaucitron>] = 1|0` en una sola petición.
+     * No usa nonce: es un endpoint anónimo de solo recuento, y un nonce
+     * incrustado en páginas cacheadas caducaría. El abuso se limita con
+     * check_rate_limit() y aceptando solo servicios conocidos.
+     */
     public function ajax_track_consent(): void {
-        check_ajax_referer( 'wptac_track_consent_nonce', '_ajax_nonce' );
-
         $this->check_rate_limit();
 
-        $service = sanitize_key( $_POST['service'] ?? '' );
-        $status  = ! empty( $_POST['status'] );
+        $consents = isset( $_POST['consents'] ) && is_array( $_POST['consents'] )
+            ? wp_unslash( $_POST['consents'] )
+            : [];
 
-        if ( ! $service ) {
-            wp_send_json_error();
+        if ( empty( $consents ) ) {
+            wp_send_json_error( null, 400 );
         }
 
-        $definitions = WPTAC_Services::get_definitions();
-        if ( ! isset( $definitions[ $service ] ) ) {
-            wp_send_json_error();
+        // Mapa clave de tarteaucitron (tac_key) => clave del plugin.
+        $tac_map = [];
+        foreach ( WPTAC_Services::get_definitions() as $key => $def ) {
+            $tac_map[ $def['tac_key'] ?? $key ] = $key;
         }
 
-        $option_name = self::STAT_PREFIX . 'service_' . $service . '_' . ( $status ? 'allowed' : 'disallowed' );
-        $count       = (int) get_option( $option_name, 0 );
-        update_option( $option_name, $count + 1, false );
+        $counted = 0;
+        foreach ( array_slice( $consents, 0, count( $tac_map ), true ) as $tac_key => $status ) {
+            $tac_key = sanitize_key( (string) $tac_key );
+            if ( ! isset( $tac_map[ $tac_key ] ) || ! is_scalar( $status ) ) {
+                continue;
+            }
 
-        $since_opt = self::STAT_PREFIX . 'since';
-        if ( ! get_option( $since_opt ) ) {
-            update_option( $since_opt, time(), false );
+            $suffix = '1' === (string) $status ? 'allowed' : 'disallowed';
+            self::increment_stat( self::STAT_PREFIX . 'service_' . $tac_map[ $tac_key ] . '_' . $suffix );
+            $counted++;
+        }
+
+        if ( ! $counted ) {
+            wp_send_json_error( null, 400 );
+        }
+
+        if ( ! get_option( self::STAT_PREFIX . 'since' ) ) {
+            update_option( self::STAT_PREFIX . 'since', time(), false );
         }
 
         wp_send_json_success();
+    }
+
+    /**
+     * Incrementa un contador guardado como opción de forma atómica (una sola
+     * sentencia UPDATE), para no perder incrementos con peticiones concurrentes.
+     *
+     * @param string $option_name Nombre de la opción.
+     */
+    private static function increment_stat( string $option_name ): void {
+        global $wpdb;
+
+        if ( false === get_option( $option_name ) ) {
+            add_option( $option_name, 0, '', false );
+        }
+
+        $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE {$wpdb->options} SET option_value = CAST(option_value AS UNSIGNED) + 1 WHERE option_name = %s",
+                $option_name
+            )
+        );
+
+        wp_cache_delete( $option_name, 'options' );
     }
 
     private function check_rate_limit(): void {
@@ -409,10 +437,10 @@ class WPTAC_Admin {
     }
 
     public function render_dashboard_widget(): void {
-        $this->render_stats_table( 'widget' );
+        $this->render_stats_table();
     }
 
-    public function render_stats_table( string $mode = 'page' ): void {
+    public function render_stats_table(): void {
         $services = WPTAC_Services::get_definitions();
         $rows     = [];
 
@@ -469,15 +497,16 @@ class WPTAC_Admin {
                 '</small></p>';
         }
 
-        if ( 'page' === $mode ) {
-            $reset_url = wp_nonce_url(
-                add_query_arg( 'wptac_reset_stats', '1' ),
-                'wptac_reset_stats_action'
-            );
-            echo '<p><a href="' . esc_url( $reset_url ) . '" class="button" style="color:#d63638">' .
-                esc_html__( 'Reset statistics', 'wp-tac-manager' ) .
-                '</a></p>';
-        }
+        $reset_url = wp_nonce_url(
+            add_query_arg( 'wptac_reset_stats', '1', admin_url( 'index.php' ) ),
+            'wptac_reset_stats_action'
+        );
+        printf(
+            '<p><a href="%1$s" class="button" style="color:#d63638" onclick="return confirm(\'%2$s\');">%3$s</a></p>',
+            esc_url( $reset_url ),
+            esc_js( __( 'Reset all consent statistics?', 'wp-tac-manager' ) ),
+            esc_html__( 'Reset statistics', 'wp-tac-manager' )
+        );
     }
 
     public function stats_reset_action(): void {

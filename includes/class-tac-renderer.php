@@ -6,10 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class WPTAC_Renderer {
 
-    private array $settings;
+    private array $settings = [];
 
     public function __construct() {
-        $this->settings = WPTAC_Settings::get_settings();
         add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_assets' ] );
     }
 
@@ -27,7 +26,9 @@ class WPTAC_Renderer {
     }
 
     public function enqueue_assets(): void {
-        $g = $this->settings['general'];
+        // Los ajustes se leen solo cuando se renderiza el front-end.
+        $this->settings = WPTAC_Settings::get_settings();
+        $g              = $this->settings['general'];
 
         if ( empty( $g['enable_banner'] ) ) {
             return;
@@ -59,9 +60,6 @@ class WPTAC_Renderer {
             wp_add_inline_style( 'tarteaucitron', $color_css );
         }
 
-        $hide_icon_css = 'body[data-wptac-banner-visible="0"] #tarteaucitronRoot .tarteaucitronIcon { display:none!important; }';
-        wp_add_inline_style( 'tarteaucitron', $hide_icon_css );
-
         $js_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
             ? 'tarteaucitron.js'
             : 'tarteaucitron.min.js';
@@ -73,23 +71,16 @@ class WPTAC_Renderer {
             true
         );
 
-        $services_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
-            ? 'tarteaucitron.services.js'
-            : 'tarteaucitron.services.min.js';
-        wp_enqueue_script(
-            'tarteaucitron-services',
-            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $services_file,
-            [ 'tarteaucitron' ],
-            $this->asset_version( 'assets/js/tarteaucitron/' . $services_file ),
-            true
-        );
-
-        $lang      = $this->resolve_language();
-        $lang_path = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.js';
+        // Archivo de idioma: se encola antes que los servicios y el init, porque
+        // con useExternalJs = true tarteaucitron no lo descarga por su cuenta.
+        $lang          = $this->resolve_language();
+        $lang_path     = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.js';
         $min_lang_path = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.min.js';
+        $services_deps = [ 'tarteaucitron' ];
 
         if ( file_exists( $lang_path ) || file_exists( $min_lang_path ) ) {
-            $lang_file = file_exists( $min_lang_path )
+            $use_min_lang = file_exists( $min_lang_path ) && ! ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG && file_exists( $lang_path ) );
+            $lang_file    = $use_min_lang
                 ? 'lang/tarteaucitron.' . $lang . '.min.js'
                 : 'lang/tarteaucitron.' . $lang . '.js';
             wp_enqueue_script(
@@ -99,7 +90,19 @@ class WPTAC_Renderer {
                 $this->asset_version( 'assets/js/tarteaucitron/' . $lang_file ),
                 true
             );
+            $services_deps[] = 'tarteaucitron-lang';
         }
+
+        $services_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+            ? 'tarteaucitron.services.js'
+            : 'tarteaucitron.services.min.js';
+        wp_enqueue_script(
+            'tarteaucitron-services',
+            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $services_file,
+            $services_deps,
+            $this->asset_version( 'assets/js/tarteaucitron/' . $services_file ),
+            true
+        );
 
         $init_script = $this->build_init_script( $active_services );
         wp_add_inline_script( 'tarteaucitron-services', $init_script, 'after' );
@@ -126,17 +129,20 @@ class WPTAC_Renderer {
             [ 'strategy' => 'defer', 'in_footer' => true ]
         );
 
+        // Se usan las claves de tarteaucitron (tac_key), que son las que llevan
+        // los eventos "<clave>_allowed" / "<clave>_disallowed".
         $service_keys = [];
         foreach ( $active_services as $key => $service ) {
             if ( $this->service_is_ready( $key, $service ) ) {
-                $service_keys[] = $key;
+                $service_keys[] = $service['tac_key'];
             }
         }
 
+        // Sin nonce: el endpoint de estadísticas es anónimo y un nonce
+        // incrustado en páginas cacheadas caduca y hace fallar el registro.
         wp_localize_script( 'wptac-front', 'wptacFront', [
             'ajaxUrl'  => admin_url( 'admin-ajax.php' ),
-            'nonce'    => wp_create_nonce( 'wptac_track_consent_nonce' ),
-            'services' => $service_keys,
+            'services' => array_values( array_unique( $service_keys ) ),
         ] );
     }
 
@@ -158,7 +164,6 @@ class WPTAC_Renderer {
             'closePopup'          => (bool) $g['close_popup'],
             'showIcon'            => (bool) $g['show_icon'],
             'iconPosition'        => ! empty( $g['icon_position'] ) ? $g['icon_position'] : 'BottomRight',
-            'adblocker'           => (bool) $g['adblocker'],
             'DenyAllCta'          => (bool) $g['deny_all_cta'],
             'AcceptAllCta'        => (bool) $g['accept_all_cta'],
             'highPrivacy'         => true,
@@ -166,7 +171,9 @@ class WPTAC_Renderer {
             'handleBrowserDNTRequest' => (bool) $g['handle_browser_dnt'],
             'moreInfoLink'        => (bool) $g['more_info_link'],
             'useExternalCss'      => true,
-            'useExternalJs'       => false,
+            // El plugin ya encola tarteaucitron.services.js y el archivo de idioma:
+            // evita que tarteaucitron los vuelva a descargar por su cuenta.
+            'useExternalJs'       => true,
             'readmoreLink'        => '',
             'mandatory'           => (bool) $g['mandatory'],
             'mandatoryCta'        => (bool) $g['mandatory_cta'],
@@ -204,14 +211,18 @@ class WPTAC_Renderer {
 
         $custom_texts_lines = $this->build_custom_texts();
 
+        // Fuerza el idioma resuelto por el plugin; si no, tarteaucitron lo
+        // deduce del atributo lang del <html> o del navegador.
+        $force_language = wp_json_encode( $this->resolve_language() );
+
         $user_params_lines   = $this->build_user_params( $active_services );
         $add_service_lines   = $this->build_add_services( $active_services );
 
         $script = <<<JS
         (function() {
             'use strict';
-            window.tarteaucitronUseMin = true;
             function wptacInit() {
+                window.tarteaucitronForceLanguage = {$force_language};
                 {$custom_texts_lines}
                 tarteaucitron.init({$config_json});
         {$user_params_lines}
@@ -232,22 +243,38 @@ class WPTAC_Renderer {
         $lines = [];
 
         foreach ( $active_services as $key => $service ) {
+            if ( ! $this->service_is_ready( $key, $service ) ) {
+                continue;
+            }
+
             $params_config = $service['config']['params'] ?? [];
-            $params_def    = $service['params'] ?? [];
             $tac_key       = $service['tac_key'];
 
-            foreach ( $params_config as $param_key => $param_value ) {
+            // Se recorren los parámetros definidos en el catálogo (no los
+            // guardados), para no emitir claves obsoletas.
+            foreach ( $service['params'] ?? [] as $param_key => $param_def ) {
+                $param_value = (string) ( $params_config[ $param_key ] ?? '' );
                 if ( '' === $param_value ) {
                     continue;
                 }
 
-                $param_def = $params_def[ $param_key ] ?? [];
                 $js_key    = $param_def['js_key'] ?? null;
 
                 if ( $js_key ) {
                     $js_param_name = 'tarteaucitron.user.' . $js_key;
                 } else {
                     $js_param_name = 'tarteaucitron.user.' . $tac_key . ucfirst( $param_key );
+                }
+
+                if ( ! empty( $param_def['trailing_slash'] ) ) {
+                    $param_value = trailingslashit( $param_value );
+                }
+
+                if ( ! empty( $param_def['list_separator'] ) ) {
+                    $param_value = array_values( array_filter( array_map(
+                        'trim',
+                        explode( $param_def['list_separator'], $param_value )
+                    ), 'strlen' ) );
                 }
 
                 $escaped_value = wp_json_encode( $param_value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );
@@ -374,7 +401,7 @@ class WPTAC_Renderer {
                 '#tarteaucitronRoot .tarteaucitronMain .tarteaucitronName',
             ],
             'icon_bg'        => [
-                '#tarteaucitronRoot .tarteaucitronIcon',
+                '#tarteaucitronRoot #tarteaucitronIcon #tarteaucitronManager',
             ],
         ];
 
@@ -398,39 +425,48 @@ class WPTAC_Renderer {
         return implode( "\n", $rules );
     }
 
+    /**
+     * Excluye los scripts del banner (archivos y script de inicio en línea) de
+     * la minificación, combinación y carga diferida de los plugins de caché.
+     * "tarteaucitron" cubre todos los archivos (con o sin .min, idiomas) y el
+     * script en línea, que lo menciona.
+     */
     private function exclude_from_optimization(): void {
         $exclude_keywords = [
-            'tarteaucitron.min.js',
-            'tarteaucitron.services.min.js',
-            'tarteaucitron.lang',
+            'tarteaucitron',
+            'wptacFront',
             'wptac-front',
-            '/front.min.js',
-            '/front.js',
+            'wp-tac-manager/assets/js/front',
         ];
 
-        add_filter( 'litespeed_optimize_js_excludes', function( $excludes ) use ( $exclude_keywords ) {
-            if ( ! is_array( $excludes ) ) { $excludes = []; }
+        $merge = static function ( $excludes ) use ( $exclude_keywords ) {
+            if ( ! is_array( $excludes ) ) {
+                $excludes = [];
+            }
             return array_merge( $excludes, $exclude_keywords );
-        } );
-        add_filter( 'litespeed_delay_js_excludes', function( $excludes ) use ( $exclude_keywords ) {
-            if ( ! is_array( $excludes ) ) { $excludes = []; }
-            return array_merge( $excludes, $exclude_keywords );
+        };
+
+        // LiteSpeed Cache.
+        add_filter( 'litespeed_optimize_js_excludes', $merge );
+        add_filter( 'litespeed_optm_js_defer_exc', $merge );
+        add_filter( 'litespeed_delay_js_excludes', $merge );
+
+        // WP Rocket.
+        add_filter( 'rocket_exclude_js', $merge );
+        add_filter( 'rocket_exclude_inline_js', $merge );
+        add_filter( 'rocket_exclude_defer_js', $merge );
+        add_filter( 'rocket_delay_js_exclusions', $merge );
+
+        // Autoptimize (lista separada por comas).
+        add_filter( 'autoptimize_filter_js_exclude', static function ( $exclude ) use ( $exclude_keywords ) {
+            $exclude = is_string( $exclude ) ? $exclude : '';
+            return ltrim( $exclude . ', ' . implode( ', ', $exclude_keywords ), ', ' );
         } );
 
-        add_filter( 'rocket_exclude_js', function( array $excluded ) use ( $exclude_keywords ): array {
-            return array_merge( $excluded, $exclude_keywords );
-        } );
-        add_filter( 'rocket_delay_js_exclusions', function( array $excluded ) use ( $exclude_keywords ): array {
-            return array_merge( $excluded, $exclude_keywords );
-        } );
-
-        add_filter( 'autoptimize_filter_js_exclude', function( string $exclude ) use ( $exclude_keywords ): string {
-            return $exclude . ', ' . implode( ', ', $exclude_keywords );
-        } );
-
-        add_filter( 'w3tc_minify_js_do_tag_minification', function( bool $do, string $tag ) use ( $exclude_keywords ): bool {
+        // W3 Total Cache.
+        add_filter( 'w3tc_minify_js_do_tag_minification', static function ( $do, $tag = '' ) use ( $exclude_keywords ) {
             foreach ( $exclude_keywords as $keyword ) {
-                if ( str_contains( $tag, $keyword ) ) {
+                if ( is_string( $tag ) && str_contains( $tag, $keyword ) ) {
                     return false;
                 }
             }

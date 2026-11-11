@@ -34,7 +34,7 @@ class WPTAC_Settings {
                 'orientation'              => 'bottom', // Posición del banner: top | bottom | middle | popup
                 'group_services'           => false,    // Agrupar servicios por categoría
                 'show_alert_small'         => false,    // Mostrar botón pequeño siempre visible
-                'cookie_accessible_ui'     => true,     // UI accesible para lectores de pantalla
+                'cookie_accessible_ui'     => true,     // Mostrar la lista de cookies (parámetro cookieslist)
                 'remove_credit'            => false,    // Ocultar crédito "Manage Cookies"
                 'handle_browser_dnt'       => false,    // Respetar Do Not Track del navegador
                 'accept_all_cta'           => true,     // Mostrar botón "Aceptar todo"
@@ -54,11 +54,9 @@ class WPTAC_Settings {
                 'data_layer'               => false,
                 'server_side'              => false,
                 'partners_list'            => true,
-                'adblocker'                => false,
                 'more_info_link'           => true,
                 'mandatory'                => true,
                 'show_icon'                => true,
-                'reload_thx_seconds'       => 0,        // Segundos antes de recargar (0 = sin recarga)
                 'language'                 => 'auto',   // Idioma: auto | es | en | fr
                 'force_expiry_date'        => '',        // Fecha de expiración forzada (YYYY/MM/DD)
                 'icon_position'            => 'BottomRight', // Posición del icono: BottomRight | BottomLeft | TopRight | TopLeft
@@ -81,72 +79,55 @@ class WPTAC_Settings {
             ],
             // ── Textos personalizados (JSON por idioma) ──
             'texts' => [],
-            // ── Servicios ──
-            'services' => [
-                'googletagmanager' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'gtag' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'googleads' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'facebookpixel' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'linkedininsighttag' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'hotjar' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                        'sv' => '6',
-                    ],
-                ],
-                'matomocloud' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                        'host' => '',
-                    ],
-                ],
-                'plausible' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'twitteruwt' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-                'hubspot' => [
-                    'enabled' => false,
-                    'params'  => [
-                        'id' => '',
-                    ],
-                ],
-            ],
+            // ── Servicios: se generan a partir del catálogo (WPTAC_Services) ──
+            'services' => self::get_service_defaults(),
         ];
+    }
+
+    /**
+     * Valores por defecto de los servicios, generados a partir del catálogo:
+     * todos desactivados y cada parámetro con su 'default' (o vacío).
+     *
+     * @return array<string, array{enabled: bool, params: array<string, string>}>
+     */
+    private static function get_service_defaults(): array {
+        $defaults = [];
+
+        foreach ( WPTAC_Services::get_definitions() as $key => $def ) {
+            $params = [];
+            foreach ( $def['params'] ?? [] as $param_key => $param_def ) {
+                $params[ $param_key ] = (string) ( $param_def['default'] ?? '' );
+            }
+
+            $defaults[ $key ] = [
+                'enabled' => false,
+                'params'  => $params,
+            ];
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * Nombre legible de un código de idioma de tarteaucitron.js.
+     *
+     * @param string $code Código de idioma (p. ej. 'es').
+     * @return string
+     */
+    public static function get_language_name( string $code ): string {
+        $names = [
+            'ar' => 'العربية', 'bg' => 'Български', 'ca' => 'Català', 'cn' => '中文 (cn)',
+            'cs' => 'Čeština', 'da' => 'Dansk', 'de' => 'Deutsch', 'el' => 'Ελληνικά',
+            'en' => 'English', 'es' => 'Español', 'et' => 'Eesti', 'fi' => 'Suomi',
+            'fr' => 'Français', 'hr' => 'Hrvatski', 'hu' => 'Magyar', 'it' => 'Italiano',
+            'ja' => '日本語', 'ko' => '한국어', 'lb' => 'Lëtzebuergesch', 'lt' => 'Lietuvių',
+            'lv' => 'Latviešu', 'nl' => 'Nederlands', 'no' => 'Norsk', 'oc' => 'Occitan',
+            'pl' => 'Polski', 'pt' => 'Português', 'ro' => 'Română', 'ru' => 'Русский',
+            'se' => 'Svenska (se)', 'sk' => 'Slovenčina', 'sq' => 'Shqip', 'sv' => 'Svenska',
+            'tr' => 'Türkçe', 'uk' => 'Українська', 'vi' => 'Tiếng Việt', 'zh' => '中文',
+        ];
+
+        return $names[ $code ] ?? strtoupper( $code );
     }
 
     // ─────────────────────────────────────────────
@@ -175,7 +156,8 @@ class WPTAC_Settings {
      */
     public static function save_settings( array $raw_data ): bool {
         $sanitized = self::sanitize( $raw_data );
-        return update_option( WPTAC_OPTION_KEY, $sanitized, false );
+        // autoload = true: la configuración se lee en cada carga del front-end.
+        return update_option( WPTAC_OPTION_KEY, $sanitized, true );
     }
 
     /**
@@ -269,16 +251,11 @@ class WPTAC_Settings {
             $settings['general']['data_layer']                  = wp_validate_boolean( $g['data_layer'] ?? false );
             $settings['general']['server_side']                 = wp_validate_boolean( $g['server_side'] ?? false );
             $settings['general']['partners_list']               = wp_validate_boolean( $g['partners_list'] ?? false );
-            $settings['general']['adblocker']                   = wp_validate_boolean( $g['adblocker'] ?? false );
             $settings['general']['more_info_link']              = wp_validate_boolean( $g['more_info_link'] ?? false );
             $settings['general']['mandatory']                   = wp_validate_boolean( $g['mandatory'] ?? false );
             $settings['general']['show_icon']                    = wp_validate_boolean( $g['show_icon'] ?? false );
 
-            $settings['general']['reload_thx_seconds']   = isset( $g['reload_thx_seconds'] )
-                ? absint( $g['reload_thx_seconds'] )
-                : 0;
-
-            $allowed_langs                               = [ 'auto', 'es', 'en', 'fr', 'de', 'it', 'pt', 'nl' ];
+            $allowed_langs                               = array_merge( [ 'auto' ], self::get_available_languages() );
             $settings['general']['language']             = isset( $g['language'] )
                                                             && in_array( $g['language'], $allowed_langs, true )
                 ? $g['language']

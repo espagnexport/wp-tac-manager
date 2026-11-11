@@ -128,6 +128,19 @@ wp-tac-manager/
         └── tarteaucitron.min.css
 
 ## Changelog
+### 2.3.0
+- Fixed: the banner language chosen in the settings is now respected, and tarteaucitron no longer downloads the services and language files twice (useExternalJs + tarteaucitronForceLanguage).
+- Fixed: Matomo Cloud, Microsoft Clarity, Crisp, Google Fonts and Pinterest now pass their parameters with the names tarteaucitron expects; reCAPTCHA site key is optional (v3 only). Pinterest gets the required Tag ID field.
+- Fixed: Google Consent Mode is left to tarteaucitron's native, granular implementation (accepting GA4 no longer granted ad storage).
+- Fixed: tarteaucitron.js updater fetches the CSS from the package css/ folder, reads the installed version from tarteaucitron.js and restores the previous files if an update fails midway.
+- Restored the one-click "Update now" button for tarteaucitron.js.
+- Consent statistics: decisions are sent in a single request, counters are atomic, no nonce on cached pages, Pinterest is counted and the reset button is visible in the dashboard widget.
+- Removed settings that had no effect (auto-reload seconds, adblocker warning) and the WP Consent API declaration; "Show cookie list" relabelled; icon background color now applies.
+- Banner language selector lists every language bundled with tarteaucitron.js.
+- Performance: services catalog cached per request, settings read lazily and autoloaded; broader cache-plugin exclusions.
+- uninstall.php also removes statistics and rate-limit data.
+- Complete Spanish translation; translation template regenerated.
+
 ### 2.2.0
 - Atomic tarteaucitron.js auto-update (no mixed-version bundles on partial failures).
 - Strict version validation and detailed update-check error reporting.

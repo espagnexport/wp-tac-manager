@@ -4,7 +4,7 @@ Tags: cookies, gdpr, tarteaucitron, cookie-consent, privacy
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 8.0
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,7 +27,6 @@ Features:
 * Consent-based iframe lazy loading
 * Cache plugin exclusions (Autoptimize, WP Rocket, LiteSpeed Cache, W3 Total Cache)
 * Multilingual compatible (Bogo, Polylang, WPML)
-* Compatible with the WP Consent API
 
 == Installation ==
 
@@ -57,6 +56,19 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 4. Colors and texts customization.
 
 == Changelog ==
+
+= 2.3.0 =
+* Fixed: the banner language chosen in the settings is now respected, and tarteaucitron no longer downloads the services and language files twice (useExternalJs + tarteaucitronForceLanguage).
+* Fixed: Matomo Cloud, Microsoft Clarity, Crisp, Google Fonts and Pinterest now pass their parameters with the names tarteaucitron expects; reCAPTCHA site key is optional (v3 only). Pinterest gets the required Tag ID field.
+* Fixed: Google Consent Mode is left to tarteaucitron's native, granular implementation (accepting GA4 no longer granted ad storage).
+* Fixed: tarteaucitron.js updater fetches the CSS from the package css/ folder, reads the installed version from tarteaucitron.js and restores the previous files if an update fails midway.
+* Restored the one-click "Update now" button for tarteaucitron.js.
+* Consent statistics: decisions are sent in a single request, counters are atomic, no nonce on cached pages, Pinterest is counted and the reset button is visible in the dashboard widget.
+* Removed settings that had no effect (auto-reload seconds, adblocker warning) and the WP Consent API declaration; "Show cookie list" relabelled; icon background color now applies.
+* Banner language selector lists every language bundled with tarteaucitron.js.
+* Performance: services catalog cached per request, settings read lazily and autoloaded; broader cache-plugin exclusions.
+* uninstall.php also removes statistics and rate-limit data.
+* Complete Spanish translation; translation template regenerated.
 
 = 2.2.0 =
 * Made the tarteaucitron.js auto-updater atomic: files are downloaded to a temporary location and only moved into place after every download succeeds, preventing mixed-version bundles on partial failures.
@@ -93,6 +105,9 @@ Go to **TAC Manager → Settings → Updates** and click "Check for updates". If
 * Initial release.
 
 == Upgrade Notice ==
+
+= 2.3.0 =
+* Bug fix release. The "Auto-reload" and "Adblocker warning" options were removed because they did not work. Review the Google Fonts field: families are now separated by "|".
 
 = 2.2.0 =
 * Security and reliability release. No breaking changes.

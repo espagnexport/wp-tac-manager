@@ -10,30 +10,44 @@ class WPTAC_Updater {
     const CDN_FILES    = 'https://cdn.jsdelivr.net/npm/tarteaucitronjs';
     const GITHUB_API   = 'https://api.github.com/repos/AmauriC/tarteaucitron.js/releases/latest';
     const GITHUB_RAW   = 'https://raw.githubusercontent.com/AmauriC/tarteaucitron.js';
-    const VERSION_OPTION = 'wptac_tarteaucitron_latest_version';
-
+    // Opciones heredadas: la versión ya no se guarda en BD (se lee del archivo
+    // instalado). Se conservan para poder limpiarlas.
+    const VERSION_OPTION        = 'wptac_tarteaucitron_latest_version';
     const VERSION_MANUAL_OPTION = 'wptac_tarteaucitron_manual_version';
+
+    // Archivo del que se lee la versión realmente instalada.
+    const CORE_FILE = 'assets/js/tarteaucitron/tarteaucitron.js';
 
     const VERSION_CHECK_TRANSIENT    = 'wptac_tarteaucitron_version_check';
     const VERSION_CHECK_TTL          = DAY_IN_SECONDS;
     const VERSION_CHECK_NEGATIVE_TTL = MINUTE_IN_SECONDS;
 
+    /**
+     * Devuelve la versión de tarteaucitron.js realmente instalada, leída de la
+     * propiedad "version" de tarteaucitron.js. Así sigue siendo correcta aunque
+     * una actualización del plugin reponga los archivos originales.
+     *
+     * @return string
+     */
     public static function get_active_version(): string {
-        $downloaded = get_option( self::VERSION_OPTION, '' );
-        if ( ! empty( $downloaded ) ) {
-            return (string) $downloaded;
-        }
+        $file = WPTAC_PLUGIN_DIR . self::CORE_FILE;
 
-        $manual_version = get_option( self::VERSION_MANUAL_OPTION, '' );
-        if ( ! empty( $manual_version ) ) {
-            return (string) $manual_version;
+        if ( is_readable( $file ) ) {
+            $head = file_get_contents( $file, false, null, 0, 8192 );
+            if ( is_string( $head ) && preg_match( '/["\']?version["\']?\s*:\s*["\'](\d+\.\d+(?:\.\d+)?)["\']/', $head, $m ) ) {
+                return $m[1];
+            }
         }
 
         return WPTAC_TARTEAUCITRON_VERSION;
     }
 
-    public static function get_bundled_version(): string {
-        return self::get_active_version();
+    /**
+     * Elimina las opciones heredadas en las que antes se guardaba la versión.
+     */
+    private static function delete_legacy_version_options(): void {
+        delete_option( self::VERSION_OPTION );
+        delete_option( self::VERSION_MANUAL_OPTION );
     }
 
     /**
@@ -151,10 +165,6 @@ class WPTAC_Updater {
         delete_transient( self::VERSION_CHECK_TRANSIENT );
     }
 
-    private static function save_downloaded_version( string $version ): void {
-        update_option( self::VERSION_OPTION, $version, false );
-    }
-
     public static function do_update(): array {
         $latest = self::get_latest_version();
         if ( is_wp_error( $latest ) ) {
@@ -176,7 +186,7 @@ class WPTAC_Updater {
             ];
         }
 
-        if ( ! version_compare( $latest, self::get_bundled_version(), '>' ) ) {
+        if ( ! version_compare( $latest, self::get_active_version(), '>' ) ) {
             return [ 'success' => false, 'message' => __( 'You already have the latest version installed.', 'wp-tac-manager' ) ];
         }
 
@@ -189,8 +199,9 @@ class WPTAC_Updater {
             'assets/js/tarteaucitron/tarteaucitron.min.js'        => '/tarteaucitron.min.js',
             'assets/js/tarteaucitron/tarteaucitron.services.js'   => '/tarteaucitron.services.js',
             'assets/js/tarteaucitron/tarteaucitron.services.min.js' => '/tarteaucitron.services.min.js',
-            'assets/css/tarteaucitron.css'                         => '/tarteaucitron.css',
-            'assets/css/tarteaucitron.min.css'                     => '/tarteaucitron.min.css',
+            // En el paquete de tarteaucitron el CSS está en la carpeta css/.
+            'assets/css/tarteaucitron.css'                         => '/css/tarteaucitron.css',
+            'assets/css/tarteaucitron.min.css'                     => '/css/tarteaucitron.min.css',
         ];
 
         $lang_files = self::get_lang_file_list();
@@ -278,15 +289,42 @@ class WPTAC_Updater {
             return [ 'success' => false, 'message' => $message, 'errors' => $errors ];
         }
 
-        // Fase 3: mover todos los temporales a su destino final.
+        // Fase 3: apartar los archivos actuales como copia de seguridad y mover
+        // los temporales a su destino. Si algo falla, se restauran todas las
+        // copias para no dejar un bundle con versiones mezcladas.
+        $backups     = [];
+        $installed   = [];
         $move_errors = [];
+
         foreach ( $temp_files as $pair ) {
-            if ( ! $wp_filesystem->move( $pair[0], $pair[1], true ) ) {
-                $move_errors[] = basename( $pair[1] );
+            [ $temp_file, $local_file ] = $pair;
+
+            if ( $wp_filesystem->exists( $local_file ) ) {
+                $backup_file = $local_file . '.wptac-backup';
+                if ( ! $wp_filesystem->move( $local_file, $backup_file, true ) ) {
+                    $move_errors[] = basename( $local_file );
+                    break;
+                }
+                $backups[ $local_file ] = $backup_file;
             }
+
+            if ( ! $wp_filesystem->move( $temp_file, $local_file, true ) ) {
+                $move_errors[] = basename( $local_file );
+                break;
+            }
+            $installed[] = $local_file;
         }
 
         if ( ! empty( $move_errors ) ) {
+            // Retirar los archivos nuevos ya colocados y restaurar las copias.
+            foreach ( $installed as $local_file ) {
+                if ( ! isset( $backups[ $local_file ] ) ) {
+                    $wp_filesystem->delete( $local_file );
+                }
+            }
+            foreach ( $backups as $local_file => $backup_file ) {
+                $wp_filesystem->move( $backup_file, $local_file, true );
+            }
             foreach ( $temp_files as $pair ) {
                 if ( $wp_filesystem->exists( $pair[0] ) ) {
                     $wp_filesystem->delete( $pair[0] );
@@ -295,12 +333,16 @@ class WPTAC_Updater {
 
             return [
                 'success' => false,
-                'message' => __( 'Update aborted: could not move downloaded files into place.', 'wp-tac-manager' ),
+                'message' => __( 'Update aborted: could not move downloaded files into place. The previous files were restored.', 'wp-tac-manager' ),
                 'errors'  => $move_errors,
             ];
         }
 
-        self::save_downloaded_version( $latest );
+        foreach ( $backups as $backup_file ) {
+            $wp_filesystem->delete( $backup_file );
+        }
+
+        self::delete_legacy_version_options();
         self::clear_version_cache();
 
         return [
@@ -365,15 +407,15 @@ class WPTAC_Updater {
         $upload_dir = wp_upload_dir();
         $extract    = trailingslashit( $upload_dir['basedir'] ) . 'wptac-' . wp_generate_password( 12, false, false ) . '/';
 
-        if ( ! $wp_filesystem->mkdir( $extract, FS_CHMOD_DIR, true ) ) {
-            wp_delete_file( $zip_path );
-            return new WP_Error( 'mkdir', __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) );
-        }
-
         // 7. Rechazar archivos con rutas inseguras (zip-slip) antes de extraer.
         if ( self::zip_has_unsafe_paths( $zip_path ) ) {
             wp_delete_file( $zip_path );
             return new WP_Error( 'unsafe_zip', __( 'The ZIP file contains unsafe file paths.', 'wp-tac-manager' ) );
+        }
+
+        if ( ! $wp_filesystem->mkdir( $extract, FS_CHMOD_DIR ) ) {
+            wp_delete_file( $zip_path );
+            return new WP_Error( 'mkdir', __( 'Could not create temporary directory for extraction.', 'wp-tac-manager' ) );
         }
 
         // 8. Descomprimir.
@@ -393,23 +435,14 @@ class WPTAC_Updater {
             return new WP_Error( 'no_package', __( 'Could not find the tarteaucitron.js package in the ZIP.', 'wp-tac-manager' ) );
         }
 
-        // 9. Leer la versión desde package.json (si existe).
-        $version = '';
-        $package_json = trailingslashit( $root ) . 'package.json';
-
-        if ( $wp_filesystem->exists( $package_json ) ) {
-            $package = json_decode( (string) $wp_filesystem->get_contents( $package_json ), true );
-            $version = isset( $package['version'] ) ? sanitize_text_field( (string) $package['version'] ) : '';
-        }
-
         // 10. Copiar archivos principales.
         $file_map = [
             'assets/js/tarteaucitron/tarteaucitron.js'             => 'tarteaucitron.js',
             'assets/js/tarteaucitron/tarteaucitron.min.js'         => 'tarteaucitron.min.js',
             'assets/js/tarteaucitron/tarteaucitron.services.js'    => 'tarteaucitron.services.js',
             'assets/js/tarteaucitron/tarteaucitron.services.min.js' => 'tarteaucitron.services.min.js',
-            'assets/css/tarteaucitron.css'                          => 'tarteaucitron.css',
-            'assets/css/tarteaucitron.min.css'                      => 'tarteaucitron.min.css',
+            'assets/css/tarteaucitron.css'                          => 'css/tarteaucitron.css',
+            'assets/css/tarteaucitron.min.css'                      => 'css/tarteaucitron.min.css',
         ];
 
         $copied   = 0;
@@ -419,6 +452,11 @@ class WPTAC_Updater {
             $source = trailingslashit( $root ) . $basename;
             $dest   = WPTAC_PLUGIN_DIR . $relative;
 
+            // Compatibilidad con paquetes que tengan el CSS en la raíz.
+            if ( ! $wp_filesystem->exists( $source ) && str_starts_with( $basename, 'css/' ) ) {
+                $source = trailingslashit( $root ) . basename( $basename );
+            }
+
             if ( ! $wp_filesystem->is_dir( dirname( $dest ) ) ) {
                 $wp_filesystem->mkdir( dirname( $dest ), FS_CHMOD_DIR, true );
             }
@@ -426,7 +464,7 @@ class WPTAC_Updater {
             if ( $wp_filesystem->exists( $source ) && $wp_filesystem->copy( $source, $dest, true, FS_CHMOD_FILE ) ) {
                 $copied++;
             } else {
-                $warnings[] = sprintf( __( 'Failed to copy %s', 'wp-tac-manager' ), $basename );
+                $warnings[] = sprintf( __( 'Failed to copy %s', 'wp-tac-manager' ), basename( $basename ) );
             }
         }
 
@@ -468,12 +506,10 @@ class WPTAC_Updater {
             return new WP_Error( 'copy_failed', __( 'No files could be copied from the ZIP.', 'wp-tac-manager' ) );
         }
 
-        // 13. Guardar versión y limpiar cachés.
-        if ( '' !== $version ) {
-            update_option( self::VERSION_MANUAL_OPTION, $version, false );
-            update_option( self::VERSION_OPTION, $version, false );
-        }
+        // 13. Leer la versión instalada del propio archivo y limpiar cachés.
+        $version = self::get_active_version();
 
+        self::delete_legacy_version_options();
         self::clear_version_cache();
 
         return [
