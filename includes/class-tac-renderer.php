@@ -73,23 +73,16 @@ class WPTAC_Renderer {
             true
         );
 
-        $services_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
-            ? 'tarteaucitron.services.js'
-            : 'tarteaucitron.services.min.js';
-        wp_enqueue_script(
-            'tarteaucitron-services',
-            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $services_file,
-            [ 'tarteaucitron' ],
-            $this->asset_version( 'assets/js/tarteaucitron/' . $services_file ),
-            true
-        );
-
-        $lang      = $this->resolve_language();
-        $lang_path = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.js';
+        // Archivo de idioma: se encola antes que los servicios y el init, porque
+        // con useExternalJs = true tarteaucitron no lo descarga por su cuenta.
+        $lang          = $this->resolve_language();
+        $lang_path     = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.js';
         $min_lang_path = WPTAC_PLUGIN_DIR . 'assets/js/tarteaucitron/lang/tarteaucitron.' . $lang . '.min.js';
+        $services_deps = [ 'tarteaucitron' ];
 
         if ( file_exists( $lang_path ) || file_exists( $min_lang_path ) ) {
-            $lang_file = file_exists( $min_lang_path )
+            $use_min_lang = file_exists( $min_lang_path ) && ! ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG && file_exists( $lang_path ) );
+            $lang_file    = $use_min_lang
                 ? 'lang/tarteaucitron.' . $lang . '.min.js'
                 : 'lang/tarteaucitron.' . $lang . '.js';
             wp_enqueue_script(
@@ -99,7 +92,19 @@ class WPTAC_Renderer {
                 $this->asset_version( 'assets/js/tarteaucitron/' . $lang_file ),
                 true
             );
+            $services_deps[] = 'tarteaucitron-lang';
         }
+
+        $services_file = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG
+            ? 'tarteaucitron.services.js'
+            : 'tarteaucitron.services.min.js';
+        wp_enqueue_script(
+            'tarteaucitron-services',
+            WPTAC_PLUGIN_URL . 'assets/js/tarteaucitron/' . $services_file,
+            $services_deps,
+            $this->asset_version( 'assets/js/tarteaucitron/' . $services_file ),
+            true
+        );
 
         $init_script = $this->build_init_script( $active_services );
         wp_add_inline_script( 'tarteaucitron-services', $init_script, 'after' );
@@ -166,7 +171,9 @@ class WPTAC_Renderer {
             'handleBrowserDNTRequest' => (bool) $g['handle_browser_dnt'],
             'moreInfoLink'        => (bool) $g['more_info_link'],
             'useExternalCss'      => true,
-            'useExternalJs'       => false,
+            // El plugin ya encola tarteaucitron.services.js y el archivo de idioma:
+            // evita que tarteaucitron los vuelva a descargar por su cuenta.
+            'useExternalJs'       => true,
             'readmoreLink'        => '',
             'mandatory'           => (bool) $g['mandatory'],
             'mandatoryCta'        => (bool) $g['mandatory_cta'],
@@ -204,14 +211,18 @@ class WPTAC_Renderer {
 
         $custom_texts_lines = $this->build_custom_texts();
 
+        // Fuerza el idioma resuelto por el plugin; si no, tarteaucitron lo
+        // deduce del atributo lang del <html> o del navegador.
+        $force_language = wp_json_encode( $this->resolve_language() );
+
         $user_params_lines   = $this->build_user_params( $active_services );
         $add_service_lines   = $this->build_add_services( $active_services );
 
         $script = <<<JS
         (function() {
             'use strict';
-            window.tarteaucitronUseMin = true;
             function wptacInit() {
+                window.tarteaucitronForceLanguage = {$force_language};
                 {$custom_texts_lines}
                 tarteaucitron.init({$config_json});
         {$user_params_lines}
@@ -248,6 +259,17 @@ class WPTAC_Renderer {
                     $js_param_name = 'tarteaucitron.user.' . $js_key;
                 } else {
                     $js_param_name = 'tarteaucitron.user.' . $tac_key . ucfirst( $param_key );
+                }
+
+                if ( ! empty( $param_def['trailing_slash'] ) ) {
+                    $param_value = trailingslashit( $param_value );
+                }
+
+                if ( ! empty( $param_def['list_separator'] ) ) {
+                    $param_value = array_values( array_filter( array_map(
+                        'trim',
+                        explode( $param_def['list_separator'], $param_value )
+                    ), 'strlen' ) );
                 }
 
                 $escaped_value = wp_json_encode( $param_value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP );

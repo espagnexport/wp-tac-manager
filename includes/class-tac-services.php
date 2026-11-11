@@ -139,6 +139,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'matomoId',
                         'label'       => __( 'Site ID', 'wp-tac-manager' ),
                         'placeholder' => '1',
                         'required'    => true,
@@ -146,6 +147,8 @@ class WPTAC_Services {
                     ],
                     'host' => [
                         'type'        => 'url',
+                        'js_key'      => 'matomoHost',
+                        'trailing_slash' => true,
                         'label'       => __( 'Matomo server URL', 'wp-tac-manager' ),
                         'placeholder' => 'https://your-domain.matomo.cloud',
                         'required'    => true,
@@ -259,10 +262,11 @@ class WPTAC_Services {
                 'params'      => [
                     'sitekey' => [
                         'type'        => 'text',
+                        'js_key'      => 'recaptchaapi',
                         'label'       => __( 'Site Key', 'wp-tac-manager' ),
                         'placeholder' => '6Lc...',
-                        'required'    => true,
-                        'description' => __( 'Your reCAPTCHA site key.', 'wp-tac-manager' ),
+                        'required'    => false,
+                        'description' => __( 'Only for reCAPTCHA v3 (it is added as the "render" parameter). Leave blank for reCAPTCHA v2.', 'wp-tac-manager' ),
                     ],
                 ],
             ],
@@ -305,6 +309,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'clarity',
                         'label'       => __( 'Project ID', 'wp-tac-manager' ),
                         'placeholder' => 'abcdefgh',
                         'required'    => true,
@@ -333,7 +338,6 @@ class WPTAC_Services {
             ],
 
             'crisp' => [
-                'js_key'      => 'crispID',
                 'label'       => 'Crisp Chat',
                 'category'    => 'other',
                 'icon'        => 'dashicons-format-chat',
@@ -343,6 +347,7 @@ class WPTAC_Services {
                 'params'      => [
                     'id' => [
                         'type'        => 'text',
+                        'js_key'      => 'crispID',
                         'label'       => __( 'Website ID', 'wp-tac-manager' ),
                         'placeholder' => '',
                         'required'    => true,
@@ -361,10 +366,12 @@ class WPTAC_Services {
                 'params'      => [
                     'families' => [
                         'type'        => 'text',
+                        'js_key'      => 'googleFonts',
+                        'list_separator' => '|',
                         'label'       => __( 'Font families', 'wp-tac-manager' ),
-                        'placeholder' => 'Roboto,Open+Sans',
-                        'required'    => false,
-                        'description' => __( 'Comma-separated list of font families.', 'wp-tac-manager' ),
+                        'placeholder' => 'Roboto:400,700|Open Sans',
+                        'required'    => true,
+                        'description' => __( 'Font families separated by "|" (Web Font Loader syntax, e.g. Roboto:400,700|Open Sans).', 'wp-tac-manager' ),
                     ],
                 ],
             ],
@@ -394,7 +401,15 @@ class WPTAC_Services {
                 'description' => __( 'Pinterest save button and tracking.', 'wp-tac-manager' ),
                 'doc_url'     => 'https://tarteaucitron.io/service/pinterest/',
                 'tac_key'     => 'pinterestpixel',
-                'params'      => [],
+                'params'      => [
+                    'id' => [
+                        'type'        => 'text',
+                        'label'       => __( 'Tag ID', 'wp-tac-manager' ),
+                        'placeholder' => '1234567890123',
+                        'required'    => true,
+                        'description' => __( 'Your Pinterest Tag ID.', 'wp-tac-manager' ),
+                    ],
+                ],
             ],
 
             'spotify' => [

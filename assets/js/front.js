@@ -82,44 +82,8 @@
         } )( serviceKey );
     } );
 
-    // ── Google Consent Mode v2 — premium-grade implementation ──
-    function wptacGtagConsent( granted ) {
-        var map = granted
-            ? 'granted'
-            : 'denied';
-
-        window.dataLayer = window.dataLayer || [];
-        window.gtag = window.gtag || function () {
-            window.dataLayer.push( arguments );
-        };
-
-        window.gtag( 'consent', 'update', {
-            analytics_storage: map,
-            ad_storage: map,
-            ad_user_data: map,
-            ad_personalization: map,
-            personalization_storage: map
-        } );
-
-        window.dataLayer.push( {
-            'event': 'gtm.init_consent',
-            'wptac_consent_status': map
-        } );
-    }
-
-    function wptacGcmOnAllow() {
-        wptacGtagConsent( true );
-    }
-    function wptacGcmOnDeny() {
-        wptacGtagConsent( false );
-    }
-
-    [ 'googletagmanager', 'multiplegoogletagmanager', 'gtag', 'multiplegtag', 'googleads', 'gcmads', 'gcmanalyticsstorage', 'gcmadstorage', 'gcmadsuserdata', 'gcmpersonalization' ].forEach( function ( key ) {
-        document.addEventListener( key + '_consentModeOk',  wptacGcmOnAllow, { once: true } );
-        document.addEventListener( key + '_consentModeKo',  wptacGcmOnDeny,  { once: true } );
-        document.addEventListener( key + '_allowed',        wptacGcmOnAllow );
-        document.addEventListener( key + '_disallowed',     wptacGcmOnDeny );
-    } );
+    // Google Consent Mode v2 lo gestiona tarteaucitron de forma nativa y
+    // granular (opción googleConsentMode), por lo que no se duplica aquí.
 
     // ── Stats tracking via AJAX (Optimized: only tracks explicit user decisions) ──
     function wptacTrackConsent( service, allowed ) {
