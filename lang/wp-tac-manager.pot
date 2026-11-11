@@ -1,411 +1,1073 @@
-# Copyright (C) 2024 Rafael Verde
+# Copyright (C) Rafael Verde
 # This file is distributed under the same license as WP TAC Manager.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WP TAC Manager 1.0.0\n"
+"Project-Id-Version: WP TAC Manager 2.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/espagnexport/wp-tac-manager\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en\n"
+"POT-Creation-Date: 2026-11-11 23:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-01T00:00:00+00:00\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-TAC-Manager 1.0.0\n"
 "X-Domain: wp-tac-manager\n"
 
-#: includes/class-tac-admin.php:29
-msgid "WP TAC Manager — Cookie Management"
+#: includes/class-tac-admin.php:40
+msgid "WP TAC Manager — Cookies"
 msgstr ""
 
-#: includes/class-tac-admin.php:30
-msgid "TAC Manager (Cookies banner)"
+#: includes/class-tac-admin.php:41
+msgid "TAC Manager"
 msgstr ""
 
-#: includes/class-tac-admin.php:73
+#: includes/class-tac-admin.php:51
+msgid "Cookie Settings"
+msgstr ""
+
+#: includes/class-tac-admin.php:52
+msgid "Settings"
+msgstr ""
+
+#: includes/class-tac-admin.php:92
 msgid "Saving…"
 msgstr ""
 
-#: includes/class-tac-admin.php:74
+#: includes/class-tac-admin.php:93
 msgid "✓ Settings saved"
 msgstr ""
 
-#: includes/class-tac-admin.php:75
-msgid "✗ Error while saving. Please try again."
+#: includes/class-tac-admin.php:94
+msgid "✗ Error saving. Please try again."
 msgstr ""
 
-#: includes/class-tac-admin.php:82
-msgid "You do not have permission to access this page."
+#: includes/class-tac-admin.php:95
+msgid "Select cookie icon"
+msgstr ""
+
+#: includes/class-tac-admin.php:96
+msgid "Use as icon"
+msgstr ""
+
+#: includes/class-tac-admin.php:97
+msgid "Checking…"
+msgstr ""
+
+#: includes/class-tac-admin.php:98
+msgid "Updating…"
+msgstr ""
+
+#: includes/class-tac-admin.php:99
+msgid "Update completed"
+msgstr ""
+
+#: includes/class-tac-admin.php:100
+msgid "Update error"
+msgstr ""
+
+#: includes/class-tac-admin.php:101
+msgid "You already have the latest version"
 msgstr ""
 
 #: includes/class-tac-admin.php:102
+msgid "A new version is available."
+msgstr ""
+
+#: includes/class-tac-admin.php:103
+msgid "Could not check. Try again."
+msgstr ""
+
+#: includes/class-tac-admin.php:104
+msgid "Uploading..."
+msgstr ""
+
+#: includes/class-tac-admin.php:105
+msgid "✓ tarteaucitron.js updated successfully."
+msgstr ""
+
+#: includes/class-tac-admin.php:106
+msgid "✗ Error updating tarteaucitron.js. Please check the file or try again."
+msgstr ""
+
+#: includes/class-tac-admin.php:149
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: includes/class-tac-admin.php:170 includes/class-tac-admin.php:239 includes/class-tac-admin.php:268
 msgid "Invalid or expired nonce. Reload the page and try again."
 msgstr ""
 
-#: includes/class-tac-admin.php:109
+#: includes/class-tac-admin.php:177 includes/class-tac-admin.php:243 includes/class-tac-admin.php:272 includes/class-tac-admin.php:288
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/class-tac-admin.php:116
+#: includes/class-tac-admin.php:184
 msgid "Invalid payload: JSON expected."
 msgstr ""
 
-#: includes/class-tac-admin.php:127
+#: includes/class-tac-admin.php:195
 msgid "Settings saved successfully."
 msgstr ""
 
-#: includes/class-tac-admin.php:128
+#: includes/class-tac-admin.php:196
 msgid "No changes to save."
 msgstr ""
 
-#: includes/class-tac-admin.php:152
-msgid "WP TAC Manager: The service \"%1$s\" is active but missing the required parameter \"%2$s\"."
+#: includes/class-tac-admin.php:220
+#, php-format
+msgid "WP TAC Manager: The service \"%1$s\" is active but is missing the required parameter \"%2$s\"."
 msgstr ""
 
-#: includes/class-tac-admin.php:205
+#: includes/class-tac-admin.php:292
+msgid "No file uploaded."
+msgstr ""
+
+#: includes/class-tac-admin.php:302 includes/class-tac-updater.php:352
+#, php-format
+msgid "tarteaucitron.js updated to v%s successfully."
+msgstr ""
+
+#: includes/class-tac-admin.php:304
+msgid "tarteaucitron.js updated successfully."
+msgstr ""
+
+#: includes/class-tac-admin.php:434
 msgid "WP TAC Manager — Statistics"
 msgstr ""
 
-#: includes/class-tac-admin.php:238
-msgid "No consent data available yet."
+#: includes/class-tac-admin.php:467
+msgid "No consent data yet."
 msgstr ""
 
-#: includes/class-tac-admin.php:244
+#: includes/class-tac-admin.php:473
 msgid "Service"
 msgstr ""
 
-#: includes/class-tac-admin.php:245
+#: includes/class-tac-admin.php:474
 msgid "Total"
 msgstr ""
 
-#: includes/class-tac-admin.php:246
+#: includes/class-tac-admin.php:475
 msgid "Accepted"
 msgstr ""
 
-#: includes/class-tac-admin.php:247
+#: includes/class-tac-admin.php:476
 msgid "Rejected"
 msgstr ""
 
-#: includes/class-tac-admin.php:265
+#: includes/class-tac-admin.php:494
+#, php-format
 msgid "Since %s"
 msgstr ""
 
-#: includes/class-tac-admin.php:277
+#: includes/class-tac-admin.php:507
+msgid "Reset all consent statistics?"
+msgstr ""
+
+#: includes/class-tac-admin.php:508
 msgid "Reset statistics"
 msgstr ""
 
-#: includes/class-tac-services.php:10
-msgid "Manage all your analytics and marketing tags from a single Google interface."
+#: includes/class-tac-services.php:30
+msgid "Manage all your measurement and marketing tags from a single Google interface."
 msgstr ""
 
-#: includes/class-tac-services.php:16
-msgid "GTM Container ID"
+#: includes/class-tac-services.php:36
+msgid "GTM container ID"
 msgstr ""
 
-#: includes/class-tac-services.php:19
+#: includes/class-tac-services.php:39
 msgid "Your Google Tag Manager container ID (e.g. GTM-ABCDE12)."
 msgstr ""
 
-#: includes/class-tac-services.php:29
+#: includes/class-tac-services.php:49
 msgid "Google web analytics (GA4)."
 msgstr ""
 
-#: includes/class-tac-services.php:35
+#: includes/class-tac-services.php:55
 msgid "Measurement ID"
 msgstr ""
 
-#: includes/class-tac-services.php:38
+#: includes/class-tac-services.php:58
 msgid "Your Google Analytics 4 Measurement ID (e.g. G-ABCDE12345)."
 msgstr ""
 
-#: includes/class-tac-services.php:48
+#: includes/class-tac-services.php:68
 msgid "Google Ads conversion tracking."
 msgstr ""
 
-#: includes/class-tac-services.php:54
+#: includes/class-tac-services.php:74
 msgid "Conversion ID"
 msgstr ""
 
-#: includes/class-tac-services.php:57
+#: includes/class-tac-services.php:77
 msgid "Your Google Ads conversion ID (e.g. AW-123456789)."
 msgstr ""
 
-#: includes/class-tac-services.php:67
+#: includes/class-tac-services.php:87
 msgid "Meta (Facebook) tracking pixel for conversions and audiences."
 msgstr ""
 
-#: includes/class-tac-services.php:73
+#: includes/class-tac-services.php:93 includes/class-tac-services.php:203 includes/class-tac-services.php:308
 msgid "Pixel ID"
 msgstr ""
 
-#: includes/class-tac-services.php:76
-msgid "Your Facebook pixel ID (e.g. 123456789)."
+#: includes/class-tac-services.php:96
+msgid "Your Facebook Pixel ID (e.g. 123456789)."
 msgstr ""
 
-#: includes/class-tac-services.php:85
+#: includes/class-tac-services.php:105
 msgid "LinkedIn conversion tracking and remarketing."
 msgstr ""
 
-#: includes/class-tac-services.php:91
+#: includes/class-tac-services.php:112
 msgid "Partner ID"
 msgstr ""
 
-#: includes/class-tac-services.php:94
+#: includes/class-tac-services.php:115
 msgid "Your LinkedIn Insight Tag partner ID."
 msgstr ""
 
-#: includes/class-tac-services.php:103
-msgid "Heatmaps, recordings, and surveys with Hotjar."
+#: includes/class-tac-services.php:124
+msgid "Hotjar heatmaps, recordings and surveys."
 msgstr ""
 
-#: includes/class-tac-services.php:109
-msgid "Hotjar Site ID"
+#: includes/class-tac-services.php:130 includes/class-tac-services.php:157
+msgid "Site ID"
 msgstr ""
 
-#: includes/class-tac-services.php:112
-msgid "Your Hotjar site ID (e.g. 1234567)."
+#: includes/class-tac-services.php:133
+msgid "Your Hotjar site ID."
 msgstr ""
 
-#: includes/class-tac-services.php:121
+#: includes/class-tac-services.php:138
+msgid "Snippet version"
+msgstr ""
+
+#: includes/class-tac-services.php:141
+msgid "Hotjar snippet version, normally 6."
+msgstr ""
+
+#: includes/class-tac-services.php:150
 msgid "Self-hosted web analytics with Matomo."
 msgstr ""
 
-#: includes/class-tac-services.php:127
-msgid "Matomo Site ID"
-msgstr ""
-
-#: includes/class-tac-services.php:130
+#: includes/class-tac-services.php:160
 msgid "Your Matomo site ID."
 msgstr ""
 
-#: includes/class-tac-services.php:134
-msgid "Matomo Server URL"
+#: includes/class-tac-services.php:166
+msgid "Matomo server URL"
 msgstr ""
 
-#: includes/class-tac-services.php:137
+#: includes/class-tac-services.php:169
 msgid "Full URL of your Matomo Cloud instance."
 msgstr ""
 
-#: includes/class-tac-services.php:146
+#: includes/class-tac-services.php:178
 msgid "Lightweight and privacy-friendly web analytics."
 msgstr ""
 
-#: includes/class-tac-services.php:152
+#: includes/class-tac-services.php:185
 msgid "Domain"
 msgstr ""
 
-#: includes/class-tac-services.php:155
+#: includes/class-tac-services.php:188
 msgid "The domain you track in Plausible."
 msgstr ""
 
-#: includes/class-tac-services.php:164
-msgid "Conversion and audience tracking for X (Twitter)."
+#: includes/class-tac-services.php:197
+msgid "X (Twitter) conversion tracking and audiences."
 msgstr ""
 
-#: includes/class-tac-services.php:170
-msgid "Pixel ID"
+#: includes/class-tac-services.php:206
+msgid "Your X/Twitter pixel ID."
 msgstr ""
 
-#: includes/class-tac-services.php:173
-msgid "Your Twitter/X pixel ID."
-msgstr ""
-
-#: includes/class-tac-services.php:182
+#: includes/class-tac-services.php:215
 msgid "HubSpot CRM and marketing automation."
 msgstr ""
 
-#: includes/class-tac-services.php:188
+#: includes/class-tac-services.php:221
 msgid "HubSpot ID"
 msgstr ""
 
-#: includes/class-tac-services.php:191
+#: includes/class-tac-services.php:224
 msgid "Your HubSpot account ID."
 msgstr ""
 
-#: admin/views/settings-page.php:35
-msgid "WP TAC Manager"
+#: includes/class-tac-services.php:235
+msgid "YouTube video embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:245
+msgid "Vimeo video embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:255
+msgid "Google Maps embedding with API key."
+msgstr ""
+
+#: includes/class-tac-services.php:261
+msgid "API Key"
+msgstr ""
+
+#: includes/class-tac-services.php:264
+msgid "Your Google Maps API key (optional)."
+msgstr ""
+
+#: includes/class-tac-services.php:273
+msgid "Google reCAPTCHA anti-spam protection."
+msgstr ""
+
+#: includes/class-tac-services.php:280
+msgid "Site Key"
+msgstr ""
+
+#: includes/class-tac-services.php:283
+msgid "Only for reCAPTCHA v3 (it is added as the \"render\" parameter). Leave blank for reCAPTCHA v2."
+msgstr ""
+
+#: includes/class-tac-services.php:292
+msgid "Instagram content embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:302
+msgid "TikTok video embedding and tracking."
+msgstr ""
+
+#: includes/class-tac-services.php:311
+msgid "Your TikTok pixel ID (optional)."
+msgstr ""
+
+#: includes/class-tac-services.php:320
+msgid "Microsoft Clarity session recordings and heatmaps."
+msgstr ""
+
+#: includes/class-tac-services.php:327
+msgid "Project ID"
+msgstr ""
+
+#: includes/class-tac-services.php:330
+msgid "Your Microsoft Clarity project ID."
+msgstr ""
+
+#: includes/class-tac-services.php:339
+msgid "Bing Ads (Microsoft Advertising) conversion tracking."
+msgstr ""
+
+#: includes/class-tac-services.php:346 includes/class-tac-services.php:421
+msgid "Tag ID"
+msgstr ""
+
+#: includes/class-tac-services.php:349
+msgid "Your Bing Ads universal event tracking (UET) tag ID."
+msgstr ""
+
+#: includes/class-tac-services.php:358
+msgid "Crisp live chat widget."
+msgstr ""
+
+#: includes/class-tac-services.php:365
+msgid "Website ID"
+msgstr ""
+
+#: includes/class-tac-services.php:368
+msgid "Your Crisp website ID."
+msgstr ""
+
+#: includes/class-tac-services.php:377
+msgid "Google Fonts loading."
+msgstr ""
+
+#: includes/class-tac-services.php:385
+msgid "Font families"
+msgstr ""
+
+#: includes/class-tac-services.php:388
+msgid "Font families separated by \"|\" (Web Font Loader syntax, e.g. Roboto:400,700|Open Sans)."
+msgstr ""
+
+#: includes/class-tac-services.php:397
+msgid "Disqus comment system."
+msgstr ""
+
+#: includes/class-tac-services.php:403
+msgid "Shortname"
+msgstr ""
+
+#: includes/class-tac-services.php:406
+msgid "Your Disqus forum shortname."
+msgstr ""
+
+#: includes/class-tac-services.php:415
+msgid "Pinterest save button and tracking."
+msgstr ""
+
+#: includes/class-tac-services.php:424
+msgid "Your Pinterest Tag ID."
+msgstr ""
+
+#: includes/class-tac-services.php:433
+msgid "Spotify music and podcast embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:443
+msgid "SoundCloud audio embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:453
+msgid "Dailymotion video embedding."
+msgstr ""
+
+#: includes/class-tac-services.php:463
+msgid "Twitch live stream embedding."
+msgstr ""
+
+#: includes/class-tac-updater.php:84
+msgid "Could not retrieve the latest tarteaucitron.js version from any update source."
+msgstr ""
+
+#: includes/class-tac-updater.php:126
+#, php-format
+msgid "GitHub returned HTTP %d."
+msgstr ""
+
+#: includes/class-tac-updater.php:132
+msgid "GitHub returned an invalid release payload."
+msgstr ""
+
+#: includes/class-tac-updater.php:152
+#, php-format
+msgid "The CDN returned HTTP %1$d while fetching %2$s."
+msgstr ""
+
+#: includes/class-tac-updater.php:158
+msgid "The CDN returned an invalid package.json without a version."
+msgstr ""
+
+#: includes/class-tac-updater.php:183
+#, php-format
+msgid "Refusing to update: unexpected version format \"%s\"."
+msgstr ""
+
+#: includes/class-tac-updater.php:190
+msgid "You already have the latest version installed."
+msgstr ""
+
+#: includes/class-tac-updater.php:227 includes/class-tac-updater.php:388 includes/class-tac-updater.php:394
+msgid "Could not initialize the filesystem."
+msgstr ""
+
+#: includes/class-tac-updater.php:266
+#, php-format
+msgid "Error downloading %s"
+msgstr ""
+
+#: includes/class-tac-updater.php:285
+#, php-format
+msgid "Update aborted: %1$d files downloaded, %2$d errors. No files were modified."
+msgstr ""
+
+#: includes/class-tac-updater.php:336
+msgid "Update aborted: could not move downloaded files into place. The previous files were restored."
+msgstr ""
+
+#: includes/class-tac-updater.php:367
+msgid "There was an error uploading the file."
+msgstr ""
+
+#: includes/class-tac-updater.php:373
+msgid "Invalid file type. Please upload a ZIP file."
+msgstr ""
+
+#: includes/class-tac-updater.php:379
+msgid "The uploaded ZIP file is too large."
+msgstr ""
+
+#: includes/class-tac-updater.php:413
+msgid "The ZIP file contains unsafe file paths."
+msgstr ""
+
+#: includes/class-tac-updater.php:418
+msgid "Could not create temporary directory for extraction."
+msgstr ""
+
+#: includes/class-tac-updater.php:427
+msgid "Could not unzip the file."
+msgstr ""
+
+#: includes/class-tac-updater.php:435
+msgid "Could not find the tarteaucitron.js package in the ZIP."
+msgstr ""
+
+#: includes/class-tac-updater.php:467 includes/class-tac-updater.php:496
+#, php-format
+msgid "Failed to copy %s"
+msgstr ""
+
+#: includes/class-tac-updater.php:506
+msgid "No files could be copied from the ZIP."
 msgstr ""
 
 #: admin/views/settings-page.php:36
+msgid "WP TAC Manager"
+msgstr ""
+
+#: admin/views/settings-page.php:37
 msgid "Cookie management with Tarte au Citron"
 msgstr ""
 
-#: admin/views/settings-page.php:44
+#: admin/views/settings-page.php:45
+#, php-format
 msgid "tarteaucitron.js v%s"
 msgstr ""
 
-#: admin/views/settings-page.php:64
+#: admin/views/settings-page.php:65
 msgid "Configuration sections"
 msgstr ""
 
-#: admin/views/settings-page.php:69
+#: admin/views/settings-page.php:70 admin/views/settings-page.php:117
 msgid "General settings"
 msgstr ""
 
-#: admin/views/settings-page.php:75
+#: admin/views/settings-page.php:76
 msgid "Services"
 msgstr ""
 
-#: admin/views/settings-page.php:98
-msgid "General settings"
+#: admin/views/settings-page.php:89
+msgid "Updates"
 msgstr ""
 
-#: admin/views/settings-page.php:99
+#: admin/views/settings-page.php:95
+msgid "Colors"
+msgstr ""
+
+#: admin/views/settings-page.php:101
+msgid "Labels"
+msgstr ""
+
+#: admin/views/settings-page.php:118
 msgid "Global options for the tarteaucitron cookie banner."
 msgstr ""
 
-#: admin/views/settings-page.php:107
-msgid "Privacy Policy URL"
-msgstr ""
-
-#: admin/views/settings-page.php:120
-msgid "Link to your privacy policy. Displayed in the banner."
-msgstr ""
-
-#: admin/views/settings-page.php:127
+#: admin/views/settings-page.php:126
 msgid "Banner position"
 msgstr ""
 
-#: admin/views/settings-page.php:132
+#: admin/views/settings-page.php:131
 msgid "Bottom"
 msgstr ""
 
-#: admin/views/settings-page.php:133
+#: admin/views/settings-page.php:132
 msgid "Top"
 msgstr ""
 
-#: admin/views/settings-page.php:134
+#: admin/views/settings-page.php:133
 msgid "Center"
 msgstr ""
 
-#: admin/views/settings-page.php:135
+#: admin/views/settings-page.php:134
 msgid "Centered modal (popup)"
 msgstr ""
 
-#: admin/views/settings-page.php:149
-msgid "Banner language"
+#: admin/views/settings-page.php:148
+msgid "Cookie icon position"
+msgstr ""
+
+#: admin/views/settings-page.php:153
+msgid "Bottom right"
 msgstr ""
 
 #: admin/views/settings-page.php:154
-msgid "Automatic (WordPress language)"
+msgid "Bottom left"
 msgstr ""
 
-#: admin/views/settings-page.php:175
-msgid "Cookie name"
+#: admin/views/settings-page.php:155
+msgid "Top right"
 msgstr ""
 
-#: admin/views/settings-page.php:187
-msgid "Name of the cookie storing user preferences. Lowercase letters, numbers, hyphens, and underscores only."
+#: admin/views/settings-page.php:156
+msgid "Top left"
+msgstr ""
+
+#: admin/views/settings-page.php:166
+msgid "Location of the tarteaucitron floating icon."
+msgstr ""
+
+#: admin/views/settings-page.php:173
+msgid "Custom icon"
+msgstr ""
+
+#: admin/views/settings-page.php:185
+msgid "Select image"
+msgstr ""
+
+#: admin/views/settings-page.php:189
+msgid "Remove"
 msgstr ""
 
 #: admin/views/settings-page.php:194
-msgid "Hashtag to reopen the panel"
+msgid "Custom image for the floating cookie icon (recommended: 64×64 px)."
 msgstr ""
 
-#: admin/views/settings-page.php:207
-msgid "Add %s to any link so users can reopen the cookie panel."
+#: admin/views/settings-page.php:201
+msgid "Privacy Policy URL"
 msgstr ""
 
-#: admin/views/settings-page.php:217
-msgid "Automatic reload after acceptance (seconds)"
+#: admin/views/settings-page.php:212
+msgid "Link to your privacy policy page. If left blank, WordPress will automatically resolve your dynamic or localized privacy policy URL."
 msgstr ""
 
-#: admin/views/settings-page.php:229
-msgid "0 = no automatic reload. Useful for loading blocked scripts after consent."
+#: admin/views/settings-page.php:219
+msgid "Banner language"
 msgstr ""
 
-#: admin/views/settings-page.php:236
-msgid "Force new consent request from"
+#: admin/views/settings-page.php:224
+msgid "Automatic (WordPress language)"
 msgstr ""
 
-#: admin/views/settings-page.php:248
-msgid "Format: YYYY/MM/DD. If the user's consent predates this date, consent will be requested again."
+#: admin/views/settings-page.php:240
+msgid "Cookie name"
 msgstr ""
 
-#: admin/views/settings-page.php:254
-msgid "Behavior options"
+#: admin/views/settings-page.php:252
+msgid "Name of the cookie that stores user preferences. Only lowercase letters, numbers, hyphens and underscores."
 msgstr ""
 
 #: admin/views/settings-page.php:259
-msgid "Group services by category"
-msgstr ""
-
-#: admin/views/settings-page.php:260
-msgid "Displays services grouped in the cookie panel."
-msgstr ""
-
-#: admin/views/settings-page.php:263
-msgid "Show always-visible small button"
-msgstr ""
-
-#: admin/views/settings-page.php:264
-msgid "Displays a small quick-access button for the cookie panel."
-msgstr ""
-
-#: admin/views/settings-page.php:267
-msgid "Accessible interface (cookie list)"
-msgstr ""
-
-#: admin/views/settings-page.php:268
-msgid "Improves accessibility for screen readers."
-msgstr ""
-
-#: admin/views/settings-page.php:271
-msgid "Enable cookie banner"
+msgid "Hashtag to reopen the panel"
 msgstr ""
 
 #: admin/views/settings-page.php:272
-msgid "Displays the consent banner to visitors. If disabled, tarteaucitron will not load."
+#, php-format
+msgid "Add %s to any link so users can reopen the cookie panel."
 msgstr ""
 
-#: admin/views/settings-page.php:275
+#: admin/views/settings-page.php:282
+msgid "Force new consent request from"
+msgstr ""
+
+#: admin/views/settings-page.php:294
+msgid "Format: YYYY/MM/DD. If the user's consent is older than this date, they will be asked again."
+msgstr ""
+
+#: admin/views/settings-page.php:300
+msgid "Behavior options"
+msgstr ""
+
+#: admin/views/settings-page.php:305
+msgid "Group services by category"
+msgstr ""
+
+#: admin/views/settings-page.php:306
+msgid "Shows services grouped in the cookie panel."
+msgstr ""
+
+#: admin/views/settings-page.php:309
+msgid "Show always-visible small button"
+msgstr ""
+
+#: admin/views/settings-page.php:310
+msgid "Shows a small quick-access button to the cookie panel."
+msgstr ""
+
+#: admin/views/settings-page.php:313
+msgid "Show cookie list"
+msgstr ""
+
+#: admin/views/settings-page.php:314
+msgid "Adds a button next to the small banner that lists the cookies placed by each service."
+msgstr ""
+
+#: admin/views/settings-page.php:317
+msgid "Enable cookie banner"
+msgstr ""
+
+#: admin/views/settings-page.php:318
+msgid "Shows the consent banner to visitors. If disabled, tarteaucitron is not loaded."
+msgstr ""
+
+#: admin/views/settings-page.php:321
 msgid "Disable banner for logged-in users"
 msgstr ""
 
-#: admin/views/settings-page.php:276
-msgid "The banner is only displayed to visitors who are not logged in."
+#: admin/views/settings-page.php:322
+msgid "The banner is only shown to visitors who are not logged in."
 msgstr ""
 
-#: admin/views/settings-page.php:279
+#: admin/views/settings-page.php:325
 msgid "Respect browser Do Not Track signal"
 msgstr ""
 
-#: admin/views/settings-page.php:280
-msgid "If the user has DNT enabled, all services will automatically be denied."
+#: admin/views/settings-page.php:326
+msgid "If the user has DNT enabled, all services will be automatically denied."
 msgstr ""
 
-#: admin/views/settings-page.php:283
-msgid "Show \"Accept all\" button"
+#: admin/views/settings-page.php:329
+msgid "Show \"Accept All\" button"
 msgstr ""
 
-#: admin/views/settings-page.php:284
-msgid "Allows users to accept all services with a single click."
+#: admin/views/settings-page.php:330
+msgid "Allows users to accept all services with one click."
 msgstr ""
 
-#: admin/views/settings-page.php:287
-msgid "Show \"Deny all\" button"
+#: admin/views/settings-page.php:333
+msgid "Show \"Deny All\" button"
 msgstr ""
 
-#: admin/views/settings-page.php:288
-msgid "Allows users to deny all non-essential services with a single click."
+#: admin/views/settings-page.php:334
+msgid "Allows users to deny all non-essential services with one click."
 msgstr ""
 
-#: admin/views/settings-page.php:291
+#: admin/views/settings-page.php:337
+msgid "Show details on click"
+msgstr ""
+
+#: admin/views/settings-page.php:338
+msgid "Click to expand the service description."
+msgstr ""
+
+#: admin/views/settings-page.php:341
+msgid "Cookie list in panel"
+msgstr ""
+
+#: admin/views/settings-page.php:342
+msgid "Show the cookie list inside the control panel."
+msgstr ""
+
+#: admin/views/settings-page.php:345
+msgid "Show close button on banner"
+msgstr ""
+
+#: admin/views/settings-page.php:346
+msgid "Display a close X on the cookie banner."
+msgstr ""
+
+#: admin/views/settings-page.php:349
+msgid "Always need consent"
+msgstr ""
+
+#: admin/views/settings-page.php:350
+msgid "Ask for consent even for privacy-by-design services."
+msgstr ""
+
+#: admin/views/settings-page.php:353
+msgid "Mandatory cookies button"
+msgstr ""
+
+#: admin/views/settings-page.php:354
+msgid "Show a disabled accept button for mandatory cookies."
+msgstr ""
+
+#: admin/views/settings-page.php:357
+msgid "Show \"More info\" link"
+msgstr ""
+
+#: admin/views/settings-page.php:358
+msgid "Display the more info link on the banner."
+msgstr ""
+
+#: admin/views/settings-page.php:361
+msgid "Show mandatory cookies message"
+msgstr ""
+
+#: admin/views/settings-page.php:362
+msgid "Display information about mandatory cookies."
+msgstr ""
+
+#: admin/views/settings-page.php:365
+msgid "Bing Consent Mode"
+msgstr ""
+
+#: admin/views/settings-page.php:366
+msgid "Enable consent mode for Clarity & Bing Ads."
+msgstr ""
+
+#: admin/views/settings-page.php:369
+msgid "Piano Consent Mode"
+msgstr ""
+
+#: admin/views/settings-page.php:370
+msgid "Enable consent mode for Piano Analytics."
+msgstr ""
+
+#: admin/views/settings-page.php:373
+msgid "Piano Essential Mode"
+msgstr ""
+
+#: admin/views/settings-page.php:374
+msgid "Load Piano Analytics in essential mode by default."
+msgstr ""
+
+#: admin/views/settings-page.php:377
+msgid "Soft consent mode"
+msgstr ""
+
+#: admin/views/settings-page.php:378
+msgid "Consent is required before loading services."
+msgstr ""
+
+#: admin/views/settings-page.php:381
+msgid "DataLayer events"
+msgstr ""
+
+#: admin/views/settings-page.php:382
+msgid "Send events to dataLayer with service status."
+msgstr ""
+
+#: admin/views/settings-page.php:385
+msgid "Server-side only"
+msgstr ""
+
+#: admin/views/settings-page.php:386
+msgid "Tags are not loaded client-side, only server-side."
+msgstr ""
+
+#: admin/views/settings-page.php:389
+msgid "Show partners list"
+msgstr ""
+
+#: admin/views/settings-page.php:390
+msgid "Display the number of partners on the banner."
+msgstr ""
+
+#: admin/views/settings-page.php:393
+msgid "Show floating cookie icon"
+msgstr ""
+
+#: admin/views/settings-page.php:394
+msgid "Display the floating cookie icon to reopen the panel."
+msgstr ""
+
+#: admin/views/settings-page.php:397
 msgid "Disable Google Consent Mode"
 msgstr ""
 
-#: admin/views/settings-page.php:292
-msgid "Disables tarteaucitron Google Consent Mode v2. Enable this if you use Google Consent Mode from another plugin."
+#: admin/views/settings-page.php:398
+msgid "Disables tarteaucitron's Google Consent Mode v2. Enable this if you use Google Consent Mode from another plugin."
 msgstr ""
 
-#: admin/views/settings-page.php:295
-msgid "Hide \"Manage cookies\" credit"
+#: admin/views/settings-page.php:401
+msgid "Hide \"Manage Cookies\" credit"
 msgstr ""
 
-#: admin/views/settings-page.php:296
+#: admin/views/settings-page.php:402
 msgid "Hides the tarteaucitron credit link in the banner."
+msgstr ""
+
+#: admin/views/settings-page.php:431
+msgid "Custom CSS"
+msgstr ""
+
+#: admin/views/settings-page.php:441
+msgid "Additional CSS to customize the cookie banner appearance. No HTML tags allowed."
+msgstr ""
+
+#: admin/views/settings-page.php:453
+msgid "Cookie services"
+msgstr ""
+
+#: admin/views/settings-page.php:454
+msgid "Enable and configure each service. Only enabled and properly configured services will be loaded."
+msgstr ""
+
+#: admin/views/settings-page.php:477
+msgid "View documentation"
+msgstr ""
+
+#: admin/views/settings-page.php:480
+msgid "Docs"
+msgstr ""
+
+#: admin/views/settings-page.php:499
+#, php-format
+msgid "Enable %s"
+msgstr ""
+
+#: admin/views/settings-page.php:527
+msgid "required"
+msgstr ""
+
+#: admin/views/settings-page.php:557
+msgid "tarteaucitron.js Updates"
+msgstr ""
+
+#: admin/views/settings-page.php:558
+msgid "Check if a new version of tarteaucitron.js is available and update it with one click."
+msgstr ""
+
+#: admin/views/settings-page.php:563
+msgid "Installed version"
+msgstr ""
+
+#: admin/views/settings-page.php:570
+msgid "Latest available version"
+msgstr ""
+
+#: admin/views/settings-page.php:572
+msgid "Click \"Check\" to find out."
+msgstr ""
+
+#: admin/views/settings-page.php:581
+msgid "Check for updates"
+msgstr ""
+
+#: admin/views/settings-page.php:587
+msgid "Manual tarteaucitron.js Update"
+msgstr ""
+
+#: admin/views/settings-page.php:589
+msgid "If automatic updates are not working, you can manually upload the tarteaucitron.js ZIP file downloaded from GitHub (e.g., tarteaucitron.js-master.zip)."
+msgstr ""
+
+#: admin/views/settings-page.php:590
+msgid "The plugin will extract the contents and replace the relevant files."
+msgstr ""
+
+#: admin/views/settings-page.php:594
+msgid "Upload ZIP file"
+msgstr ""
+
+#: admin/views/settings-page.php:597
+msgid "Please upload the \"tarteaucitron.js-master.zip\" file."
+msgstr ""
+
+#: admin/views/settings-page.php:602
+msgid "Upload and Install"
+msgstr ""
+
+#: admin/views/settings-page.php:614
+msgid "Main banner background"
+msgstr ""
+
+#: admin/views/settings-page.php:614
+msgid "Background color of the main cookie banner."
+msgstr ""
+
+#: admin/views/settings-page.php:615
+msgid "Main banner text"
+msgstr ""
+
+#: admin/views/settings-page.php:615
+msgid "Text color in the main banner."
+msgstr ""
+
+#: admin/views/settings-page.php:616
+msgid "\"Accept\" button background"
+msgstr ""
+
+#: admin/views/settings-page.php:616
+msgid "Background color of the accept button."
+msgstr ""
+
+#: admin/views/settings-page.php:617
+msgid "\"Accept\" button border"
+msgstr ""
+
+#: admin/views/settings-page.php:617
+msgid "Border color of the accept button."
+msgstr ""
+
+#: admin/views/settings-page.php:618
+msgid "\"Accept\" button text"
+msgstr ""
+
+#: admin/views/settings-page.php:618
+msgid "Text color of the accept button."
+msgstr ""
+
+#: admin/views/settings-page.php:619
+msgid "\"Deny\" button background"
+msgstr ""
+
+#: admin/views/settings-page.php:619
+msgid "Background color of the deny button."
+msgstr ""
+
+#: admin/views/settings-page.php:620
+msgid "\"Deny\" button border"
+msgstr ""
+
+#: admin/views/settings-page.php:620
+msgid "Border color of the deny button."
+msgstr ""
+
+#: admin/views/settings-page.php:621
+msgid "\"Deny\" button text"
+msgstr ""
+
+#: admin/views/settings-page.php:621
+msgid "Text color of the deny button."
+msgstr ""
+
+#: admin/views/settings-page.php:622
+msgid "Panel background"
+msgstr ""
+
+#: admin/views/settings-page.php:622
+msgid "Background color of the preferences panel."
+msgstr ""
+
+#: admin/views/settings-page.php:623
+msgid "Panel text"
+msgstr ""
+
+#: admin/views/settings-page.php:623
+msgid "Text color in the preferences panel."
+msgstr ""
+
+#: admin/views/settings-page.php:624
+msgid "Icon background"
+msgstr ""
+
+#: admin/views/settings-page.php:624
+msgid "Background color of the floating cookie icon."
+msgstr ""
+
+#: admin/views/settings-page.php:629
+msgid "tarteaucitron colors"
+msgstr ""
+
+#: admin/views/settings-page.php:630
+msgid "Customize the cookie banner colors. Each field includes a color picker."
+msgstr ""
+
+#: admin/views/settings-page.php:653
+#, php-format
+msgid "Default: %s"
+msgstr ""
+
+#: admin/views/settings-page.php:664
+msgid "Reset to defaults"
+msgstr ""
+
+#: admin/views/settings-page.php:676
+msgid "Custom texts"
+msgstr ""
+
+#: admin/views/settings-page.php:677
+msgid "Override translation strings per language with JSON. Select a language and enter your custom texts."
+msgstr ""
+
+#: admin/views/settings-page.php:684
+msgid "Language"
+msgstr ""
+
+#: admin/views/settings-page.php:686
+msgid "Select"
+msgstr ""
+
+#: admin/views/settings-page.php:697
+#, php-format
+msgid "Custom JSON for %s"
+msgstr ""
+
+#: admin/views/settings-page.php:707
+msgid "Enter a JSON object. These values merge with the default translation for this language."
+msgstr ""
+
+#: admin/views/settings-page.php:723
+msgid "Save changes"
 msgstr ""
